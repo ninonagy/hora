@@ -7,11 +7,12 @@ const ProfilePage = props => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Profile</IonTitle>
+          <IonTitle>Name Surname</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
-      </IonContent>
+      <Ion-Content>
+
+      </Ion-Content>
     </IonPage>
   );
 }
