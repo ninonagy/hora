@@ -1,5 +1,5 @@
-import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import React from 'react';
+import { Redirect, Route } from 'react-router-dom';
 import {
   IonContent,
   IonHeader,
@@ -13,21 +13,19 @@ import {
   IonLabel,
   IonBadge,
   IonRouterOutlet
-} from "@ionic/react";
+} from '@ionic/react';
 
-import "./HomePage.css";
-
-import FindPage from "./FindPage";
-import GivePage from "./GivePage";
-import MessagesPage from "./MessagesPage";
-import ProfilePage from "./ProfilePage";
+import FindPage from './FindPage';
+import GivePage from './GivePage';
+import MessagesPage from './MessagesPage';
+import ProfilePage from './ProfilePage';
 
 import {
   searchOutline,
   addCircleOutline,
   chatbubblesOutline,
   personOutline
-} from "ionicons/icons";
+} from 'ionicons/icons';
 
 const Home = props => {
   return (

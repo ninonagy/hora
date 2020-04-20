@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   IonText,
   IonContent,
@@ -6,8 +6,8 @@ import {
   IonToolbar,
   IonTitle,
   IonPage
-} from "@ionic/react";
-import { withRouter } from "react-router";
+} from '@ionic/react';
+import { withRouter } from 'react-router';
 
 const GivePage = props => {
   return (

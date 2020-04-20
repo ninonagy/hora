@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   IonIcon,
   IonText,
@@ -7,17 +7,20 @@ import {
   IonToolbar,
   IonTitle,
   IonPage
-} from "@ionic/react";
-import { withRouter } from "react-router";
-import { starOutline, star, starHalf } from "ionicons/icons";
+} from '@ionic/react';
+import { withRouter } from 'react-router';
+import { starOutline, star, starHalf } from 'ionicons/icons';
 
 const FindPage = props => {
+  var { location, match } = props;
+
   return (
     <IonPage>
       <IonContent fullscreen="true">
         <IonToolbar>
           <IonTitle slot="start">HORA</IonTitle>
         </IonToolbar>
+
         <ion-card>
           <ion-item>
             <ion-avatar slot="start">
