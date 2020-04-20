@@ -1,6 +1,7 @@
 import React from 'react';
-import { IonText, IonContent, IonHeader, IonToolbar, IonTitle, IonPage } from '@ionic/react';
+import { IonIcon, IonText, IonContent, IonHeader, IonToolbar, IonTitle, IonPage } from '@ionic/react';
 import { withRouter } from "react-router";
+import { starOutline, star, starHalf } from 'ionicons/icons';
 
 const FindPage = props => {
   return (
@@ -17,7 +18,13 @@ const FindPage = props => {
                     <img src="https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340" />
                 </ion-avatar>
                 <ion-label>John Malkovich</ion-label>
-                <ion-badge color="warning">4.3</ion-badge>
+                <ion-badge color="warning">
+                    <IonIcon icon={star} />
+                    <IonIcon icon={star} />
+                    <IonIcon icon={star} />
+                    <IonIcon icon={starHalf} />
+                    <IonIcon icon={starOutline} />
+                </ion-badge>
             </ion-item>
 
             <ion-card-header>
