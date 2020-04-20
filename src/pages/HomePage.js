@@ -22,6 +22,7 @@ import GivePage from './GivePage';
 import MessagesPage from './MessagesPage';
 import ProfilePage from './ProfilePage';
 
+
 import { searchOutline, addCircleOutline, chatbubblesOutline, personOutline } from 'ionicons/icons';
 
 const Home = props => {

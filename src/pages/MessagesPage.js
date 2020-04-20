@@ -27,7 +27,7 @@ const MessagesPage = props => {
           <ion-badge color="danger">55</ion-badge>
         </ion-item>        
       </IonContent>
-    </IonPage>
+    </IonPage>  
   );
 }
 
