@@ -1,5 +1,12 @@
-import React from 'react';
-import { IonText, IonContent, IonHeader, IonToolbar, IonTitle, IonPage } from '@ionic/react';
+import React from "react";
+import {
+  IonText,
+  IonContent,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonPage
+} from "@ionic/react";
 import { withRouter } from "react-router";
 
 const GivePage = props => {
@@ -10,10 +17,9 @@ const GivePage = props => {
           <IonTitle>Give</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
-      </IonContent>
+      <IonContent></IonContent>
     </IonPage>
   );
-}
+};
 
 export default withRouter(GivePage);

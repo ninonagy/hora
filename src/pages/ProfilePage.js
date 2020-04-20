@@ -1,5 +1,12 @@
-import React from 'react';
-import { IonText, IonContent, IonHeader, IonToolbar, IonTitle, IonPage } from '@ionic/react';
+import React from "react";
+import {
+  IonText,
+  IonContent,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonPage
+} from "@ionic/react";
 import { withRouter } from "react-router";
 
 const ProfilePage = props => {
@@ -10,11 +17,9 @@ const ProfilePage = props => {
           <IonTitle>--Name Surname--</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <Ion-Content>
-
-      </Ion-Content>
+      <Ion-Content></Ion-Content>
     </IonPage>
   );
-}
+};
 
 export default withRouter(ProfilePage);

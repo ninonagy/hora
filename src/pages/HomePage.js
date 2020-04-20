@@ -1,5 +1,5 @@
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import React from "react";
+import { Redirect, Route } from "react-router-dom";
 import {
   IonContent,
   IonHeader,
@@ -13,21 +13,24 @@ import {
   IonLabel,
   IonBadge,
   IonRouterOutlet
-} from '@ionic/react';
+} from "@ionic/react";
 
-import './HomePage.css';
+import "./HomePage.css";
 
-import FindPage from './FindPage';
-import GivePage from './GivePage';
-import MessagesPage from './MessagesPage';
-import ProfilePage from './ProfilePage';
+import FindPage from "./FindPage";
+import GivePage from "./GivePage";
+import MessagesPage from "./MessagesPage";
+import ProfilePage from "./ProfilePage";
 
-
-import { searchOutline, addCircleOutline, chatbubblesOutline, personOutline } from 'ionicons/icons';
+import {
+  searchOutline,
+  addCircleOutline,
+  chatbubblesOutline,
+  personOutline
+} from "ionicons/icons";
 
 const Home = props => {
   return (
-
     <IonTabs>
       <IonRouterOutlet>
         {/* Tabs (same as pages except they are navigated as tabs) */}
@@ -38,7 +41,6 @@ const Home = props => {
         <Route path="/" render={() => <Redirect to="/find" />} />
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
-
         <IonTabButton tab="find" href="/find">
           <IonIcon icon={searchOutline} />
           {/* <IonLabel>Find</IonLabel> */}
@@ -56,10 +58,8 @@ const Home = props => {
         <IonTabButton tab="profile" href="/profile">
           <IonIcon icon={personOutline} />
         </IonTabButton>
-
       </IonTabBar>
     </IonTabs>
-
   );
 };
 

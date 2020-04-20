@@ -31,7 +31,7 @@ function App() {
         <Route path="/" component={HomePage} />
       </IonReactRouter>
     </IonApp>
-  )
+  );
 }
 
 export default App;

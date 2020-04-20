@@ -1,8 +1,15 @@
 import React from 'react';
-import { IonText, IonContent, IonHeader, IonToolbar, IonTitle, IonPage } from '@ionic/react';
-import { withRouter } from "react-router";
+import {
+  IonText,
+  IonContent,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonPage
+} from '@ionic/react';
+import { withRouter } from 'react-router';
 
-const Addpage = props => {
+const AddPage = props => {
   return (
     <IonPage>
       <IonHeader>
@@ -10,10 +17,9 @@ const Addpage = props => {
           <IonTitle>Give</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
-      </IonContent>
+      <IonContent></IonContent>
     </IonPage>
   );
-}
+};
 
-export default withRouter(GivePage);
+export default withRouter(AddPage);

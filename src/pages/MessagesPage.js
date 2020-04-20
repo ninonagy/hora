@@ -1,5 +1,12 @@
-import React from 'react';
-import { IonText, IonContent, IonHeader, IonToolbar, IonTitle, IonPage } from '@ionic/react';
+import React from "react";
+import {
+  IonText,
+  IonContent,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonPage
+} from "@ionic/react";
 import { withRouter } from "react-router";
 
 const MessagesPage = props => {
@@ -25,10 +32,10 @@ const MessagesPage = props => {
           </ion-avatar>
           <ion-label>John Malkovich</ion-label>
           <ion-badge color="danger">55</ion-badge>
-        </ion-item>        
+        </ion-item>
       </IonContent>
-    </IonPage>  
+    </IonPage>
   );
-}
+};
 
 export default withRouter(MessagesPage);
