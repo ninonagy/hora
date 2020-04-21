@@ -15,7 +15,7 @@ import {
   IonRouterOutlet
 } from '@ionic/react';
 
-import FindPage from './FindPage';
+import SearchTab from './SearchTab';
 import GivePage from './GivePage';
 import MessagesPage from './MessagesPage';
 import ProfilePage from './ProfilePage';
@@ -32,12 +32,13 @@ const Home = props => {
     <IonTabs>
       <IonRouterOutlet>
         {/* Tabs (same as pages except they are navigated as tabs) */}
-        <Route path="/:tab(find)" component={FindPage} />
+        <Route path="/:tab(search)" component={SearchTab} />
         <Route path="/:tab(give)" component={GivePage} />
         <Route path="/:tab(messages)" component={MessagesPage} />
         <Route path="/:tab(profile)" component={ProfilePage} />
-        <Route path="/" render={() => <Redirect to="/find" />} />
+        <Route path="/" render={() => <Redirect to="/search" />} />
       </IonRouterOutlet>
+
       <IonTabBar slot="bottom">
         <IonTabButton tab="find" href="/find">
           <IonIcon icon={searchOutline} />
