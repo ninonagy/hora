@@ -24,7 +24,7 @@ const FavorsListPage = ({ match }) => {
 
         <IonList>
           {['1', '2', '3'].map(id => (
-            <FavorCard id={id} back={`${match.url}/favor/${id}`} />
+            <FavorCard id={id} link={`${match.url}/favor/${id}`} />
           ))}
         </IonList>
       </IonContent>
