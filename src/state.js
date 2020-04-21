@@ -4,7 +4,8 @@ import globalHook from 'use-global-hook';
 // https://www.npmjs.com/package/use-global-hook
 
 const initialState = {
-  userId: undefined
+  // userId: undefined,
+  userId: 1 // testing
 };
 
 const actions = {

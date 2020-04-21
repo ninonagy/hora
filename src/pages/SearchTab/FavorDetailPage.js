@@ -5,16 +5,21 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonPage
+  IonPage,
+  IonButtons,
+  IonBackButton
 } from '@ionic/react';
 import { withRouter } from 'react-router';
 
-const AddPage = props => {
+const FavorDetailPage = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Give</IonTitle>
+          <IonButtons slot="start">
+            <IonBackButton text="Back" />
+          </IonButtons>
+          <IonTitle>Some Favor</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent></IonContent>
@@ -22,4 +27,4 @@ const AddPage = props => {
   );
 };
 
-export default withRouter(AddPage);
+export default withRouter(FavorDetailPage);
