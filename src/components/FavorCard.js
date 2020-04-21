@@ -21,7 +21,7 @@ import {
 
 import { starOutline, star, starHalf } from 'ionicons/icons';
 
-const FavorCard = ({ id, back }) => {
+const FavorCard = ({ id, link }) => {
   return (
     <IonCard>
       <IonItem>
@@ -44,7 +44,7 @@ const FavorCard = ({ id, back }) => {
 
       <IonCardContent>
         -- Text of the Ad --
-        <IonButton color="dark" expand="block" routerLink={back}>
+        <IonButton color="dark" expand="block" routerLink={link}>
           See more
         </IonButton>
       </IonCardContent>
