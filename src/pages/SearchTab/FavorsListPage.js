@@ -1,26 +1,14 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-
 import {
-  IonIcon,
-  IonText,
+  IonPage,
   IonContent,
-  IonHeader,
   IonToolbar,
   IonTitle,
-  IonPage,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonCard,
-  IonAvatar,
-  IonItem,
-  IonLabel,
-  IonBadge,
-  IonButton
+  IonList
 } from '@ionic/react';
 
-import { starOutline, star, starHalf } from 'ionicons/icons';
+import FavorCard from '../../components/FavorCard';
 
 const FavorsListPage = ({ match }) => {
   return (
@@ -30,38 +18,15 @@ const FavorsListPage = ({ match }) => {
           <IonTitle slot="start">HORA</IonTitle>
         </IonToolbar>
 
-        {['1', '2', '3'].map(id => 
-          <IonCard key={id}>
-            <IonItem>
-              <IonAvatar slot="start">
-                <img src="https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340" />
-              </IonAvatar>
-              <IonLabel>John Malkovich</IonLabel>
-              <IonBadge color="warning">
-                <IonIcon icon={star} />
-                <IonIcon icon={star} />
-                <IonIcon icon={star} />
-                <IonIcon icon={starHalf} />
-                <IonIcon icon={starOutline} />
-              </IonBadge>
-            </IonItem>
+        {/* 
+          TODO: API call for retrieving list of favours
+         */}
 
-            <IonCardHeader>
-              <IonCardTitle>--Title of the Ad--</IonCardTitle>
-            </IonCardHeader>
-
-            <IonCardContent>
-              -- Text of the Ad --
-              <IonButton
-                color="dark"
-                expand="block"
-                routerLink={`${match.url}/favor/${id}`}
-              >
-                See more
-              </IonButton>
-            </IonCardContent>
-          </IonCard>
-        )}
+        <IonList>
+          {['1', '2', '3'].map(id => (
+            <FavorCard id={id} back={`${match.url}/favor/${id}`} />
+          ))}
+        </IonList>
       </IonContent>
     </IonPage>
   );
