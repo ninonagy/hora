@@ -16,14 +16,15 @@ import {
   IonItem,
   IonLabel,
   IonBadge,
-  IonButton
+  IonButton,
+  IonChip
 } from '@ionic/react';
 
 import { starOutline, star, starHalf } from 'ionicons/icons';
 
 const FavorCard = ({ id, link }) => {
   return (
-    <IonCard>
+    <IonCard routerLink={link}>
       <IonItem>
         <IonAvatar slot="start">
           <img src="https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340" />
@@ -39,14 +40,18 @@ const FavorCard = ({ id, link }) => {
       </IonItem>
 
       <IonCardHeader>
-        <IonCardTitle>--Title of the Ad--</IonCardTitle>
+        <IonCardTitle>--Title of the Favor--</IonCardTitle>
       </IonCardHeader>
 
       <IonCardContent>
-        -- Text of the Ad --
-        <IonButton color="dark" expand="block" routerLink={link}>
-          See more
-        </IonButton>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tristique pharetra tellus, vitae dignissim ex posuere eget. Etiam blandit consequat bibendum. Pellentes...
+        <br />
+        <IonChip>
+          <IonLabel>tag1</IonLabel>
+        </IonChip>
+        <IonChip>
+          <IonLabel>tag2</IonLabel>
+        </IonChip>
       </IonCardContent>
     </IonCard>
   );
