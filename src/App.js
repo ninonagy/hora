@@ -27,6 +27,8 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import * as db from './db';
+
 const SplashScreen = () => {
   // render some nice picture
   return <div></div>;
@@ -41,6 +43,8 @@ const App = () => {
   // TODO
   // lookup if user auth code is stored in app data
   // or try to authenticate user through login-signup form
+
+  let user = db.getUser('u1');
 
   let isUserAuthed = globalState.userId !== undefined;
 
