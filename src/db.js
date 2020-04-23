@@ -121,6 +121,16 @@ function storeValue(path = '', ids = {}, value = {}) {
   store(paths, value, db);
 }
 
+// Return object as array with id in each entry
+function arrayWithId(obj) {
+  return Object.keys(obj).map(key => {
+    obj[key]['id'] = key;
+    return obj[key];
+  });
+}
+
+// Database functions
+
 function getUser(id) {
   return returnValue(paths.user, { userId: id });
 }
@@ -130,7 +140,7 @@ function getFavor(id) {
 }
 
 function getFavorsList() {
-  return Object.values(getFavor(''));
+  return arrayWithId(getFavor(''));
 }
 
 function storeFavor(id, data = {}) {
