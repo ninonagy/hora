@@ -22,29 +22,49 @@ import {
 
 import { starOutline, star, starHalf } from 'ionicons/icons';
 
-const FavorCard = ({ id, link }) => {
+import * as db from '../db';
+
+const RatingIcons = ({ rating }) => {
+  let count = Math.floor(rating);
+  let decimal = rating - count;
+
+  return (
+    <IonBadge color="warning">
+      {[...Array(5)].map((e, i) =>
+        i < count ? (
+          <IonIcon icon={star} />
+        ) : i === count && decimal >= 0.5 ? (
+          <IonIcon icon={starHalf} />
+        ) : (
+          <IonIcon icon={starOutline} />
+        )
+      )}
+    </IonBadge>
+  );
+};
+
+const FavorCard = ({ item, link }) => {
+  let { ownerId, title, description } = item;
+
+  // get user name, profile picture, rating
+  let user = db.getUser(ownerId);
+
   return (
     <IonCard routerLink={link}>
       <IonItem>
         <IonAvatar slot="start">
-          <img src="https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340" />
+          <img src={user.pictureLink} alt="Profile" />
         </IonAvatar>
-        <IonLabel>John Malkovich</IonLabel>
-        <IonBadge color="warning">
-          <IonIcon icon={star} />
-          <IonIcon icon={star} />
-          <IonIcon icon={star} />
-          <IonIcon icon={starHalf} />
-          <IonIcon icon={starOutline} />
-        </IonBadge>
+        <IonLabel>{user.name}</IonLabel>
+        <RatingIcons rating={user.rating} />
       </IonItem>
 
       <IonCardHeader>
-        <IonCardTitle>--Title of the Favor--</IonCardTitle>
+        <IonCardTitle>{title}</IonCardTitle>
       </IonCardHeader>
 
       <IonCardContent>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tristique pharetra tellus, vitae dignissim ex posuere eget. Etiam blandit consequat bibendum. Pellentes...
+        {description}
         <br />
         <IonChip>
           <IonLabel>tag1</IonLabel>
