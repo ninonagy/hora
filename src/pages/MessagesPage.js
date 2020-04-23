@@ -21,13 +21,11 @@ const MessagesPage = props => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-      
         <IonList>
           {['1', '2', '3'].map(id => (
-            <MessagesCard  />
+            <MessagesCard />
           ))}
         </IonList>
-
       </IonContent>
     </IonPage>
   );
