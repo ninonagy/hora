@@ -1,15 +1,8 @@
 import React from 'react';
 
-import {
-  IonLabel,
-  IonItem,
-  IonAvatar,
-  IonBadge
-} from '@ionic/react';
+import { IonLabel, IonItem, IonAvatar, IonBadge } from '@ionic/react';
 
-import { starOutline, star, starHalf } from 'ionicons/icons';
-
-const MessagesCard = ({ }) => {
+const MessagesCard = ({}) => {
   return (
     <IonItem>
       <IonAvatar slot="start">
