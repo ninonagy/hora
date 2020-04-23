@@ -5,7 +5,7 @@ import globalHook from 'use-global-hook';
 
 const initialState = {
   // userId: undefined,
-  userId: 1 // testing
+  userId: 'u1' // testing
 };
 
 const actions = {
