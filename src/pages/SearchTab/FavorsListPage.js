@@ -10,21 +10,26 @@ import {
 
 import FavorCard from '../../components/FavorCard';
 
+import * as db from '../../db.js';
+
 const FavorsListPage = ({ match }) => {
+
+  let favors = db.getFavorsList();
+  favors = favors.sort((item1, item2) => {
+    let diff = new Date(item1.dateCreated) - new Date(item2.dateCreated);
+    return -diff;
+  });
+
   return (
     <IonPage>
       <IonContent fullscreen="true">
         <IonToolbar>
           <IonTitle slot="start">HORA</IonTitle>
         </IonToolbar>
-
-        {/* 
-          TODO: API call for retrieving list of favours
-         */}
-
+        
         <IonList>
-          {['1', '2', '3'].map(id => (
-            <FavorCard id={id} link={`${match.url}/favor/${id}`} />
+          {favors.map(item => (
+            <FavorCard item={item} key={item.id} link={`${match.url}/favor/${item.id}`} />
           ))}
         </IonList>
       </IonContent>

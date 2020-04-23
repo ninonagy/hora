@@ -9,7 +9,9 @@ var db = {
       birthDate: '1996-02-03',
       address: '3307 Westheimer Rd',
       password: 'coyote',
-      rating: 5.0,
+      rating: 3.9,
+      pictureLink:
+        'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
       favorsCreated: {
         f1: true,
         f2: true
@@ -21,7 +23,9 @@ var db = {
       birthDate: '2000-01-20',
       address: '9407 Ash Dr',
       password: 'luv2epus',
-      rating: 4.5,
+      rating: 4.6,
+      pictureLink:
+        'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
       favorsCreated: {}
     },
     u3: {
@@ -30,7 +34,9 @@ var db = {
       birthDate: '1963-08-07',
       address: '257 Edwards Rd',
       password: 'butkus',
-      rating: 4.6,
+      rating: 4.5,
+      pictureLink:
+        'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
       favorsCreated: {
         f3: true
       }
@@ -41,16 +47,25 @@ var db = {
   // In future, seperate favors list on activeFavors and consumedFavors
   favors: {
     f1: {
+      ownerId: 'u1',
       title: 'Zamjeniti žarulju u kući',
       description: 'Trebam pomoć da se mi zamijeni žarulja u mojem stanu.',
       location: 'Zagreb',
       dateCreated: '2020-04-22 21:58:30'
     },
     f2: {
+      ownerId: 'u1',
       title: 'Iznošenje starog namještaja',
       description: 'Iznosit ćemo stari namještaj van iz kuće.',
       location: 'Krk',
       dateCreated: '2020-04-20 08:20:58'
+    },
+    f3: {
+      ownerId: 'u3',
+      title: 'Izrada Web stranice',
+      description: 'Treba mi pomoć oko dovršavanja dijela osobne web stranice.',
+      location: 'Sesvete',
+      dateCreated: '2020-04-23 16:56:42'
     }
   },
 
@@ -60,8 +75,8 @@ var db = {
   // This data should be visible only to selected user and owner?
   // More fields needed for each connection (dealDate, timeLimit...)
   activeConnections: {
-    u2: 'f2',
-    u3: 'f1'
+    u1: 'f3',
+    u2: 'f1'
   },
 
   images: {
