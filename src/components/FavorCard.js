@@ -29,7 +29,7 @@ const FavorCard = ({ id, link }) => {
         <IonAvatar slot="start">
           <img src="https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340" />
         </IonAvatar>
-        <IonLabel>John Malkovich</IonLabel>
+        <IonLabel>John, 25</IonLabel>
         <IonBadge color="warning">
           <IonIcon icon={star} />
           <IonIcon icon={star} />
