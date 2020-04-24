@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
   IonTabs,
   IonTabBar,
   IonTabButton,
   IonIcon,
-  IonRouterOutlet
+  IonRouterOutlet,
+  IonModal,
+  IonButtons,
+  IonButton
 } from '@ionic/react';
 
 import SearchTab from './SearchTab';
@@ -21,14 +28,35 @@ import {
   personOutline
 } from 'ionicons/icons';
 
+import { close } from 'ionicons/icons';
+
 const Home = props => {
+
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <IonContent>
+      <IonModal isOpen={showModal}>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonButton onClick={() => setShowModal(false)}>
+                <IonIcon icon={close} />
+              </IonButton>
+            </IonButtons>
+            <IonTitle>Give</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        
+        <IonContent>
+          <GivePage />
+        </IonContent>
+      </IonModal>
+
       <IonTabs>
         <IonRouterOutlet>
           {/* Tabs (same as pages except they are navigated as tabs) */}
           <Route path="/:tab(search)" component={SearchTab} />
-          <Route path="/:tab(give)" component={GivePage} />
           <Route path="/:tab(messages)" component={MessagesPage} />
           <Route path="/:tab(profile)" component={ProfilePage} />
           <Route path="/" render={() => <Redirect to="/search" />} />
@@ -40,7 +68,7 @@ const Home = props => {
             {/* <IonLabel>Find</IonLabel> */}
           </IonTabButton>
 
-          <IonTabButton tab="give" href="/give">
+          <IonTabButton tab="give" onClick={() => setShowModal(true)}>
             <IonIcon icon={addCircleOutline} />
             {/* <IonLabel>Give</IonLabel> */}
           </IonTabButton>
