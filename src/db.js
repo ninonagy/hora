@@ -12,7 +12,7 @@ var db = {
       rating: 3.9,
       timeSpent: 0,
       timeEarned: 3,
-      skills: 'Matematika, Umjetnik, Plesanje',
+      skills: ['Matematika', 'Umjetnik', 'Plesanje'],
       pictureLink:
         'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
       favorsCreated: {
@@ -29,7 +29,7 @@ var db = {
       rating: 4.6,
       timeSpent: 0,
       timeEarned: 3,
-      skills: 'Jezici, Slikanje, Sviranje',
+      skills: ['Jezici', 'Slikanje', 'Sviranje'],
       pictureLink:
         'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
       favorsCreated: {}
@@ -43,7 +43,7 @@ var db = {
       rating: 4.5,
       timeSpent: 0,
       timeEarned: 3,
-      skills: 'Čitanje, Čuvanje djece, Trčanje',
+      skills: ['Čitanje', 'Čuvanje djece', 'Trčanje'],
       pictureLink:
         'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
       favorsCreated: {
