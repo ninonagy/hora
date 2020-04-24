@@ -7,9 +7,12 @@ var db = {
       name: 'Stacey Scott',
       email: 'stacey.scott@example.com',
       birthDate: '1996-02-03',
-      address: '3307 Westheimer Rd',
+      location: 'Zagreb',
       password: 'coyote',
       rating: 3.9,
+      timeSpent: 0,
+      timeEarned: 3,
+      skills: 'Matematika, Umjetnik, Plesanje',
       pictureLink:
         'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
       favorsCreated: {
@@ -21,9 +24,12 @@ var db = {
       name: 'Ron Lawrence',
       email: 'ron.lawrence@example.com',
       birthDate: '2000-01-20',
-      address: '9407 Ash Dr',
+      location: 'Rijeka',
       password: 'luv2epus',
       rating: 4.6,
+      timeSpent: 0,
+      timeEarned: 3,
+      skills: 'Jezici, Slikanje, Sviranje',
       pictureLink:
         'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
       favorsCreated: {}
@@ -32,9 +38,12 @@ var db = {
       name: 'Alexis Chavez',
       email: 'alexis.chavez@example.com',
       birthDate: '1963-08-07',
-      address: '257 Edwards Rd',
+      location: 'Sesvete',
       password: 'butkus',
       rating: 4.5,
+      timeSpent: 0,
+      timeEarned: 3,
+      skills: 'Čitanje, Čuvanje djece, Trčanje',
       pictureLink:
         'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
       favorsCreated: {
