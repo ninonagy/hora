@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   IonText,
   IonContent,
@@ -15,7 +15,8 @@ import {
   IonBadge,
   IonList,
   IonImg,
-  IonButton
+  IonButton,
+  IonPopover
 } from '@ionic/react';
 
 import './FavorDetailPage.css';
@@ -24,6 +25,8 @@ import { withRouter } from 'react-router';
 
 import RatingIcons from '../../components/RatingIcons';
 
+import { ellipsisHorizontal } from 'ionicons/icons';
+  
 import * as db from '../../db';
 
 const items = [
@@ -37,6 +40,8 @@ const getAge = birthDate =>
 const FavorDetailPage = ({ match }) => {
   let favorId = match.params.id;
 
+const [showPopover, setShowPopover] = useState(false);
+  
   let { ownerId, title, description, location, dateCreated } = db.getFavor(
     favorId
   );
@@ -45,10 +50,25 @@ const FavorDetailPage = ({ match }) => {
 
   return (
     <IonPage>
+      <IonPopover
+        isOpen={showPopover.open}
+        event={showPopover.event}
+        onDidDismiss={e => setShowPopover({ open: false})}
+      >
+        <ion-list>
+          <ion-item>Report</ion-item>
+          <ion-item>Share</ion-item>
+        </ion-list>
+      </IonPopover>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton text="Back" />
+          </IonButtons>
+          <IonButtons slot="end">
+            <IonButton onClick={(e) => setShowPopover({ open: true, event: e.nativeEvent })}>
+              <IonIcon icon={ellipsisHorizontal} />
+            </IonButton>
           </IonButtons>
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
@@ -61,9 +81,7 @@ const FavorDetailPage = ({ match }) => {
           <IonLabel>
             {user.name}, {getAge(user.birthDate)}
           </IonLabel>
-          <IonBadge color="warning">
-            <RatingIcons rating={user.rating} />
-          </IonBadge>
+          <RatingIcons rating={user.rating} />
         </IonItem>
         <h1>{title}</h1>
         <p>{description}</p>
