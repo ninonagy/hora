@@ -1,23 +1,90 @@
 import React from 'react';
 import {
   IonText,
+  IonItem,
+  IonChip,
+  IonLabel,
   IonContent,
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonPage
+  IonPage,
+  IonAvatar,
+  IonGrid,
+  IonRow,
+  IonCol
 } from '@ionic/react';
 import { withRouter } from 'react-router';
 
-const ProfilePage = props => {
+import useGlobalState from '../state';
+import * as db from '../db';
+
+const getAge = birthDate =>
+  new Date().getFullYear() - new Date(birthDate).getFullYear();
+
+const ProfilePage = ({ match }) => {
+  const [globalState, globalActions] = useGlobalState();
+  let userId = globalState.userId;
+
+  let {
+    name,
+    email,
+    birthDate,
+    location,
+    rating,
+    timeSpent,
+    timeEarned,
+    skills,
+    pictureLink
+  } = db.getUser(userId);
+
+  let timeAvailable = timeEarned - timeSpent;
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>--Name Surname--</IonTitle>
+          <IonTitle>
+            {name}, {getAge(birthDate)}
+          </IonTitle>
         </IonToolbar>
       </IonHeader>
-      <Ion-Content></Ion-Content>
+      <IonContent>
+        <IonItem>
+          <IonAvatar>
+            <img src={pictureLink} alt="Avatar" />
+          </IonAvatar>
+          <IonGrid>
+            <IonRow>
+              <IonCol>
+                <IonText>{location}</IonText>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonText>Neki kratak opis</IonText>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+        </IonItem>
+
+        <IonItem>
+          <IonText>Vještine/Hobiji</IonText>
+          {skills.map(item => (
+            <IonChip>
+              <IonLabel>{item}</IonLabel>
+            </IonChip>
+          ))}
+        </IonItem>
+
+        <IonItem>
+          <IonText>Novčići: {timeAvailable}</IonText>
+        </IonItem>
+
+        <IonItem>
+          <IonText>Ocjena: {rating}</IonText>
+        </IonItem>
+      </IonContent>
     </IonPage>
   );
 };
