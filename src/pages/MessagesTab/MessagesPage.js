@@ -21,7 +21,7 @@ const MessagesPage = (props) => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonList inset="true" lines="none">
+        <IonList inset="true">
           {["1", "2", "3"].map((id) => (
             <MessagesCard />
           ))}
