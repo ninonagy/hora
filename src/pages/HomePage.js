@@ -1,28 +1,28 @@
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import React from "react";
+import { Redirect, Route } from "react-router-dom";
 import {
   IonContent,
   IonTabs,
   IonTabBar,
   IonTabButton,
   IonIcon,
-  IonRouterOutlet
-} from '@ionic/react';
+  IonRouterOutlet,
+} from "@ionic/react";
 
-import SearchTab from './SearchTab';
-import GivePage from './GivePage';
-import MessagesPage from './MessagesTab/MessagesPage';
-import ConversationPage from './MessagesTab/ConversationPage';
-import ProfilePage from './ProfilePage';
+import SearchTab from "./SearchTab";
+import GivePage from "./GivePage";
+import MessagesPage from "./MessagesTab/MessagesPage";
+import ConversationPage from "./MessagesTab/ConversationPage";
+import ProfilePage from "./ProfilePage";
 
 import {
   searchOutline,
   addCircleOutline,
   chatbubblesOutline,
-  personOutline
-} from 'ionicons/icons';
+  personOutline,
+} from "ionicons/icons";
 
-const Home = props => {
+const Home = (props) => {
   return (
     <IonContent>
       <IonTabs>

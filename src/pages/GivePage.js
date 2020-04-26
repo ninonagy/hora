@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState } from "react";
 import {
   IonText,
   IonContent,
@@ -21,14 +21,13 @@ import {
   IonThumbnail,
 } from "@ionic/react";
 
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router";
 
 import { closeCircle } from "ionicons/icons";
 
 const dateTime = new Date();
 
-const GivePage = props => {
-
+const GivePage = (props) => {
   const [showModal, setShowModal] = useState(false);
 
   return (
