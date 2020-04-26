@@ -11,7 +11,8 @@ import {
 
 import SearchTab from './SearchTab';
 import GivePage from './GivePage';
-import MessagesPage from './MessagesPage';
+import MessagesPage from './MessagesTab/MessagesPage';
+import ConversationPage from './MessagesTab/ConversationPage';
 import ProfilePage from './ProfilePage';
 
 import {
@@ -28,10 +29,11 @@ const Home = props => {
         <IonRouterOutlet>
           {/* Tabs (same as pages except they are navigated as tabs) */}
           <Route path="/:tab(search)" component={SearchTab} />
+          <Route path="/:tab(conversation)" component={ConversationPage} />
           <Route path="/:tab(give)" component={GivePage} />
           <Route path="/:tab(messages)" component={MessagesPage} />
           <Route path="/:tab(profile)" component={ProfilePage} />
-          <Route path="/" render={() => <Redirect to="/search" />} />
+          <Route exact path="/" render={() => <Redirect to="/search" />} />
         </IonRouterOutlet>
 
         <IonTabBar slot="bottom">

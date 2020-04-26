@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   IonText,
   IonContent,
@@ -6,13 +6,13 @@ import {
   IonToolbar,
   IonTitle,
   IonPage,
-  IonList
-} from '@ionic/react';
+  IonList,
+} from "@ionic/react";
 
-import { withRouter } from 'react-router';
-import MessagesCard from '../components/MessagesCard';
+import { withRouter } from "react-router";
+import MessagesCard from "../../components/MessagesCard";
 
-const MessagesPage = props => {
+const MessagesPage = (props) => {
   return (
     <IonPage>
       <IonHeader>
@@ -21,8 +21,8 @@ const MessagesPage = props => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonList>
-          {['1', '2', '3'].map(id => (
+        <IonList inset="true" lines="none">
+          {["1", "2", "3"].map((id) => (
             <MessagesCard />
           ))}
         </IonList>

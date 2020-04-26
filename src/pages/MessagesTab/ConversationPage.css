@@ -1,0 +1,31 @@
+.message {
+  display: inline-block;
+  padding: 7px 12px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 5px;
+  margin-top: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  border-radius: 15px;
+}
+
+.left {
+  float: left;
+  background-color: #f1f0f0;
+  color: black;
+  clear: both;
+  margin-right: 23%;
+}
+
+.right {
+  float: right;
+  background-color: #0084ff;
+  color: white;
+  clear: both;
+  margin-left: 23%;
+}
+
+.next {
+  margin-top: -2px;
+}
