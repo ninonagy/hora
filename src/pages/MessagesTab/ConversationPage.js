@@ -8,8 +8,12 @@ import {
   IonPage,
   IonButtons,
   IonBackButton,
-  IonAvatar,
-  IonList,
+  IonTextarea,
+  IonFooter,
+  IonRow,
+  IonCol,
+  IonButton,
+  IonIcon,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -17,6 +21,8 @@ import { withRouter } from "react-router";
 import "./ConversationPage.css";
 
 import Message from "../../components/MessageCard";
+
+import { chevronUpCircle } from "ionicons/icons";
 
 const ConversationPage = (props) => {
   return (
@@ -29,7 +35,12 @@ const ConversationPage = (props) => {
           <IonTitle>Conversation</IonTitle>
         </IonToolbar>
       </IonHeader>
+
       <IonContent>
+        {/* TODO: make this less bad. This is just a temporary solution until we
+                  add messages to the database.
+         */}
+
         <Message
           user="left"
           order=""
@@ -71,6 +82,29 @@ const ConversationPage = (props) => {
           A statement on modern society, 'Oh Ain't Modern Society Awful?'!"
         />
       </IonContent>
+      <IonFooter className="ion-no-border">
+        <IonToolbar>
+          <IonRow className="ion-align-items-center">
+            <IonCol size="10">
+              <IonTextarea
+                placeholder="Hey! Ho! Let's go!"
+                class="message-input"
+                rows="1"
+              ></IonTextarea>
+            </IonCol>
+            <IonCol size="2">
+              <IonButton
+                expand="block"
+                fill="clear"
+                color="primary"
+                class="message-button"
+              >
+                <IonIcon class="sendIcon" icon={chevronUpCircle} />
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        </IonToolbar>
+      </IonFooter>
     </IonPage>
   );
 };
