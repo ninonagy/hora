@@ -25,13 +25,13 @@ const NotificationCard = ({ user, order, content }) => {
         nauči me?
         <IonRow class="notification-card-buttons">
           <IonCol>
-            <IonButton color="primary" expand="block" fill="outline">
-              Prihvati
+            <IonButton color="danger" expand="block" fill="outline">
+              Odbij
             </IonButton>
           </IonCol>
           <IonCol>
-            <IonButton color="danger" expand="block" fill="outline">
-              Odbij
+            <IonButton color="primary" expand="block" fill="solid">
+              Prihvati
             </IonButton>
           </IonCol>
         </IonRow>

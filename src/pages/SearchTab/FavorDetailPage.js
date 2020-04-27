@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   IonText,
   IonContent,
@@ -16,32 +16,39 @@ import {
   IonList,
   IonImg,
   IonButton,
-  IonPopover
-} from '@ionic/react';
+  IonPopover,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonCard,
+  IonCardContent,
+} from "@ionic/react";
 
-import './FavorDetailPage.css';
+import "./FavorDetailPage.css";
 
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router";
 
-import RatingIcons from '../../components/RatingIcons';
+import RatingIcons from "../../components/RatingIcons";
 
-import { ellipsisHorizontal } from 'ionicons/icons';
-  
-import * as db from '../../db';
+import ImageCard from "../../components/ImageCard";
+
+import { ellipsisHorizontal } from "ionicons/icons";
+
+import * as db from "../../db";
 
 const items = [
-  { src: 'http://placekitten.com/g/100/100', text: 'this is my cat Minnie' },
-  { src: 'http://placekitten.com/g/101/100', text: 'this is my cat John' }
+  { src: "http://placekitten.com/g/100/100", text: "this is my cat Minnie" },
+  { src: "http://placekitten.com/g/101/100", text: "this is my cat John" },
 ];
 
-const getAge = birthDate =>
+const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
 const FavorDetailPage = ({ match }) => {
   let favorId = match.params.id;
 
-const [showPopover, setShowPopover] = useState(false);
-  
+  const [showPopover, setShowPopover] = useState(false);
+
   let { ownerId, title, description, location, dateCreated } = db.getFavor(
     favorId
   );
@@ -53,7 +60,7 @@ const [showPopover, setShowPopover] = useState(false);
       <IonPopover
         isOpen={showPopover.open}
         event={showPopover.event}
-        onDidDismiss={e => setShowPopover({ open: false})}
+        onDidDismiss={(e) => setShowPopover({ open: false })}
       >
         <ion-list>
           <ion-item>Report</ion-item>
@@ -66,34 +73,65 @@ const [showPopover, setShowPopover] = useState(false);
             <IonBackButton text="Back" />
           </IonButtons>
           <IonButtons slot="end">
-            <IonButton onClick={(e) => setShowPopover({ open: true, event: e.nativeEvent })}>
+            <IonButton
+              onClick={(e) =>
+                setShowPopover({ open: true, event: e.nativeEvent })
+              }
+            >
               <IonIcon icon={ellipsisHorizontal} />
             </IonButton>
           </IonButtons>
-          <IonTitle>{title}</IonTitle>
+          <IonTitle>Favor</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonItem>
-          <IonAvatar slot="start">
-            <IonImg src={user.pictureLink} />
-          </IonAvatar>
-          <IonLabel>
-            {user.name}, {getAge(user.birthDate)}
-          </IonLabel>
-          <RatingIcons rating={user.rating} />
-        </IonItem>
-        <h1>{title}</h1>
-        <p>{description}</p>
-        <IonList>
-          {items.map((image, i) => (
-            <IonItem key={i}>
-              <IonImg src={image.src} />
-              <IonLabel>{image.text}</IonLabel>
-            </IonItem>
-          ))}
-        </IonList>
-        <IonButton color="dark" expand="block">
+        <IonGrid>
+          <IonRow>
+            <IonCol offset="1" size="3">
+              <IonAvatar class="favor-avatar">
+                <IonImg src={user.pictureLink} />
+              </IonAvatar>
+            </IonCol>
+            <IonCol>
+              {user.name}, {getAge(user.birthDate)}
+              <br />
+              <RatingIcons rating={user.rating} />
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+        <div class="favor-text">
+          <h1>{title}</h1>
+          <p>{description}</p>
+        </div>
+        <div class="image-card-wrapper">
+          <ImageCard
+            url="http://placekitten.com/230/520"
+            caption="This is Minnie"
+            orientation="portrait"
+          />
+          <ImageCard
+            url="http://placekitten.com/421/230"
+            caption="Haha! Cute Maxie!"
+            orientation="landscape"
+          />
+          <ImageCard
+            url="http://placekitten.com/250/500"
+            caption="(:"
+            orientation="portrait"
+          />
+          <ImageCard
+            url="http://placekitten.com/230/230"
+            caption="Ohhh look at Foxie!"
+            orientation="landscape"
+          />
+        </div>
+
+        <IonButton
+          class="button-do-it"
+          size="large"
+          color="dark"
+          expand="block"
+        >
           HELP
         </IonButton>
       </IonContent>
