@@ -4,78 +4,79 @@ var db = {
   // Used for showing profile page
   users: {
     u1: {
-      name: 'Stacey Scott',
-      email: 'stacey.scott@example.com',
-      birthDate: '1996-02-03',
-      location: 'Zagreb',
-      password: 'coyote',
+      name: "Stacey Scott",
+      email: "stacey.scott@example.com",
+      birthDate: "1996-02-03",
+      location: "Zagreb",
+      password: "coyote",
       rating: 3.9,
       timeSpent: 0,
       timeEarned: 3,
-      skills: ['Matematika', 'Umjetnik', 'Plesanje'],
+      skills: ["Matematika", "Umjetnik", "Plesanje"],
       pictureLink:
-        'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
+        "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {
         f1: true,
-        f2: true
-      }
+        f2: true,
+      },
     },
     u2: {
-      name: 'Ron Lawrence',
-      email: 'ron.lawrence@example.com',
-      birthDate: '2000-01-20',
-      location: 'Rijeka',
-      password: 'luv2epus',
+      name: "Ron Lawrence",
+      email: "ron.lawrence@example.com",
+      birthDate: "2000-01-20",
+      location: "Rijeka",
+      password: "luv2epus",
       rating: 4.6,
       timeSpent: 0,
       timeEarned: 3,
-      skills: ['Jezici', 'Slikanje', 'Sviranje'],
+      skills: ["Jezici", "Slikanje", "Sviranje"],
       pictureLink:
-        'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
-      favorsCreated: {}
+        "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
+      favorsCreated: {},
     },
     u3: {
-      name: 'Alexis Chavez',
-      email: 'alexis.chavez@example.com',
-      birthDate: '1963-08-07',
-      location: 'Sesvete',
-      password: 'butkus',
+      name: "Alexis Chavez",
+      email: "alexis.chavez@example.com",
+      birthDate: "1963-08-07",
+      location: "Sesvete",
+      password: "butkus",
       rating: 4.5,
       timeSpent: 0,
       timeEarned: 3,
-      skills: ['Čitanje', 'Čuvanje djece', 'Trčanje'],
+      skills: ["Čitanje", "Čuvanje djece", "Trčanje"],
       pictureLink:
-        'https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340',
+        "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {
-        f3: true
-      }
-    }
+        f3: true,
+      },
+    },
   },
 
   // Favors is a list for showing in search result
   // In future, seperate favors list on activeFavors and consumedFavors
   favors: {
     f1: {
-      ownerId: 'u1',
-      title: 'Zamjeniti žarulju u kući',
-      description: 'Trebam pomoć da se mi zamijeni žarulja u mojem stanu.',
-      location: 'Zagreb',
-      dateCreated: '2020-04-22 21:58:30'
+      ownerId: "u1",
+      title: "Zamjeniti žarulju u kući",
+      description: "Trebam pomoć da se mi zamijeni žarulja u mojem stanu.",
+      location: "Zagreb",
+      dateCreated: "2020-04-22 21:58:30",
     },
     f2: {
-      ownerId: 'u1',
-      title: 'Iznošenje starog namještaja',
-      description: 'Iznosit ćemo stari namještaj van iz kuće.',
-      location: 'Krk',
-      dateCreated: '2020-04-20 08:20:58'
+      ownerId: "u1",
+      title: "Goodbye... Fancypants! Be a pal and tell me, Am I a good man? ",
+      description:
+        "Nosey parker. What? What?! WHAT?! People who talk about infallibility are usually on very shaky ground. No… No-no-no-no-wait-wait-wait-wait… I remember I'm-I-I… I'm with my father, we're lying back in the grass, it's a warm Gallifreyan night— Let's go in!",
+      location: "Krk",
+      dateCreated: "2020-04-20 08:20:58",
     },
     f3: {
-      ownerId: 'u3',
-      title: 'Izrada Web stranice',
-      description: 'Treba mi pomoć oko dovršavanja dijela osobne web stranice.',
-      location: 'Sesvete',
-      dateCreated: '2020-04-23 16:56:42'
-    }
+      ownerId: "u3",
+      title: "Izrada Web stranice",
+      description: "Treba mi pomoć oko dovršavanja dijela osobne web stranice.",
+      location: "Sesvete",
+      dateCreated: "2020-04-23 16:56:42",
+    },
   },
 
   // Active favor deals made by owner and some user
@@ -84,56 +85,56 @@ var db = {
   // This data should be visible only to selected user and owner?
   // More fields needed for each connection (dealDate, timeLimit...)
   activeConnections: {
-    u1: 'f3',
-    u2: 'f1'
+    u1: "f3",
+    u2: "f1",
   },
 
   images: {
-    f1: 'data',
-    f2: 'data',
-    f3: 'data'
+    f1: "data",
+    f2: "data",
+    f3: "data",
   },
 
-  ratings: {}
+  ratings: {},
 
   // ...
 };
 
 const paths = {
-  user: '/users/{userId}',
-  favor: '/favors/{favorId}',
-  activeConnection: '/activeConnection/{userId}'
+  user: "/users/{userId}",
+  favor: "/favors/{favorId}",
+  activeConnection: "/activeConnection/{userId}",
   // ...
 };
 
-function buildPath(path = '', ids = {}) {
+function buildPath(path = "", ids = {}) {
   // ids = { userId: "u1" };
   for (let label in ids) {
     let idValue = ids[label];
-    path = path.replace('{' + label + '}', idValue);
+    path = path.replace("{" + label + "}", idValue);
   }
-  return path.split('/').filter(i => i !== '/' && i !== '');
+  return path.split("/").filter((i) => i !== "/" && i !== "");
 }
 
-function returnValue(path = '', ids = {}) {
-  if (path === '') return;
+function returnValue(path = "", ids = {}) {
+  if (path === "") return;
   let paths = buildPath(path, ids);
   // loop through keys to get value
   let value = db;
-  paths.forEach(p => {
+  paths.forEach((p) => {
     value = value[p];
   });
   return value;
 }
 
-function storeValue(path = '', ids = {}, value = {}) {
-  if (path === '') return;
+function storeValue(path = "", ids = {}, value = {}) {
+  if (path === "") return;
   let paths = buildPath(path, ids);
 
   // https://medium.com/data-scraper-tips-tricks/safely-read-write-in-deeply-nested-objects-js-a1d9ddd168c6
   const store = (paths, value, obj) => {
     if (paths.length > 1) {
-      if (!obj.hasOwnProperty(paths[0]) || typeof obj[paths[0]] !== 'object')
+      if (!obj.hasOwnProperty(paths[0]) || typeof obj[paths[0]] !== "object")
         obj[paths[0]] = {};
       return store(paths.slice(1), value, obj[paths[0]]);
     } else {
@@ -147,8 +148,8 @@ function storeValue(path = '', ids = {}, value = {}) {
 
 // Return object as array with id in each entry
 function arrayWithId(obj) {
-  return Object.keys(obj).map(key => {
-    obj[key]['id'] = key;
+  return Object.keys(obj).map((key) => {
+    obj[key]["id"] = key;
     return obj[key];
   });
 }
@@ -164,7 +165,7 @@ function getFavor(id) {
 }
 
 function getFavorsList() {
-  return arrayWithId(getFavor(''));
+  return arrayWithId(getFavor(""));
 }
 
 function storeFavor(id, data = {}) {

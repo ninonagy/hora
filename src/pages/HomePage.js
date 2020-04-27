@@ -37,7 +37,7 @@ const Home = (props) => {
         </IonRouterOutlet>
 
         <IonTabBar slot="bottom">
-          <IonTabButton tab="find" href="/find">
+          <IonTabButton tab="search" href="/search">
             <IonIcon icon={searchOutline} />
             {/* <IonLabel>Find</IonLabel> */}
           </IonTabButton>
