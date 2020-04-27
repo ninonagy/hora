@@ -6,7 +6,7 @@ import {
   IonTabBar,
   IonTabButton,
   IonIcon,
-  IonRouterOutlet,
+  IonRouterOutlet
 } from "@ionic/react";
 
 import SearchTab from "./SearchTab";
@@ -19,10 +19,10 @@ import {
   searchOutline,
   addCircleOutline,
   chatbubblesOutline,
-  personOutline,
+  personOutline
 } from "ionicons/icons";
 
-const Home = (props) => {
+const Home = props => {
   return (
     <IonContent>
       <IonTabs>

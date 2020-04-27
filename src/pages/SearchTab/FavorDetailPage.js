@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonText,
   IonContent,
@@ -21,7 +21,7 @@ import {
   IonRow,
   IonCol,
   IonCard,
-  IonCardContent,
+  IonCardContent
 } from "@ionic/react";
 
 import "./FavorDetailPage.css";
@@ -38,29 +38,36 @@ import * as db from "../../db";
 
 const items = [
   { src: "http://placekitten.com/g/100/100", text: "this is my cat Minnie" },
-  { src: "http://placekitten.com/g/101/100", text: "this is my cat John" },
+  { src: "http://placekitten.com/g/101/100", text: "this is my cat John" }
 ];
 
-const getAge = (birthDate) =>
+const getAge = birthDate =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
 const FavorDetailPage = ({ match }) => {
   let favorId = match.params.id;
 
+  let [favor, setFavor] = useState({});
+  let [user, setUser] = useState({});
   const [showPopover, setShowPopover] = useState(false);
 
-  let { ownerId, title, description, location, dateCreated } = db.getFavor(
-    favorId
-  );
+  useEffect(() => {
+    db.getFavor(favorId).then(favor => {
+      db.getUser(favor.ownerId).then(user => {
+        setFavor(favor);
+        setUser(user);
+      });
+    });
+  }, [favorId]);
 
-  let user = db.getUser(ownerId);
+  let { title, description, location, dateCreated } = favor;
 
   return (
     <IonPage>
       <IonPopover
         isOpen={showPopover.open}
         event={showPopover.event}
-        onDidDismiss={(e) => setShowPopover({ open: false })}
+        onDidDismiss={e => setShowPopover({ open: false })}
       >
         <ion-list>
           <ion-item>Report</ion-item>
@@ -74,7 +81,7 @@ const FavorDetailPage = ({ match }) => {
           </IonButtons>
           <IonButtons slot="end">
             <IonButton
-              onClick={(e) =>
+              onClick={e =>
                 setShowPopover({ open: true, event: e.nativeEvent })
               }
             >

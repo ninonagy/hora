@@ -1,5 +1,10 @@
 // Temporary database structure
 
+// https://capacitor.ionicframework.com/docs/apis/storage/
+import { Plugins } from "@capacitor/core";
+
+const { Storage } = Plugins;
+
 var db = {
   // Used for showing profile page
   users: {
@@ -17,8 +22,8 @@ var db = {
         "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {
         f1: true,
-        f2: true,
-      },
+        f2: true
+      }
     },
     u2: {
       name: "Ron Lawrence",
@@ -32,7 +37,7 @@ var db = {
       skills: ["Jezici", "Slikanje", "Sviranje"],
       pictureLink:
         "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
-      favorsCreated: {},
+      favorsCreated: {}
     },
     u3: {
       name: "Alexis Chavez",
@@ -47,9 +52,9 @@ var db = {
       pictureLink:
         "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {
-        f3: true,
-      },
-    },
+        f3: true
+      }
+    }
   },
 
   // Favors is a list for showing in search result
@@ -60,7 +65,7 @@ var db = {
       title: "Zamjeniti žarulju u kući",
       description: "Trebam pomoć da se mi zamijeni žarulja u mojem stanu.",
       location: "Zagreb",
-      dateCreated: "2020-04-22 21:58:30",
+      dateCreated: "2020-04-22 21:58:30"
     },
     f2: {
       ownerId: "u1",
@@ -68,15 +73,15 @@ var db = {
       description:
         "Nosey parker. What? What?! WHAT?! People who talk about infallibility are usually on very shaky ground. No… No-no-no-no-wait-wait-wait-wait… I remember I'm-I-I… I'm with my father, we're lying back in the grass, it's a warm Gallifreyan night— Let's go in!",
       location: "Krk",
-      dateCreated: "2020-04-20 08:20:58",
+      dateCreated: "2020-04-20 08:20:58"
     },
     f3: {
       ownerId: "u3",
       title: "Izrada Web stranice",
       description: "Treba mi pomoć oko dovršavanja dijela osobne web stranice.",
       location: "Sesvete",
-      dateCreated: "2020-04-23 16:56:42",
-    },
+      dateCreated: "2020-04-23 16:56:42"
+    }
   },
 
   // Active favor deals made by owner and some user
@@ -86,24 +91,39 @@ var db = {
   // More fields needed for each connection (dealDate, timeLimit...)
   activeConnections: {
     u1: "f3",
-    u2: "f1",
+    u2: "f1"
   },
 
   images: {
     f1: "data",
     f2: "data",
-    f3: "data",
+    f3: "data"
   },
 
-  ratings: {},
+  ratings: {}
 
   // ...
 };
 
+const db_key = "db";
+
+async function setDB() {
+  await Storage.set({
+    key: db_key,
+    value: JSON.stringify(db)
+  });
+}
+
+async function getDB() {
+  const ret = await Storage.get({ key: db_key });
+  db = JSON.parse(ret.value);
+  return db;
+}
+
 const paths = {
   user: "/users/{userId}",
   favor: "/favors/{favorId}",
-  activeConnection: "/activeConnection/{userId}",
+  activeConnection: "/activeConnection/{userId}"
   // ...
 };
 
@@ -113,18 +133,21 @@ function buildPath(path = "", ids = {}) {
     let idValue = ids[label];
     path = path.replace("{" + label + "}", idValue);
   }
-  return path.split("/").filter((i) => i !== "/" && i !== "");
+  return path.split("/").filter(i => i !== "/" && i !== "");
 }
 
 function returnValue(path = "", ids = {}) {
   if (path === "") return;
   let paths = buildPath(path, ids);
-  // loop through keys to get value
-  let value = db;
-  paths.forEach((p) => {
-    value = value[p];
+  let connection = getDB();
+  return connection.then(db => {
+    let value = db;
+    // loop through keys to get value
+    paths.forEach(p => {
+      value = value[p];
+    });
+    return value;
   });
-  return value;
 }
 
 function storeValue(path = "", ids = {}, value = {}) {
@@ -144,11 +167,13 @@ function storeValue(path = "", ids = {}, value = {}) {
   };
 
   store(paths, value, db);
+  // update local database
+  setDB();
 }
 
 // Return object as array with id in each entry
 function arrayWithId(obj) {
-  return Object.keys(obj).map((key) => {
+  return Object.keys(obj).map(key => {
     obj[key]["id"] = key;
     return obj[key];
   });
@@ -156,23 +181,29 @@ function arrayWithId(obj) {
 
 // Database functions
 
-function getUser(id) {
+async function getUser(id) {
   return returnValue(paths.user, { userId: id });
 }
 
-function getFavor(id) {
+async function getFavor(id) {
   return returnValue(paths.favor, { favorId: id });
 }
 
-function getFavorsList() {
-  return arrayWithId(getFavor(""));
+async function getFavorsList() {
+  return getFavor("").then(data => arrayWithId(data));
 }
 
-function storeFavor(id, data = {}) {
+async function storeFavor(id, data = {}) {
   storeValue(paths.favor, { favorId: id }, data);
 }
 
 // ...
+
+// Try to connect to localStorage
+let connection = getDB();
+connection.then(stored => {
+  if (stored == null) setDB();
+});
 
 // export db functions
 export { getUser, getFavor, storeFavor, getFavorsList };

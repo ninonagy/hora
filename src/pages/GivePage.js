@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   IonText,
   IonContent,
@@ -18,7 +19,7 @@ import {
   IonRange,
   IonDatetime,
   IonChip,
-  IonThumbnail,
+  IonThumbnail
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -27,14 +28,14 @@ import { closeCircle } from "ionicons/icons";
 
 const dateTime = new Date();
 
-const GivePage = (props) => {
+const GivePage = props => {
   const [showModal, setShowModal] = useState(false);
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Give</IonTitle>
+          <IonTitle>Objavi uslugu</IonTitle>
         </IonToolbar>
       </IonHeader>
 
