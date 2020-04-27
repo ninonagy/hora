@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import {
   IonText,
   IonItem,
@@ -13,18 +13,26 @@ import {
   IonGrid,
   IonRow,
   IonCol
-} from '@ionic/react';
-import { withRouter } from 'react-router';
+} from "@ionic/react";
+import { withRouter } from "react-router";
 
-import useGlobalState from '../state';
-import * as db from '../db';
+import useGlobalState from "../state";
+import * as db from "../db";
 
 const getAge = birthDate =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
 const ProfilePage = ({ match }) => {
   const [globalState, globalActions] = useGlobalState();
+  let [user, setUser] = useState({});
+
   let userId = globalState.userId;
+
+  useEffect(() => {
+    db.getUser(userId).then(user => {
+      setUser(user);
+    });
+  }, [userId]);
 
   let {
     name,
@@ -36,7 +44,9 @@ const ProfilePage = ({ match }) => {
     timeEarned,
     skills,
     pictureLink
-  } = db.getUser(userId);
+  } = user;
+
+  skills = skills || [];
 
   let timeAvailable = timeEarned - timeSpent;
 

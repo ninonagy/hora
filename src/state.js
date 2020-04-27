@@ -1,11 +1,11 @@
-import React from 'react';
-import globalHook from 'use-global-hook';
+import React from "react";
+import globalHook from "use-global-hook";
 
 // https://www.npmjs.com/package/use-global-hook
 
 const initialState = {
   // userId: undefined,
-  userId: 'u1' // testing
+  userId: "u1" // testing
 };
 
 const actions = {
