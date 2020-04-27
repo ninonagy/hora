@@ -46,3 +46,17 @@
 .sendIcon {
   font-size: 35px;
 }
+
+.notification-card-buttons {
+  margin-top: 10px;
+}
+
+.messages-avatar {
+  height: 30px;
+  width: 30px;
+}
+
+.button-profile {
+  color: var(--ion-color-light-shade);
+  margin-right: -5px;
+}

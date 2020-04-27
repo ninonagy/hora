@@ -14,6 +14,7 @@ import {
   IonCol,
   IonButton,
   IonIcon,
+  IonAvatar,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -22,7 +23,8 @@ import "./ConversationPage.css";
 
 import Message from "../../components/MessageCard";
 
-import { chevronUpCircle } from "ionicons/icons";
+import { chevronUpCircle, chevronForwardOutline } from "ionicons/icons";
+import NotificationCard from "../../components/NotificationCard";
 
 const ConversationPage = (props) => {
   return (
@@ -32,7 +34,15 @@ const ConversationPage = (props) => {
           <IonButtons slot="start">
             <IonBackButton text="Back" />
           </IonButtons>
-          <IonTitle>Conversation</IonTitle>
+          <IonTitle>user.username</IonTitle>
+          <IonButtons slot="end">
+            <IonButton slot="end">
+              <IonAvatar class="messages-avatar">
+                <img src="http://placekitten.com/50/50" alt="Profile" />
+              </IonAvatar>
+              <IonIcon class="button-profile" icon={chevronForwardOutline} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
@@ -75,6 +85,9 @@ const ConversationPage = (props) => {
           content="No. No violence. I won't stand for it. Not now, not ever, do you
           understand me?!"
         />
+
+        <NotificationCard />
+
         <Message
           user="right"
           order=""
