@@ -6,7 +6,7 @@ import {
   IonTabBar,
   IonTabButton,
   IonIcon,
-  IonRouterOutlet
+  IonRouterOutlet,
 } from "@ionic/react";
 
 import SearchTab from "./SearchTab";
@@ -19,32 +19,31 @@ import {
   searchOutline,
   addCircleOutline,
   chatbubblesOutline,
-  personOutline
+  personOutline,
 } from "ionicons/icons";
 
-const Home = props => {
+const Home = (props) => {
   return (
     <IonContent>
       <IonTabs>
         <IonRouterOutlet>
           {/* Tabs (same as pages except they are navigated as tabs) */}
           <Route path="/:tab(search)" component={SearchTab} />
-          <Route path="/:tab(conversation)" component={ConversationPage} />
           <Route path="/:tab(give)" component={GivePage} />
           <Route path="/:tab(messages)" component={MessagesPage} />
           <Route path="/:tab(profile)" component={ProfilePage} />
           <Route exact path="/" render={() => <Redirect to="/search" />} />
+          {/* Other routes */}
+          <Route path="/messages/conversation" component={ConversationPage} />
         </IonRouterOutlet>
 
         <IonTabBar slot="bottom">
           <IonTabButton tab="search" href="/search">
             <IonIcon icon={searchOutline} />
-            {/* <IonLabel>Find</IonLabel> */}
           </IonTabButton>
 
           <IonTabButton tab="give" href="/give">
             <IonIcon icon={addCircleOutline} />
-            {/* <IonLabel>Give</IonLabel> */}
           </IonTabButton>
 
           <IonTabButton tab="messages" href="/messages">

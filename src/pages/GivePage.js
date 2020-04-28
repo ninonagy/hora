@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   IonText,
@@ -19,17 +19,37 @@ import {
   IonRange,
   IonDatetime,
   IonChip,
-  IonThumbnail
+  IonThumbnail,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
 
 import { closeCircle } from "ionicons/icons";
 
-const dateTime = new Date();
+import * as db from "../db";
+import useGlobal from "../state";
 
-const GivePage = props => {
-  const [showModal, setShowModal] = useState(false);
+const GivePage = (props) => {
+  const [globalState, globalActions] = useGlobal();
+  let [title, setTitle] = useState("");
+  let [description, setDescription] = useState("");
+  let [dateTime, setDateTime] = useState(new Date());
+  let [timeEstimation, setTimeEstimation] = useState(30);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    let userId = globalState.userId;
+    let { location } = globalState.user;
+    debugger;
+    db.storeFavor({
+      ownerId: userId,
+      title: title,
+      description: description,
+      location: location,
+      dateCreated: new Date().toISOString(),
+      dateDue: dateTime.toISOString(),
+    });
+  }
 
   return (
     <IonPage>
@@ -40,79 +60,93 @@ const GivePage = props => {
       </IonHeader>
 
       <IonContent>
-        <IonList class="ion-no-margin ion-no-padding">
-          <IonItem>
-            <IonLabel position="floating">Naslov</IonLabel>
-            <IonInput></IonInput>
-          </IonItem>
+        <form onSubmit={handleSubmit}>
+          <IonList class="ion-no-margin ion-no-padding">
+            <IonItem>
+              <IonLabel position="floating">Naslov</IonLabel>
+              <IonInput
+                onIonChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </IonItem>
 
-          <IonItem>
-            <IonLabel position="floating">Opis</IonLabel>
-            <IonTextarea rows="5"></IonTextarea>
-          </IonItem>
+            <IonItem>
+              <IonLabel position="floating">Opis</IonLabel>
+              <IonTextarea
+                rows="5"
+                onIonChange={(e) => setDescription(e.target.value)}
+                required
+              />
+            </IonItem>
 
-          <IonItem>
-            <IonLabel>Oznake</IonLabel>
-            <IonInput>
-              <IonChip>
-                <IonIcon icon={closeCircle} />
-                <IonLabel>primjer 1</IonLabel>
-              </IonChip>
+            {/* <IonItem>
+              <IonLabel>Oznake</IonLabel>
+              <IonInput>
+                <IonChip>
+                  <IonIcon icon={closeCircle} />
+                  <IonLabel>primjer 1</IonLabel>
+                </IonChip>
 
-              <IonChip>
-                <IonIcon icon={closeCircle} />
-                <IonLabel>primjer 2</IonLabel>
-              </IonChip>
-            </IonInput>
-          </IonItem>
+                <IonChip>
+                  <IonIcon icon={closeCircle} />
+                  <IonLabel>primjer 2</IonLabel>
+                </IonChip>
+              </IonInput>
+            </IonItem> */}
 
-          <IonItemDivider></IonItemDivider>
+            <IonItemDivider />
 
-          <ion-item>
-            <IonLabel>Datum</IonLabel>
-            <IonDatetime
-              monthShortNames="siječnja, veljače, ožujka, travnja, svibnja, lipnja, srpnja, kolovoza, rujna, listopada, studenog, prosinca"
-              display-format="DD. MMM YYYY."
-              picker-format="DD. MMM YYYY."
-              value={
-                dateTime.getFullYear() +
-                "-" +
-                (dateTime.getMonth() + 1) +
-                "-" +
-                dateTime.getDate()
-              }
-            ></IonDatetime>
-          </ion-item>
+            <IonItem>
+              <IonLabel>Datum</IonLabel>
+              <IonDatetime
+                monthShortNames="siječnja, veljače, ožujka, travnja, svibnja, lipnja, srpnja, kolovoza, rujna, listopada, studenog, prosinca"
+                display-format="DD. MMM YYYY."
+                picker-format="DD. MMM YYYY."
+                min={new Date().toISOString()}
+                value={
+                  dateTime.getFullYear() +
+                  "-" +
+                  (dateTime.getMonth() + 1) +
+                  "-" +
+                  dateTime.getDate()
+                }
+                onIonChange={(e) => setDateTime(new Date(e.target.value))}
+              ></IonDatetime>
+            </IonItem>
 
-          <IonItem>
-            <IonLabel>Vrijeme</IonLabel>
-            <IonDatetime
-              display-format="HH:mm"
-              picker-format="HH:mm"
-              value={dateTime.getHours() + ":" + dateTime.getMinutes()}
-            ></IonDatetime>
-          </IonItem>
+            {/* <IonItem>
+              <IonLabel>Vrijeme</IonLabel>
+              <IonDatetime
+                required
+                display-format="HH:mm"
+                picker-format="HH:mm"
+                value={dateTime.getHours() + ":" + dateTime.getMinutes()}
+                // onIonChange={e => setTime(e.target.value)}
+              />
+            </IonItem> */}
 
-          <IonItem>
-            <IonLabel>Procijenjeno vrijeme</IonLabel>
-            <IonRange
-              value={15}
-              min={0}
-              max={60}
-              step={5}
-              snaps={true}
-              ticks={false}
-              pin={true}
-              color="secondary"
-            />
-          </IonItem>
+            <IonItem>
+              <IonLabel>Procijenjeno vrijeme</IonLabel>
+              <IonRange
+                value={timeEstimation}
+                onIonChange={(e) => setTimeEstimation(e.target.value)}
+                min={15}
+                max={60}
+                step={5}
+                snaps={true}
+                ticks={false}
+                pin={true}
+                color="secondary"
+              />
+            </IonItem>
 
-          <IonItemDivider></IonItemDivider>
+            <IonItemDivider />
 
-          <IonButton expand="block" fill="outline">
-            potvrdi
-          </IonButton>
-        </IonList>
+            <IonButton type="submit" expand="block" fill="outline">
+              Objavi
+            </IonButton>
+          </IonList>
+        </form>
       </IonContent>
     </IonPage>
   );
