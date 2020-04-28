@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 
 import {
   IonIcon,
@@ -17,18 +17,21 @@ import {
   IonLabel,
   IonBadge,
   IonButton,
-  IonChip
-} from '@ionic/react';
+  IonChip,
+} from "@ionic/react";
 
-import RatingIcons from '../components/RatingIcons';
+import RatingIcons from "../components/RatingIcons";
 
-import * as db from '../db';
+import * as db from "../db";
 
 const FavorCard = ({ item, link }) => {
   let { ownerId, title, description } = item;
+  let [user, setUser] = useState({});
 
-  // get user name, profile picture, rating
-  let user = db.getUser(ownerId);
+  useEffect(() => {
+    // get user name, profile picture, rating
+    db.getUser(ownerId).then((user) => setUser(user));
+  }, [ownerId]);
 
   return (
     <IonCard routerLink={link}>

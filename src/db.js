@@ -1,5 +1,10 @@
 // Temporary database structure
 
+// https://capacitor.ionicframework.com/docs/apis/storage/
+import { Plugins } from "@capacitor/core";
+
+const { Storage } = Plugins;
+
 var db = {
   // Used for showing profile page
   users: {
@@ -61,6 +66,7 @@ var db = {
       description: "Trebam pomoć da se mi zamijeni žarulja u mojem stanu.",
       location: "Zagreb",
       dateCreated: "2020-04-22 21:58:30",
+      dateDue: "2020-04-28 20:00:00",
     },
     f2: {
       ownerId: "u1",
@@ -69,6 +75,7 @@ var db = {
         "Nosey parker. What? What?! WHAT?! People who talk about infallibility are usually on very shaky ground. No… No-no-no-no-wait-wait-wait-wait… I remember I'm-I-I… I'm with my father, we're lying back in the grass, it's a warm Gallifreyan night— Let's go in!",
       location: "Krk",
       dateCreated: "2020-04-20 08:20:58",
+      dateDue: "2020-04-30 18:00:00",
     },
     f3: {
       ownerId: "u3",
@@ -76,6 +83,7 @@ var db = {
       description: "Treba mi pomoć oko dovršavanja dijela osobne web stranice.",
       location: "Sesvete",
       dateCreated: "2020-04-23 16:56:42",
+      dateDue: "2020-05-01 16:00:00",
     },
   },
 
@@ -100,6 +108,25 @@ var db = {
   // ...
 };
 
+const db_key = "db";
+
+async function setDB() {
+  await Storage.set({
+    key: db_key,
+    value: JSON.stringify(db),
+  });
+}
+
+async function getDB() {
+  const ret = await Storage.get({ key: db_key });
+  let value = null;
+  if (ret.value) {
+    value = JSON.parse(ret.value);
+    db = value;
+  }
+  return value;
+}
+
 const paths = {
   user: "/users/{userId}",
   favor: "/favors/{favorId}",
@@ -119,12 +146,15 @@ function buildPath(path = "", ids = {}) {
 function returnValue(path = "", ids = {}) {
   if (path === "") return;
   let paths = buildPath(path, ids);
-  // loop through keys to get value
-  let value = db;
-  paths.forEach((p) => {
-    value = value[p];
+  let connection = getDB();
+  return connection.then((db) => {
+    let value = db;
+    // loop through keys to get value
+    paths.forEach((p) => {
+      value = value[p];
+    });
+    return value;
   });
-  return value;
 }
 
 function storeValue(path = "", ids = {}, value = {}) {
@@ -144,6 +174,8 @@ function storeValue(path = "", ids = {}, value = {}) {
   };
 
   store(paths, value, db);
+  // update local database
+  return setDB();
 }
 
 // Return object as array with id in each entry
@@ -154,25 +186,41 @@ function arrayWithId(obj) {
   });
 }
 
+// https://stackoverflow.com/questions/6248666/how-to-generate-short-uid-like-ax4j9z-in-js
+function uid() {
+  var firstPart = (Math.random() * 46656) | 0;
+  var secondPart = (Math.random() * 46656) | 0;
+  firstPart = ("000" + firstPart.toString(36)).slice(-3);
+  secondPart = ("000" + secondPart.toString(36)).slice(-3);
+  return firstPart + secondPart;
+}
+
 // Database functions
 
-function getUser(id) {
+async function getUser(id) {
   return returnValue(paths.user, { userId: id });
 }
 
-function getFavor(id) {
+async function getFavor(id) {
   return returnValue(paths.favor, { favorId: id });
 }
 
-function getFavorsList() {
-  return arrayWithId(getFavor(""));
+async function getFavorsList() {
+  return getFavor("").then((data) => arrayWithId(data));
 }
 
-function storeFavor(id, data = {}) {
-  storeValue(paths.favor, { favorId: id }, data);
+async function storeFavor(data = {}) {
+  let id = uid();
+  return storeValue(paths.favor, { favorId: id }, data).then(() => id);
 }
 
 // ...
+
+// Try to connect to localStorage
+let connection = getDB();
+connection.then((stored) => {
+  if (stored == null) setDB();
+});
 
 // export db functions
 export { getUser, getFavor, storeFavor, getFavorsList };

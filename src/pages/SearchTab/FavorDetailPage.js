@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonText,
   IonContent,
@@ -44,16 +44,23 @@ const items = [
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
-const FavorDetailPage = ({ match }) => {
+const FavorDetailPage = ({ history, match }) => {
   let favorId = match.params.id;
 
+  let [favor, setFavor] = useState({});
+  let [user, setUser] = useState({});
   const [showPopover, setShowPopover] = useState(false);
 
-  let { ownerId, title, description, location, dateCreated } = db.getFavor(
-    favorId
-  );
+  useEffect(() => {
+    db.getFavor(favorId).then((favor) => {
+      db.getUser(favor.ownerId).then((user) => {
+        setFavor(favor);
+        setUser(user);
+      });
+    });
+  }, [favorId]);
 
-  let user = db.getUser(ownerId);
+  let { title, description, location, dateCreated } = favor;
 
   return (
     <IonPage>
@@ -86,7 +93,9 @@ const FavorDetailPage = ({ match }) => {
       </IonHeader>
       <IonContent>
         <IonGrid>
-          <IonRow>
+          <IonRow
+            onClick={() => history.push(`/profile/public/${favor.ownerId}`)}
+          >
             <IonCol offset="1" size="3">
               <IonAvatar class="favor-avatar">
                 <IonImg src={user.pictureLink} />

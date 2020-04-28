@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import {
   IonText,
   IonContent,
@@ -6,19 +6,38 @@ import {
   IonToolbar,
   IonTitle,
   IonPage,
-  IonButton
-} from '@ionic/react';
-import { withRouter } from 'react-router';
+  IonButton,
+} from "@ionic/react";
+import { withRouter } from "react-router";
 
-import useGlobalState from '../state';
+import * as db from "../db";
 
-const LoginPage = props => {
-  const [s, a] = useGlobalState();
+import useGlobal from "../state";
+
+const LoginPage = (props) => {
+  const [globalState, globalActions] = useGlobal();
   const { history } = props;
 
+  let [userId, setUserId] = useState();
+
+  // demo
+  useEffect(() => {
+    setUserId("u1");
+  }, []);
+  handleLogin();
+
+  // Password verification
+
   function handleLogin() {
-    a.setAuthUser('1'); // demo
-    history.push('/');
+    db.getUser(userId)
+      .then((user) => {
+        // Set user session
+        globalActions.setAuthUser(userId);
+        // Set user data in global store
+        globalActions.setUser(user);
+        history.push("/");
+      })
+      .catch((error) => {});
   }
 
   return (

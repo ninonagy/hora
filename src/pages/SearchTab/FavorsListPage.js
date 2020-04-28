@@ -1,23 +1,29 @@
-import React from 'react';
-import { withRouter } from 'react-router';
+import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router";
 import {
   IonPage,
   IonContent,
   IonToolbar,
   IonTitle,
-  IonList
-} from '@ionic/react';
+  IonList,
+} from "@ionic/react";
 
-import FavorCard from '../../components/FavorCard';
+import FavorCard from "../../components/FavorCard";
 
-import * as db from '../../db.js';
+import * as db from "../../db.js";
 
 const FavorsListPage = ({ match }) => {
-  let favors = db.getFavorsList();
-  favors = favors.sort((item1, item2) => {
-    let diff = new Date(item1.dateCreated) - new Date(item2.dateCreated);
-    return -diff;
-  });
+  let [favors, setFavors] = useState([]);
+
+  useEffect(() => {
+    db.getFavorsList().then((favors) => {
+      let list = favors.sort((item1, item2) => {
+        let diff = new Date(item1.dateCreated) - new Date(item2.dateCreated);
+        return -diff;
+      });
+      setFavors(list);
+    });
+  }, []);
 
   return (
     <IonPage>
@@ -27,7 +33,7 @@ const FavorsListPage = ({ match }) => {
         </IonToolbar>
 
         <IonList>
-          {favors.map(item => (
+          {favors.map((item) => (
             <FavorCard
               item={item}
               key={item.id}
