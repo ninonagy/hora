@@ -12,24 +12,24 @@ import {
   IonAvatar,
   IonGrid,
   IonRow,
-  IonCol
+  IonCol,
 } from "@ionic/react";
 import { withRouter } from "react-router";
 
 import useGlobalState from "../state";
 import * as db from "../db";
 
-const getAge = birthDate =>
+const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
-const ProfilePage = ({ match }) => {
+const ProfilePage = ({ match, isPublic }) => {
   const [globalState, globalActions] = useGlobalState();
   let [user, setUser] = useState({});
 
-  let userId = globalState.userId;
+  let userId = isPublic ? match.params.userId : globalState.userId;
 
   useEffect(() => {
-    db.getUser(userId).then(user => {
+    db.getUser(userId).then((user) => {
       setUser(user);
     });
   }, [userId]);
@@ -43,7 +43,7 @@ const ProfilePage = ({ match }) => {
     timeSpent,
     timeEarned,
     skills,
-    pictureLink
+    pictureLink,
   } = user;
 
   skills = skills || [];
@@ -80,7 +80,7 @@ const ProfilePage = ({ match }) => {
 
         <IonItem>
           <IonText>Vještine/Hobiji</IonText>
-          {skills.map(item => (
+          {skills.map((item) => (
             <IonChip>
               <IonLabel>{item}</IonLabel>
             </IonChip>

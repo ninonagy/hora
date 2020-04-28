@@ -23,7 +23,7 @@ const MessagesPage = (props) => {
       <IonContent>
         <IonList inset="true">
           {["1", "2", "3"].map((id) => (
-            <MessagesCard />
+            <MessagesCard link={`${props.match.url}/conversation/${id}`} />
           ))}
         </IonList>
       </IonContent>

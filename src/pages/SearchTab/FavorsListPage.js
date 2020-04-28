@@ -5,7 +5,7 @@ import {
   IonContent,
   IonToolbar,
   IonTitle,
-  IonList
+  IonList,
 } from "@ionic/react";
 
 import FavorCard from "../../components/FavorCard";
@@ -16,7 +16,7 @@ const FavorsListPage = ({ match }) => {
   let [favors, setFavors] = useState([]);
 
   useEffect(() => {
-    db.getFavorsList().then(favors => {
+    db.getFavorsList().then((favors) => {
       let list = favors.sort((item1, item2) => {
         let diff = new Date(item1.dateCreated) - new Date(item2.dateCreated);
         return -diff;
@@ -33,7 +33,7 @@ const FavorsListPage = ({ match }) => {
         </IonToolbar>
 
         <IonList>
-          {favors.map(item => (
+          {favors.map((item) => (
             <FavorCard
               item={item}
               key={item.id}

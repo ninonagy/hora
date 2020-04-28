@@ -44,10 +44,6 @@ const App = () => {
   // lookup if user auth code is stored in app data
   // or try to authenticate user through login-signup form
 
-  // db.getFavor("f4").then(favor => console.log(favor));
-
-  // db.getUser("u1").then(user => console.log(user));
-
   let isUserAuthed = globalState.userId !== undefined;
 
   return (

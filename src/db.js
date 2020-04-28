@@ -175,7 +175,7 @@ function storeValue(path = "", ids = {}, value = {}) {
 
   store(paths, value, db);
   // update local database
-  setDB();
+  return setDB();
 }
 
 // Return object as array with id in each entry
@@ -211,7 +211,7 @@ async function getFavorsList() {
 
 async function storeFavor(data = {}) {
   let id = uid();
-  storeValue(paths.favor, { favorId: id }, data);
+  return storeValue(paths.favor, { favorId: id }, data).then(() => id);
 }
 
 // ...

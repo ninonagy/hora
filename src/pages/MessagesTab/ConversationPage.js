@@ -27,6 +27,10 @@ import { chevronUpCircle, chevronForwardOutline } from "ionicons/icons";
 import NotificationCard from "../../components/NotificationCard";
 
 const ConversationPage = (props) => {
+  let conversationId = props.match.params.conversationId;
+  let userId = "u2";
+  // TODO: Get history of conversation messages
+
   return (
     <IonPage>
       <IonHeader>
@@ -36,7 +40,7 @@ const ConversationPage = (props) => {
           </IonButtons>
           <IonTitle>user.username</IonTitle>
           <IonButtons slot="end">
-            <IonButton slot="end">
+            <IonButton slot="end" routerLink={`/profile/public/${userId}`}>
               <IonAvatar class="messages-avatar">
                 <img src="http://placekitten.com/50/50" alt="Profile" />
               </IonAvatar>

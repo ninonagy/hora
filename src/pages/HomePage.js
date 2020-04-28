@@ -14,6 +14,7 @@ import GivePage from "./GivePage";
 import MessagesPage from "./MessagesTab/MessagesPage";
 import ConversationPage from "./MessagesTab/ConversationPage";
 import ProfilePage from "./ProfilePage";
+import PublicProfilePage from "./PublicProfilePage";
 
 import {
   searchOutline,
@@ -28,13 +29,23 @@ const Home = (props) => {
       <IonTabs>
         <IonRouterOutlet>
           {/* Tabs (same as pages except they are navigated as tabs) */}
-          <Route path="/:tab(search)" component={SearchTab} />
-          <Route path="/:tab(give)" component={GivePage} />
-          <Route path="/:tab(messages)" component={MessagesPage} />
-          <Route path="/:tab(profile)" component={ProfilePage} />
-          <Route exact path="/" render={() => <Redirect to="/search" />} />
+          <Route exact path="/:tab(search)" component={SearchTab} />
+          <Route exact path="/:tab(give)" component={GivePage} />
+          <Route exact path="/:tab(messages)" component={MessagesPage} />
+          <Route exact path="/:tab(profile)" component={ProfilePage} />
           {/* Other routes */}
-          <Route path="/messages/conversation" component={ConversationPage} />
+          {/* Conversation page */}
+          <Route
+            path="/messages/conversation/:conversationId"
+            component={ConversationPage}
+          />
+          {/* Public profile */}
+          <Route
+            path="/profile/public/:userId"
+            render={(props) => <PublicProfilePage {...props} />}
+          />
+          {/* Default route */}
+          <Route exact path="/" render={() => <Redirect to="/search" />} />
         </IonRouterOutlet>
 
         <IonTabBar slot="bottom">
