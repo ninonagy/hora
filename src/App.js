@@ -55,7 +55,7 @@ const App = () => {
       <IonReactRouter>
         <Route
           path="/"
-          render={props => {
+          render={(props) => {
             return isUserAuthed ? <HomePage {...props} /> : <LoginPage />;
           }}
         />
