@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import {
   IonText,
   IonItem,
@@ -12,19 +12,27 @@ import {
   IonAvatar,
   IonGrid,
   IonRow,
-  IonCol
-} from '@ionic/react';
-import { withRouter } from 'react-router';
+  IonCol,
+} from "@ionic/react";
+import { withRouter } from "react-router";
 
-import useGlobalState from '../state';
-import * as db from '../db';
+import useGlobalState from "../state";
+import * as db from "../db";
 
-const getAge = birthDate =>
+const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
-const ProfilePage = ({ match }) => {
+const ProfilePage = ({ match, isPublic }) => {
   const [globalState, globalActions] = useGlobalState();
-  let userId = globalState.userId;
+  let [user, setUser] = useState({});
+
+  let userId = isPublic ? match.params.userId : globalState.userId;
+
+  useEffect(() => {
+    db.getUser(userId).then((user) => {
+      setUser(user);
+    });
+  }, [userId]);
 
   let {
     name,
@@ -35,8 +43,10 @@ const ProfilePage = ({ match }) => {
     timeSpent,
     timeEarned,
     skills,
-    pictureLink
-  } = db.getUser(userId);
+    pictureLink,
+  } = user;
+
+  skills = skills || [];
 
   let timeAvailable = timeEarned - timeSpent;
 
@@ -70,7 +80,7 @@ const ProfilePage = ({ match }) => {
 
         <IonItem>
           <IonText>Vještine/Hobiji</IonText>
-          {skills.map(item => (
+          {skills.map((item) => (
             <IonChip>
               <IonLabel>{item}</IonLabel>
             </IonChip>
