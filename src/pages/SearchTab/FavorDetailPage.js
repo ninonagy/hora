@@ -21,7 +21,7 @@ import {
   IonRow,
   IonCol,
   IonCard,
-  IonCardContent
+  IonCardContent,
 } from "@ionic/react";
 
 import "./FavorDetailPage.css";
@@ -38,13 +38,13 @@ import * as db from "../../db";
 
 const items = [
   { src: "http://placekitten.com/g/100/100", text: "this is my cat Minnie" },
-  { src: "http://placekitten.com/g/101/100", text: "this is my cat John" }
+  { src: "http://placekitten.com/g/101/100", text: "this is my cat John" },
 ];
 
-const getAge = birthDate =>
+const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
-const FavorDetailPage = ({ match }) => {
+const FavorDetailPage = ({ history, match }) => {
   let favorId = match.params.id;
 
   let [favor, setFavor] = useState({});
@@ -52,8 +52,8 @@ const FavorDetailPage = ({ match }) => {
   const [showPopover, setShowPopover] = useState(false);
 
   useEffect(() => {
-    db.getFavor(favorId).then(favor => {
-      db.getUser(favor.ownerId).then(user => {
+    db.getFavor(favorId).then((favor) => {
+      db.getUser(favor.ownerId).then((user) => {
         setFavor(favor);
         setUser(user);
       });
@@ -67,7 +67,7 @@ const FavorDetailPage = ({ match }) => {
       <IonPopover
         isOpen={showPopover.open}
         event={showPopover.event}
-        onDidDismiss={e => setShowPopover({ open: false })}
+        onDidDismiss={(e) => setShowPopover({ open: false })}
       >
         <ion-list>
           <ion-item>Report</ion-item>
@@ -81,7 +81,7 @@ const FavorDetailPage = ({ match }) => {
           </IonButtons>
           <IonButtons slot="end">
             <IonButton
-              onClick={e =>
+              onClick={(e) =>
                 setShowPopover({ open: true, event: e.nativeEvent })
               }
             >
@@ -93,7 +93,9 @@ const FavorDetailPage = ({ match }) => {
       </IonHeader>
       <IonContent>
         <IonGrid>
-          <IonRow>
+          <IonRow
+            onClick={() => history.push(`/profile/public/${favor.ownerId}`)}
+          >
             <IonCol offset="1" size="3">
               <IonAvatar class="favor-avatar">
                 <IonImg src={user.pictureLink} />

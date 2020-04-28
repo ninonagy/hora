@@ -40,7 +40,6 @@ const GivePage = (props) => {
     e.preventDefault();
     let userId = globalState.userId;
     let { location } = globalState.user;
-    debugger;
     db.storeFavor({
       ownerId: userId,
       title: title,
@@ -48,6 +47,9 @@ const GivePage = (props) => {
       location: location,
       dateCreated: new Date().toISOString(),
       dateDue: dateTime.toISOString(),
+    }).then((favorId) => {
+      // Forward user to the public favor page
+      props.history.push(`/search/favor/${favorId}`);
     });
   }
 

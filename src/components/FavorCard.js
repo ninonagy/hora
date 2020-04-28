@@ -17,7 +17,7 @@ import {
   IonLabel,
   IonBadge,
   IonButton,
-  IonChip
+  IonChip,
 } from "@ionic/react";
 
 import RatingIcons from "../components/RatingIcons";
@@ -30,7 +30,7 @@ const FavorCard = ({ item, link }) => {
 
   useEffect(() => {
     // get user name, profile picture, rating
-    db.getUser(ownerId).then(user => setUser(user));
+    db.getUser(ownerId).then((user) => setUser(user));
   }, [ownerId]);
 
   return (
