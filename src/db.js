@@ -24,6 +24,9 @@ var db = {
         f1: true,
         f2: true,
       },
+      conversations: {
+        c1: true,
+      },
     },
     u2: {
       name: "Ron Lawrence",
@@ -53,6 +56,9 @@ var db = {
         "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {
         f3: true,
+      },
+      conversations: {
+        c1: true,
       },
     },
   },
@@ -103,6 +109,21 @@ var db = {
     f3: "data",
   },
 
+  conversations: {
+    c1: {
+      msg_message1: {
+        senderId: "u1",
+        content: "Some content",
+        dateCreated: "2020-04-29 22:43:19",
+      },
+      msg_message2: {
+        senderId: "u3",
+        content: "Some content",
+        dateCreated: "2020-04-29 22:43:19",
+      },
+    },
+  },
+
   ratings: {},
 
   // ...
@@ -131,6 +152,9 @@ const paths = {
   user: "/users/{userId}",
   favor: "/favors/{favorId}",
   activeConnection: "/activeConnection/{userId}",
+  conversation: "/conversations/{conversationId}",
+  userConversation: "/users/{userId}/conversations/{conversationId}",
+  message: "/conversations/{conversationId}/{messageId}",
   // ...
 };
 
@@ -214,6 +238,44 @@ async function storeFavor(data = {}) {
   return storeValue(paths.favor, { favorId: id }, data).then(() => id);
 }
 
+// Get all messages from conversation
+async function getConversation(id) {
+  return returnValue(paths.conversation, {
+    conversationId: id,
+  }).then((conversation) => arrayWithId(conversation));
+}
+
+// Start conversation thread
+async function storeConversation(senderId, receiverId) {
+  let id = uid();
+  return storeValue(paths.conversation, { conversationId: id }, {}).then(() =>
+    storeValue(
+      paths.userConversation,
+      { userId: senderId, conversationId: id },
+      true
+    ).then(() =>
+      storeValue(
+        paths.userConversation,
+        { userId: receiverId, conversationId: id },
+        true
+      ).then(() => id)
+    )
+  );
+}
+
+// Store new message in conversation thread
+async function storeMessage(conversationId, data = {}, type = "msg") {
+  data = { ...data, type };
+  let messageId = uid();
+  return storeValue(
+    paths.message,
+    { conversationId: conversationId, messageId: messageId },
+    data
+  ).then(() => {
+    return messageId;
+  });
+}
+
 // ...
 
 // Try to connect to localStorage
@@ -223,4 +285,12 @@ connection.then((stored) => {
 });
 
 // export db functions
-export { getUser, getFavor, storeFavor, getFavorsList };
+export {
+  getUser,
+  getFavor,
+  storeFavor,
+  getFavorsList,
+  getConversation,
+  storeConversation,
+  storeMessage,
+};
