@@ -40,7 +40,7 @@ const ConversationPage = (props) => {
           </IonButtons>
           <IonTitle>user.username</IonTitle>
           <IonButtons slot="end">
-            <IonButton slot="end" routerLink={`/profile/public/${userId}`}>
+            <IonButton slot="end" routerLink={`/user/${userId}`}>
               <IonAvatar class="messages-avatar">
                 <img src="http://placekitten.com/50/50" alt="Profile" />
               </IonAvatar>

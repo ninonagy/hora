@@ -35,6 +35,7 @@ import ImageCard from "../../components/ImageCard";
 import { ellipsisHorizontal } from "ionicons/icons";
 
 import * as db from "../../db";
+import useGlobal from "../../state";
 
 const items = [
   { src: "http://placekitten.com/g/100/100", text: "this is my cat Minnie" },
@@ -45,7 +46,8 @@ const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
 const FavorDetailPage = ({ history, match }) => {
-  let favorId = match.params.id;
+  const [globalState, globalActions] = useGlobal();
+  let favorId = match.params.favorId;
 
   let [favor, setFavor] = useState({});
   let [user, setUser] = useState({});
@@ -93,9 +95,7 @@ const FavorDetailPage = ({ history, match }) => {
       </IonHeader>
       <IonContent>
         <IonGrid>
-          <IonRow
-            onClick={() => history.push(`/profile/public/${favor.ownerId}`)}
-          >
+          <IonRow onClick={() => history.push(`/user/${favor.ownerId}`)}>
             <IonCol offset="1" size="3">
               <IonAvatar class="favor-avatar">
                 <IonImg src={user.pictureLink} />
@@ -136,6 +136,7 @@ const FavorDetailPage = ({ history, match }) => {
         </div>
 
         <IonButton
+          disabled={favor.ownerId === globalState.userId}
           class="button-do-it"
           size="large"
           color="dark"

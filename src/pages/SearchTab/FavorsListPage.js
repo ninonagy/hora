@@ -37,7 +37,7 @@ const FavorsListPage = ({ match }) => {
             <FavorCard
               item={item}
               key={item.id}
-              link={`${match.url}/favor/${item.id}`}
+              link={`/favor/${item.id}`}
             />
           ))}
         </IonList>
