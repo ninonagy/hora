@@ -1,0 +1,90 @@
+.heading {
+  font-size: 100px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 900;
+  padding: 0;
+  margin: 0;
+  animation: text-shadow 2s ease-in-out;
+  padding-left: 20px;
+}
+
+.heading2 {
+  font-size: 35px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 700;
+  margin-top: 20%;
+  padding-left: 20px;
+}
+
+.login-card {
+  padding: 10px 15px 0px;
+}
+
+.login-input {
+  font-size: 15px;
+  border-radius: 15px;
+  background: var(--ion-color-light);
+  --padding-start: 15px !important;
+  margin-top: 10px;
+}
+
+.login-button {
+  font-size: 15px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin: 10px 0px;
+}
+
+.col1 {
+  background-color: #0c2ffb;
+}
+
+.col2 {
+  background-color: #2cfcfd;
+}
+
+.col3 {
+  background-color: #fb203b;
+}
+
+.col4 {
+  background-color: #fefc4b;
+}
+
+@keyframes text-shadow {
+  0% {
+    transform: translateY(0);
+    text-shadow: 0 0 0 #0c2ffb, 0 0 0 #2cfcfd, 0 0 0 #fb203b, 0 0 0 #fefc4b;
+  }
+
+  20% {
+    transform: translateY(-0em);
+    text-shadow: 0 0.125em 0 #0c2ffb, 0 0.25em 0 #2cfcfd, 0 -0.125em 0 #fb203b,
+      0 -0.25em 0 #fefc4b;
+  }
+
+  40% {
+    transform: translateY(0em);
+    text-shadow: 0 -0.0625em 0 #0c2ffb, 0 -0.125em 0 #2cfcfd,
+      0 0.0625em 0 #fb203b, 0 0.125em 0 #fefc4b;
+  }
+
+  60% {
+    transform: translateY(0em);
+    text-shadow: 0 0.03125em 0 #0c2ffb, 0 0.0625em 0 #2cfcfd,
+      0 -0.03125em 0 #fb203b, 0 -0.0625em 0 #fefc4b;
+  }
+
+  80% {
+    transform: translateY(0);
+    text-shadow: 0 0 0 #0c2ffb, 0 0 0 #2cfcfd, 0 0 0 #fb203b, 0 0 0 #fefc4b;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
