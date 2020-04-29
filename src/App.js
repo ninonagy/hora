@@ -1,11 +1,16 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { IonApp, IonRouterOutlet } from "@ionic/react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+} from "react-router-dom";
 import { IonReactRouter } from "@ionic/react-router";
+
+import { IonApp, IonPage } from "@ionic/react";
 
 import useGlobalState from "./state";
 
-import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 
 /* Core CSS required for Ionic components to work properly */
@@ -27,34 +32,25 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 
-import * as db from "./db";
+import Tabs from "./pages/Tabs";
 
 const SplashScreen = () => {
   // render some nice picture
-  return <div></div>;
+  return <IonPage>Loading...</IonPage>;
 };
 
 const App = () => {
-  const [globalState, globalActions] = useGlobalState();
-
   // let assetsLoaded = false;
   // TODO: Load assets (fonts, localization, images)
-
-  // TODO
-  // lookup if user auth code is stored in app data
-  // or try to authenticate user through login-signup form
-
-  let isUserAuthed = globalState.userId !== undefined;
 
   return (
     <IonApp>
       <IonReactRouter>
-        <Route
-          path="/"
-          render={(props) => {
-            return isUserAuthed ? <HomePage {...props} /> : <LoginPage />;
-          }}
-        />
+        <Switch>
+          <Redirect exact from="/" to="/home" />
+          <Route exact path="/login" component={LoginPage} />
+          <Tabs />
+        </Switch>
       </IonReactRouter>
     </IonApp>
   );
