@@ -46,6 +46,11 @@ var db = {
       pictureLink:
         "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {},
+      conversations: {
+        "c3": {
+          receiverId: "u4"
+        }
+      }
     },
     u3: {
       name: "Alexis Chavez",
@@ -230,6 +235,7 @@ const paths = {
   conversation: "/conversations/{conversationId}",
   userConversation: "/users/{userId}/conversations/{conversationId}",
   message: "/conversations/{conversationId}/{messageId}",
+  userFavorsCreated: "/users/{userId}/favorsCreated/{favorId}",
   // ...
 };
 
@@ -309,17 +315,25 @@ async function getFavorsList() {
 }
 
 async function storeFavor(data = {}) {
-  let id = uid();
-  return storeValue(paths.favor, { favorId: id }, data).then(() => id);
+  let favorId = uid();
+  let ownerId = data.ownerId;
+  return storeValue(paths.favor, { favorId: favorId }, data).then(() =>
+    // Store favor key to user
+    storeValue(
+      paths.userFavorsCreated,
+      { userId: ownerId, favorId: favorId },
+      true
+    ).then(() => favorId)
+  );
 }
 
+// Return validated user
 async function getUserByAuth(email, password) {
-  let user = getUser("").then((users) =>
+  return getUser("").then((users) =>
     arrayWithId(users).find(
-      (user) => user.email == email && user.password == password
+      (user) => user.email === email && user.password === password
     )
   );
-  return user;
 }
 
 // Get all messages from conversation
@@ -347,6 +361,7 @@ async function storeConversation(senderId, receiverId) {
   );
 }
 
+// Get all user's conversations
 async function getUserConversationList(id) {
   return returnValue(paths.userConversation, {
     userId: id,
@@ -354,6 +369,14 @@ async function getUserConversationList(id) {
   }).then((conversations) => {
     return arrayWithId(conversations);
   });
+}
+
+// Get user conversation
+async function getUserConversation(id, conversationId) {
+  return returnValue(paths.userConversation, {
+    userId: id,
+    conversationId: conversationId,
+  }).then((conversation) => conversation);
 }
 
 // Store new message in conversation thread
@@ -387,5 +410,6 @@ export {
   getConversation,
   storeConversation,
   storeMessage,
+  getUserConversation,
   getUserConversationList,
 };
