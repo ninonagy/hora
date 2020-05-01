@@ -49,6 +49,7 @@ const GivePage = (props) => {
       dateDue: dateTime.toISOString(),
     }).then((favorId) => {
       // Forward user to the public favor page
+      debugger;
       props.history.push(`/favor/${favorId}`);
     });
   }

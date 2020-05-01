@@ -194,6 +194,7 @@ const paths = {
   conversation: "/conversations/{conversationId}",
   userConversation: "/users/{userId}/conversations/{conversationId}",
   message: "/conversations/{conversationId}/{messageId}",
+  userFavorsCreated: "/users/{userId}/favorsCreated/{favorId}",
   // ...
 };
 
@@ -273,10 +274,19 @@ async function getFavorsList() {
 }
 
 async function storeFavor(data = {}) {
-  let id = uid();
-  return storeValue(paths.favor, { favorId: id }, data).then(() => id);
+  let favorId = uid();
+  let ownerId = data.ownerId;
+  return storeValue(paths.favor, { favorId: favorId }, data).then(() =>
+    // Store favor key to user
+    storeValue(
+      paths.userFavorsCreated,
+      { userId: ownerId, favorId: favorId },
+      true
+    ).then(() => favorId)
+  );
 }
 
+// Return validated user
 async function getUserByAuth(email, password) {
   return getUser("").then((users) =>
     arrayWithId(users).find(
@@ -310,6 +320,7 @@ async function storeConversation(senderId, receiverId) {
   );
 }
 
+// Get all user's conversations
 async function getUserConversationList(id) {
   return returnValue(paths.userConversation, {
     userId: id,
@@ -317,6 +328,14 @@ async function getUserConversationList(id) {
   }).then((conversations) => {
     return arrayWithId(conversations);
   });
+}
+
+// Get user conversation
+async function getUserConversation(id, conversationId) {
+  return returnValue(paths.userConversation, {
+    userId: id,
+    conversationId: conversationId,
+  }).then((conversation) => conversation);
 }
 
 // Store new message in conversation thread
