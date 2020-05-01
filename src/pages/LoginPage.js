@@ -48,19 +48,17 @@ const LoginPage = (props) => {
   }
 
   function logInUser() {
-    db.getUserByAuth(email, password).then((value) => {
-      if (value.id && !globalState.isAuthenticated) {
-        db.getUser(value.id).then((user) => {
-          // Set user session
-          globalActions.setAuthUser(value.id, user);
-          // Set user data in global store
-          globalActions.setUser(user);
-          setIsAuth(true);
-        });
-      } else {
-        alert(value);
-      }
-    });
+    db.getUserByAuth(email, password)
+      .then((user) => {
+        // Set user session
+        globalActions.setAuthUser(user.id);
+        // Set user data in global store
+        globalActions.setUser(user);
+        setIsAuth(true);
+      })
+      .catch(() => {
+        // TODO: Handle error
+      });
   }
 
   if (isAuth) {
