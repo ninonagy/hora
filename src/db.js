@@ -24,6 +24,14 @@ var db = {
         f1: true,
         f2: true,
       },
+      conversations: {
+        c1: {
+          receiverId: "u3",
+        },
+        c2: {
+          receiverId: "u2",
+        },
+      },
     },
     u2: {
       name: "Ron Lawrence",
@@ -117,6 +125,43 @@ var db = {
     f3: "data",
   },
 
+  conversations: {
+    c1: {
+      msg_message1: {
+        senderId: "u1",
+        content: "I have a question... ",
+        dateCreated: "2020-04-29 22:30:12",
+      },
+      msg_message2: {
+        senderId: "u3",
+        content: "Fire it! :D",
+        dateCreated: "2020-04-29 22:43:19",
+      },
+    },
+    c2: {
+      msg_message3: {
+        senderId: "u2",
+        content: "Hey how's going? :D",
+        dateCreated: "2020-04-29 20:43:19",
+      },
+      msg_message4: {
+        senderId: "u2",
+        content: "Happy Birthday Nino! 🎉🎉",
+        dateCreated: "2020-04-29 20:43:30",
+      },
+      msg_message5: {
+        senderId: "u1",
+        content: "All fine, really happy :)",
+        dateCreated: "2020-04-30 21:00:19",
+      },
+      msg_message6: {
+        senderId: "u1",
+        content: "Thanks! :D",
+        dateCreated: "2020-04-30 21:00:20",
+      },
+    },
+  },
+
   ratings: {},
 
   // ...
@@ -145,6 +190,9 @@ const paths = {
   user: "/users/{userId}",
   favor: "/favors/{favorId}",
   activeConnection: "/activeConnection/{userId}",
+  conversation: "/conversations/{conversationId}",
+  userConversation: "/users/{userId}/conversations/{conversationId}",
+  message: "/conversations/{conversationId}/{messageId}",
   // ...
 };
 
@@ -237,6 +285,53 @@ async function getUserByAuth(email, password) {
   return user;
 }
 
+// Get all messages from conversation
+async function getConversation(id) {
+  return returnValue(paths.conversation, {
+    conversationId: id,
+  }).then((conversation) => arrayWithId(conversation));
+}
+
+// Start conversation thread
+async function storeConversation(senderId, receiverId) {
+  let id = uid();
+  return storeValue(paths.conversation, { conversationId: id }, {}).then(() =>
+    storeValue(
+      paths.userConversation,
+      { userId: senderId, conversationId: id },
+      { receiverId: receiverId }
+    ).then(() =>
+      storeValue(
+        paths.userConversation,
+        { userId: receiverId, conversationId: id },
+        { receiverId: senderId }
+      ).then(() => id)
+    )
+  );
+}
+
+async function getUserConversationList(id) {
+  return returnValue(paths.userConversation, {
+    userId: id,
+    conversationId: "",
+  }).then((conversations) => {
+    return arrayWithId(conversations);
+  });
+}
+
+// Store new message in conversation thread
+async function storeMessage(conversationId, data = {}, type = "msg") {
+  data = { ...data, type };
+  let messageId = uid();
+  return storeValue(
+    paths.message,
+    { conversationId: conversationId, messageId: messageId },
+    data
+  ).then(() => {
+    return messageId;
+  });
+}
+
 // ...
 
 // Try to connect to localStorage
@@ -246,4 +341,14 @@ connection.then((stored) => {
 });
 
 // export db functions
-export { getUser, getUserByAuth, getFavor, storeFavor, getFavorsList };
+export {
+  getUser,
+  getFavor,
+  storeFavor,
+  getFavorsList,
+  getUserByAuth,
+  getConversation,
+  storeConversation,
+  storeMessage,
+  getUserConversationList,
+};

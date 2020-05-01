@@ -38,7 +38,7 @@ const LoginPage = (props) => {
         .then((user) => {
           // TODO: Password verification
           // Set user session
-          globalActions.setAuthUser(userId, user);
+          globalActions.setAuthUser(userId);
           // Set user data in global store
           globalActions.setUser(user);
           setIsAuth(true);
