@@ -76,6 +76,7 @@ var db = {
       pictureLink:
         "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {},
+      conversations: {},
     },
   },
 
@@ -277,12 +278,11 @@ async function storeFavor(data = {}) {
 }
 
 async function getUserByAuth(email, password) {
-  let user = getUser("").then((users) =>
+  return getUser("").then((users) =>
     arrayWithId(users).find(
-      (user) => user.email == email && user.password == password
+      (user) => user.email === email && user.password === password
     )
   );
-  return user;
 }
 
 // Get all messages from conversation
