@@ -25,7 +25,12 @@ var db = {
         f2: true,
       },
       conversations: {
-        c1: true,
+        c1: {
+          receiverId: "u3",
+        },
+        c2: {
+          receiverId: "u2",
+        },
       },
     },
     u2: {
@@ -56,9 +61,6 @@ var db = {
         "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {
         f3: true,
-      },
-      conversations: {
-        c1: true,
       },
     },
   },
@@ -113,13 +115,35 @@ var db = {
     c1: {
       msg_message1: {
         senderId: "u1",
-        content: "Some content",
-        dateCreated: "2020-04-29 22:43:19",
+        content: "I have a question... ",
+        dateCreated: "2020-04-29 22:30:12",
       },
       msg_message2: {
         senderId: "u3",
-        content: "Some content",
+        content: "Fire it! :D",
         dateCreated: "2020-04-29 22:43:19",
+      },
+    },
+    c2: {
+      msg_message3: {
+        senderId: "u2",
+        content: "Hey how's going? :D",
+        dateCreated: "2020-04-29 20:43:19",
+      },
+      msg_message4: {
+        senderId: "u2",
+        content: "Happy Birthday Nino! 🎉🎉",
+        dateCreated: "2020-04-29 20:43:30",
+      },
+      msg_message5: {
+        senderId: "u1",
+        content: "All fine, really happy :)",
+        dateCreated: "2020-04-30 21:00:19",
+      },
+      msg_message6: {
+        senderId: "u1",
+        content: "Thanks! :D",
+        dateCreated: "2020-04-30 21:00:20",
       },
     },
   },
@@ -252,15 +276,24 @@ async function storeConversation(senderId, receiverId) {
     storeValue(
       paths.userConversation,
       { userId: senderId, conversationId: id },
-      true
+      { receiverId: receiverId }
     ).then(() =>
       storeValue(
         paths.userConversation,
         { userId: receiverId, conversationId: id },
-        true
+        { receiverId: senderId }
       ).then(() => id)
     )
   );
+}
+
+async function getUserConversationList(id) {
+  return returnValue(paths.userConversation, {
+    userId: id,
+    conversationId: "",
+  }).then((conversations) => {
+    return arrayWithId(conversations);
+  });
 }
 
 // Store new message in conversation thread
@@ -293,4 +326,5 @@ export {
   getConversation,
   storeConversation,
   storeMessage,
+  getUserConversationList,
 };
