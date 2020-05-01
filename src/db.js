@@ -55,6 +55,20 @@ var db = {
         f3: true,
       },
     },
+    u4: {
+      name: "admin",
+      email: "admin",
+      birthDate: "2000-01-20",
+      location: "Rijeka",
+      password: "admin",
+      rating: 5,
+      timeSpent: 0,
+      timeEarned: 100,
+      skills: ["admin", "admin", "admin"],
+      pictureLink:
+        "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
+      favorsCreated: {},
+    },
   },
 
   // Favors is a list for showing in search result
@@ -214,6 +228,15 @@ async function storeFavor(data = {}) {
   return storeValue(paths.favor, { favorId: id }, data).then(() => id);
 }
 
+async function getUserByAuth(email, password) {
+  let user = getUser("").then((users) =>
+    arrayWithId(users).find(
+      (user) => user.email == email && user.password == password
+    )
+  );
+  return user;
+}
+
 // ...
 
 // Try to connect to localStorage
@@ -223,4 +246,4 @@ connection.then((stored) => {
 });
 
 // export db functions
-export { getUser, getFavor, storeFavor, getFavorsList };
+export { getUser, getUserByAuth, getFavor, storeFavor, getFavorsList };

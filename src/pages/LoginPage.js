@@ -5,10 +5,7 @@ import {
   IonPage,
   IonButton,
   IonCard,
-  IonItem,
   IonInput,
-  IonList,
-  IonCardHeader,
   IonRow,
   IonCol,
 } from "@ionic/react";
@@ -23,12 +20,15 @@ import useGlobal from "../state";
 const LoginPage = (props) => {
   const [globalState, globalActions] = useGlobal();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   let [userId, setUserId] = useState();
   let [isAuth, setIsAuth] = useState(false);
 
   // demo
   useEffect(() => {
-    setUserId("u1");
+    setUserId("u4");
   }, []);
   handleLogin();
 
@@ -45,6 +45,22 @@ const LoginPage = (props) => {
         })
         .catch((error) => {});
     }
+  }
+
+  function logInUser() {
+    db.getUserByAuth(email, password).then((value) => {
+      if (value.id && !globalState.isAuthenticated) {
+        db.getUser(value.id).then((user) => {
+          // Set user session
+          globalActions.setAuthUser(value.id, user);
+          // Set user data in global store
+          globalActions.setUser(user);
+          setIsAuth(true);
+        });
+      } else {
+        alert(value);
+      }
+    });
   }
 
   if (isAuth) {
@@ -71,12 +87,14 @@ const LoginPage = (props) => {
               className="login-input"
               inputMode="email"
               placeholder="e-mail"
+              onIonChange={(e) => setEmail(e.target.value)}
             ></IonInput>
 
             <IonInput
               className="login-input"
               placeholder="password"
               type="password"
+              onIonChange={(e) => setPassword(e.target.value)}
             ></IonInput>
 
             <IonButton
@@ -84,7 +102,7 @@ const LoginPage = (props) => {
               color="dark"
               className="login-button"
               expand="block"
-              onClick={handleLogin}
+              onClick={logInUser}
             >
               PRIJAVA
             </IonButton>
