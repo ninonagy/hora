@@ -21,8 +21,7 @@ const NotificationCard = ({ user, order, content }) => {
         <IonCardTitle>Zamjeniti žarulju u kući</IonCardTitle>
       </IonCardHeader>
       <IonCardContent>
-        Ne znam kako se minjaju žarulje. Ima koji električar da mi pomogne i
-        nauči me?
+        {content}
         <IonRow class="notification-card-buttons">
           <IonCol>
             <IonButton color="danger" expand="block" fill="outline">
