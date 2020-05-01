@@ -1,3 +1,9 @@
+.favor-title {
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
 .favor-avatar {
   width: 75px;
   height: 75px;
@@ -9,11 +15,14 @@
 }
 
 .favor-text h1 {
-  font-size: 28px;
+  font-size: 35px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 500;
   color: var(--ion-color-dark);
 }
 
 .favor-text p {
+  font-family: "Open Sans", sans-serif;
   color: var(--ion-color-dark-tint);
   line-height: 1.5;
 }

@@ -90,7 +90,7 @@ const FavorDetailPage = ({ history, match }) => {
               <IonIcon icon={ellipsisHorizontal} />
             </IonButton>
           </IonButtons>
-          <IonTitle>Favor</IonTitle>
+          <IonTitle class="favor-title">Favor</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
