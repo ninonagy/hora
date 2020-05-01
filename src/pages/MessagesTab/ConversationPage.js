@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonText,
   IonContent,
@@ -25,11 +25,26 @@ import Message from "../../components/MessageCard";
 
 import { chevronUpCircle, chevronForwardOutline } from "ionicons/icons";
 import NotificationCard from "../../components/NotificationCard";
+import useGlobal from "../../state";
+
+import * as db from "../../db";
 
 const ConversationPage = (props) => {
+  const [globalState, globalActions] = useGlobal();
+  let [messages, setMessages] = useState([]);
+
   let conversationId = props.match.params.conversationId;
-  let userId = "u2";
-  // TODO: Get history of conversation messages
+  let userId = globalState.userId;
+
+  useEffect(() => {
+    db.getConversation(conversationId).then((messages) => {
+      setMessages(messages);
+    });
+  }, []);
+
+  if (messages.length) {
+    // debugger;
+  }
 
   return (
     <IonPage>
@@ -51,16 +66,23 @@ const ConversationPage = (props) => {
       </IonHeader>
 
       <IonContent>
-        {/* TODO: make this less bad. This is just a temporary solution until we
-                  add messages to the database.
-         */}
-
-        <Message
-          user="left"
-          order=""
-          content="They're not aliens, they're Earth…liens! You've swallowed a planet!"
-        />
-        <Message
+        {messages.map((message, id) =>
+          message.type === "notification" ? (
+            <NotificationCard
+              user={message.senderId === userId ? "right" : "left"}
+              content={message.content}
+            />
+          ) : (
+            <Message
+              user={message.senderId === userId ? "right" : "left"}
+              order={
+                messages[id ? id - 1 : 0].senderId === userId ? "next" : ""
+              }
+              content={message.content}
+            />
+          )
+        )}
+        {/* <Message
           user="left"
           order="next"
           content="Saving the world with meals on wheels."
@@ -97,7 +119,7 @@ const ConversationPage = (props) => {
           order=""
           content="No… It's a thing; it's like a plan, but with more greatness. It's art!
           A statement on modern society, 'Oh Ain't Modern Society Awful?'!"
-        />
+        /> */}
       </IonContent>
       <IonFooter className="ion-no-border">
         <IonToolbar>

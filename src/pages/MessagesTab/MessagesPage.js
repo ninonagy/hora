@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonText,
   IonContent,
@@ -12,7 +12,19 @@ import {
 import { withRouter } from "react-router";
 import MessagesCard from "../../components/MessagesCard";
 
+import * as db from "../../db";
+import useGlobal from "../../state";
+
 const MessagesPage = (props) => {
+  const [globalState, globalActions] = useGlobal();
+  let [conversations, setConversations] = useState([]);
+
+  useEffect(() => {
+    db.getUserConversationList(globalState.userId).then((list) =>
+      setConversations(list)
+    );
+  }, []);
+
   return (
     <IonPage>
       <IonHeader>
@@ -22,8 +34,12 @@ const MessagesPage = (props) => {
       </IonHeader>
       <IonContent>
         <IonList inset="true">
-          {["1", "2", "3"].map((id) => (
-            <MessagesCard link={`${props.match.url}/conversation/${id}`} />
+          {conversations.map((conversation) => (
+            <MessagesCard
+              key={conversation.id}
+              userId={conversation.receiverId}
+              link={`${props.match.url}/conversation/${conversation.id}`}
+            />
           ))}
         </IonList>
       </IonContent>

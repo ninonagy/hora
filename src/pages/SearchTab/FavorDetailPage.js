@@ -64,6 +64,30 @@ const FavorDetailPage = ({ history, match }) => {
 
   let { title, description, location, dateCreated } = favor;
 
+  function handleHelp() {
+    let { name } = globalState.user;
+    let sender = globalState.userId;
+    let receiver = favor.ownerId;
+    db.storeConversation(sender, receiver).then((conversationId) => {
+      db.storeMessage(
+        conversationId,
+        {
+          senderId: sender,
+          content: `Pozdrav! ${name} ti želi pomoći.`,
+          dateCreated: new Date().toISOString(),
+        },
+        "notification"
+      )
+        .then((messageId) => {
+          // When conversation thread is created and message stored, forward user to chat
+          history.push(`/messages/conversation/${conversationId}`);
+        })
+        .catch(() => {
+          // TODO: Handle error
+        });
+    });
+  }
+
   return (
     <IonPage>
       <IonPopover
@@ -141,6 +165,7 @@ const FavorDetailPage = ({ history, match }) => {
           size="large"
           color="dark"
           expand="block"
+          onClick={handleHelp}
         >
           HELP
         </IonButton>
