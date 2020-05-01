@@ -42,8 +42,15 @@ const ConversationPage = (props) => {
     });
   }, []);
 
+  const messageOrder = (messages, id, idprev) => {
+    if (
+      messages[idprev] != null &&
+      messages[idprev].senderId === messages[id].senderId
+    )
+      return "next";
+  };
+
   if (messages.length) {
-    // debugger;
   }
 
   return (
@@ -75,9 +82,7 @@ const ConversationPage = (props) => {
           ) : (
             <Message
               user={message.senderId === userId ? "right" : "left"}
-              order={
-                messages[id ? id - 1 : 0].senderId === userId ? "next" : ""
-              }
+              order={messageOrder(messages, id, id - 1)}
               content={message.content}
             />
           )

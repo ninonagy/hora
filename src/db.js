@@ -76,6 +76,11 @@ var db = {
       pictureLink:
         "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {},
+      conversations: {
+        c3: {
+          receiverId: "u4",
+        },
+      },
     },
   },
 
@@ -157,6 +162,38 @@ var db = {
       msg_message6: {
         senderId: "u1",
         content: "Thanks! :D",
+        dateCreated: "2020-04-30 21:00:20",
+      },
+    },
+    c3: {
+      msg_message7: {
+        senderId: "u4",
+        content: "hey waddup",
+        dateCreated: "2020-04-29 20:43:19",
+      },
+      msg_message8: {
+        senderId: "u2",
+        content: "yo",
+        dateCreated: "2020-04-29 20:43:30",
+      },
+      msg_message9: {
+        senderId: "u4",
+        content: "halo",
+        dateCreated: "2020-04-30 21:00:19",
+      },
+      msg_message10: {
+        senderId: "u2",
+        content: "cool",
+        dateCreated: "2020-04-30 21:00:20",
+      },
+      msg_message11: {
+        senderId: "u2",
+        content: "cool",
+        dateCreated: "2020-04-30 21:00:20",
+      },
+      msg_message12: {
+        senderId: "u2",
+        content: "cool",
         dateCreated: "2020-04-30 21:00:20",
       },
     },
