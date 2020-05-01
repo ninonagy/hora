@@ -10,6 +10,10 @@
   border-radius: 15px;
 }
 
+.wrapper {
+  width: 100%;
+}
+
 .left {
   float: left;
   background-color: #f1f0f0;
