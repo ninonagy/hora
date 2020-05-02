@@ -1,9 +1,8 @@
-// Temporary database structure
+import { fs } from "./firebase";
 
 // https://capacitor.ionicframework.com/docs/apis/storage/
-import { Plugins } from "@capacitor/core";
-
-const { Storage } = Plugins;
+// import { Plugins } from "@capacitor/core";
+// const { Storage } = Plugins;
 
 var db = {
   // Used for showing profile page
@@ -47,10 +46,10 @@ var db = {
         "https://media.macphun.com/img/uploads/customer/how-to/579/15531840725c93b5489d84e9.43781620.jpg?q=85&w=1340",
       favorsCreated: {},
       conversations: {
-        "c3": {
-          receiverId: "u4"
-        }
-      }
+        c3: {
+          receiverId: "u4",
+        },
+      },
     },
     u3: {
       name: "Alexis Chavez",
@@ -209,32 +208,13 @@ var db = {
   // ...
 };
 
-const db_key = "db";
-
-async function setDB() {
-  await Storage.set({
-    key: db_key,
-    value: JSON.stringify(db),
-  });
-}
-
-async function getDB() {
-  const ret = await Storage.get({ key: db_key });
-  let value = null;
-  if (ret.value) {
-    value = JSON.parse(ret.value);
-    db = value;
-  }
-  return value;
-}
-
 const paths = {
   user: "/users/{userId}",
   favor: "/favors/{favorId}",
   activeConnection: "/activeConnection/{userId}",
-  conversation: "/conversations/{conversationId}",
+  // conversation: "/conversations/{conversationId}",
   userConversation: "/users/{userId}/conversations/{conversationId}",
-  message: "/conversations/{conversationId}/{messageId}",
+  message: "/conversations/{conversationId}/messages/{messageId}",
   userFavorsCreated: "/users/{userId}/favorsCreated/{favorId}",
   // ...
 };
@@ -245,50 +225,48 @@ function buildPath(path = "", ids = {}) {
     let idValue = ids[label];
     path = path.replace("{" + label + "}", idValue);
   }
-  return path.split("/").filter((i) => i !== "/" && i !== "");
+  return path;
 }
 
-function returnValue(path = "", ids = {}) {
+function getValue(path = "", ids = {}) {
   if (path === "") return;
-  let paths = buildPath(path, ids);
-  let connection = getDB();
-  return connection.then((db) => {
-    let value = db;
-    // loop through keys to get value
-    paths.forEach((p) => {
-      value = value[p];
-    });
-    return value;
-  });
+  path = buildPath(path, ids);
+  let segments = path.split("/").filter((i) => i !== "/" && i !== "");
+  // If segment count is even then get document
+  if (segments.length % 2 === 0) {
+    return fs
+      .doc(path)
+      .get()
+      .then((result) => {
+        return result.data();
+      });
+  }
+  // Otherwise get collection
+  else {
+    return fs
+      .collection(path)
+      .get()
+      .then((querySnapshot) => {
+        let array = [];
+        let docs = querySnapshot.docs;
+        docs.forEach((doc) => {
+          array.push({ ...doc.data(), id: doc.id });
+        });
+        return array;
+      });
+  }
 }
 
-function storeValue(path = "", ids = {}, value = {}) {
+function setValue(path = "", ids = {}, value = {}) {
   if (path === "") return;
-  let paths = buildPath(path, ids);
-
-  // https://medium.com/data-scraper-tips-tricks/safely-read-write-in-deeply-nested-objects-js-a1d9ddd168c6
-  const store = (paths, value, obj) => {
-    if (paths.length > 1) {
-      if (!obj.hasOwnProperty(paths[0]) || typeof obj[paths[0]] !== "object")
-        obj[paths[0]] = {};
-      return store(paths.slice(1), value, obj[paths[0]]);
-    } else {
-      obj[paths[0]] = value;
-      return true;
-    }
-  };
-
-  store(paths, value, db);
-  // update local database
-  return setDB();
+  path = buildPath(path, ids);
+  return fs.doc(path).set(value);
 }
 
-// Return object as array with id in each entry
-function arrayWithId(obj) {
-  return Object.keys(obj).map((key) => {
-    obj[key]["id"] = key;
-    return obj[key];
-  });
+function updateValue(path = "", ids = {}, value = {}) {
+  if (path === "") return;
+  path = buildPath(path, ids);
+  return fs.doc(path).update(value);
 }
 
 // https://stackoverflow.com/questions/6248666/how-to-generate-short-uid-like-ax4j9z-in-js
@@ -303,26 +281,35 @@ function uid() {
 // Database functions
 
 async function getUser(id) {
-  return returnValue(paths.user, { userId: id });
+  return getValue(paths.user, { userId: id });
+}
+
+async function setUser(data = {}) {
+  let id = uid();
+  return setValue(paths.user, { userId: id }, data).then(() => id);
+}
+
+async function updateUser(id, data = {}) {
+  return updateValue(paths.user, { userId: id }, data).then(() => id);
 }
 
 async function getFavor(id) {
-  return returnValue(paths.favor, { favorId: id });
+  return getValue(paths.favor, { favorId: id });
 }
 
 async function getFavorsList() {
-  return getFavor("").then((data) => arrayWithId(data));
+  return getFavor("").then((data) => data);
 }
 
 async function storeFavor(data = {}) {
   let favorId = uid();
   let ownerId = data.ownerId;
-  return storeValue(paths.favor, { favorId: favorId }, data).then(() =>
+  return setValue(paths.favor, { favorId: favorId }, data).then(() =>
     // Store favor key to user
-    storeValue(
+    setValue(
       paths.userFavorsCreated,
       { userId: ownerId, favorId: favorId },
-      true
+      {}
     ).then(() => favorId)
   );
 }
@@ -330,60 +317,60 @@ async function storeFavor(data = {}) {
 // Return validated user
 async function getUserByAuth(email, password) {
   return getUser("").then((users) =>
-    arrayWithId(users).find(
-      (user) => user.email === email && user.password === password
-    )
+    users.find((user) => user.email === email && user.password === password)
   );
-}
-
-// Get all messages from conversation
-async function getConversation(id) {
-  return returnValue(paths.conversation, {
-    conversationId: id,
-  }).then((conversation) => arrayWithId(conversation));
 }
 
 // Start conversation thread
 async function storeConversation(senderId, receiverId) {
-  let id = uid();
-  return storeValue(paths.conversation, { conversationId: id }, {}).then(() =>
-    storeValue(
+  let id = "";
+  id = senderId < receiverId ? senderId + receiverId : receiverId + senderId;
+  return setValue(paths.conversation, { conversationId: id }, {}).then(() =>
+    setValue(
       paths.userConversation,
       { userId: senderId, conversationId: id },
       { receiverId: receiverId }
-    ).then(() =>
-      storeValue(
+    ).then(() => {
+      return setValue(
         paths.userConversation,
         { userId: receiverId, conversationId: id },
         { receiverId: senderId }
-      ).then(() => id)
-    )
+      ).then(() => id);
+    })
   );
 }
 
 // Get all user's conversations
 async function getUserConversationList(id) {
-  return returnValue(paths.userConversation, {
+  return getValue(paths.userConversation, {
     userId: id,
     conversationId: "",
   }).then((conversations) => {
-    return arrayWithId(conversations);
+    return conversations;
   });
 }
 
 // Get user conversation
 async function getUserConversation(id, conversationId) {
-  return returnValue(paths.userConversation, {
+  return getValue(paths.userConversation, {
     userId: id,
     conversationId: conversationId,
   }).then((conversation) => conversation);
 }
 
+// Get all messages from conversation
+async function getMessages(conversationId) {
+  return getValue(paths.message, {
+    conversationId: conversationId,
+    messageId: "",
+  });
+}
+
 // Store new message in conversation thread
 async function storeMessage(conversationId, data = {}, type = "msg") {
-  data = { ...data, type };
+  data = { ...data, type, dateCreated: new Date().toISOString() };
   let messageId = uid();
-  return storeValue(
+  return setValue(
     paths.message,
     { conversationId: conversationId, messageId: messageId },
     data
@@ -394,20 +381,17 @@ async function storeMessage(conversationId, data = {}, type = "msg") {
 
 // ...
 
-// Try to connect to localStorage
-let connection = getDB();
-connection.then((stored) => {
-  if (stored == null) setDB();
-});
-
 // export db functions
 export {
+  paths,
+  buildPath,
   getUser,
+  setUser,
   getFavor,
   storeFavor,
   getFavorsList,
   getUserByAuth,
-  getConversation,
+  getMessages,
   storeConversation,
   storeMessage,
   getUserConversation,
