@@ -74,11 +74,10 @@ const FavorDetailPage = ({ history, match }) => {
         {
           senderId: sender,
           content: `Pozdrav! ${name} ti želi pomoći.`,
-          dateCreated: new Date().toISOString(),
         },
         "notification"
       )
-        .then((messageId) => {
+        .then(() => {
           // When conversation thread is created and message stored, forward user to chat
           history.push(`/messages/conversation/${conversationId}`);
         })

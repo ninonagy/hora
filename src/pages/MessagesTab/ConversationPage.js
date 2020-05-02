@@ -29,6 +29,7 @@ import NotificationCard from "../../components/NotificationCard";
 import useGlobal from "../../state";
 
 import * as db from "../../db";
+import { fs } from "../../firebase";
 
 const ConversationPage = (props) => {
   const [globalState, globalActions] = useGlobal();
@@ -40,9 +41,20 @@ const ConversationPage = (props) => {
   let userId = globalState.userId;
 
   function updateConversation() {
-    db.getConversation(conversationId).then((messages) => {
-      setMessages(messages);
-    });
+    fs.collection(
+      db.buildPath(db.paths.message, {
+        conversationId: conversationId,
+        messageId: "",
+      })
+    )
+      .orderBy("dateCreated", "asc")
+      .onSnapshot((querySnapshot) => {
+        let array = [];
+        querySnapshot.forEach((doc) => {
+          array.push({ ...doc.data(), id: doc.id });
+        });
+        setMessages(array);
+      });
   }
 
   useEffect(() => {
@@ -51,7 +63,7 @@ const ConversationPage = (props) => {
     db.getUserConversation(userId, conversationId).then((conversation) => {
       db.getUser(conversation.receiverId).then((user) => {
         setReceiverUser(user);
-      })
+      });
     });
   }, []);
 
@@ -69,7 +81,6 @@ const ConversationPage = (props) => {
       db.storeMessage(conversationId, {
         senderId: userId,
         content: messageText,
-        dateCreated: new Date().toISOString(),
       }).then(() => {
         setMessageText("");
         // Temporary solution
