@@ -11,8 +11,6 @@ import {
   IonButton,
 } from "@ionic/react";
 
-import * as db from "../db";
-
 const NotificationCard = ({ user, order, content }) => {
   return (
     <IonCard>
@@ -22,7 +20,7 @@ const NotificationCard = ({ user, order, content }) => {
       </IonCardHeader>
       <IonCardContent>
         {content}
-        <IonRow class="notification-card-buttons">
+        <IonRow className="notification-card-buttons">
           <IonCol>
             <IonButton color="danger" expand="block" fill="outline">
               Odbij

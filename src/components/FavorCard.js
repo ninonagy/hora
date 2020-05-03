@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import {
-  IonIcon,
-  IonText,
-  IonContent,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonPage,
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
@@ -15,8 +8,6 @@ import {
   IonAvatar,
   IonItem,
   IonLabel,
-  IonBadge,
-  IonButton,
   IonChip,
 } from "@ionic/react";
 

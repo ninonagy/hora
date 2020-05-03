@@ -80,7 +80,7 @@ const LoginPage = (props) => {
         <IonContent>
           <h2 className="heading2">Bok, ovo je</h2>
           <h1 className="heading">HORA</h1>
-          <IonCard class="login-card">
+          <IonCard className="login-card">
             <IonInput
               className="login-input"
               inputMode="email"

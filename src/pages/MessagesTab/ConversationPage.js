@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  IonText,
   IonContent,
   IonHeader,
   IonToolbar,
@@ -51,7 +50,7 @@ const ConversationPage = (props) => {
     db.getUserConversation(userId, conversationId).then((conversation) => {
       db.getUser(conversation.receiverId).then((user) => {
         setReceiverUser(user);
-      })
+      });
     });
   }, []);
 
@@ -91,10 +90,13 @@ const ConversationPage = (props) => {
           <IonTitle>{name}</IonTitle>
           <IonButtons slot="end">
             <IonButton slot="end" routerLink={`/user/${userId}`}>
-              <IonAvatar class="messages-avatar">
+              <IonAvatar className="messages-avatar">
                 <img src={pictureLink} alt="Profile" />
               </IonAvatar>
-              <IonIcon class="button-profile" icon={chevronForwardOutline} />
+              <IonIcon
+                className="button-profile"
+                icon={chevronForwardOutline}
+              />
             </IonButton>
           </IonButtons>
         </IonToolbar>
