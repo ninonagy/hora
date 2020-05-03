@@ -108,7 +108,8 @@ const ConversationPage = (props) => {
             message.type === "notification" ? (
               <NotificationCard
                 key={id}
-                user={message.senderId === userId ? "right" : "left"}
+                user={name}
+                user_is_me={message.senderId === userId ? true : false}
                 content={message.content}
               />
             ) : (
