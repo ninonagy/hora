@@ -67,7 +67,7 @@ const FavorDetailPage = ({ history, match }) => {
         conversationId,
         {
           senderId: sender,
-          content: `Pozdrav! ${name} ti želi pomoći.`,
+          content: favorId,
           dateCreated: new Date().toISOString(),
         },
         "notification"
