@@ -89,7 +89,7 @@ const ConversationPage = (props) => {
     }
   }
 
-  let { name, pictureLink } = receiverUser;
+  let { id, name, pictureLink } = receiverUser;
 
   return (
     <IonPage>
@@ -100,7 +100,7 @@ const ConversationPage = (props) => {
           </IonButtons>
           <IonTitle>{name}</IonTitle>
           <IonButtons slot="end">
-            <IonButton slot="end" routerLink={`/user/${userId}`}>
+            <IonButton slot="end" routerLink={`/user/${id}`}>
               <IonAvatar className="messages-avatar">
                 <img src={pictureLink} alt="Profile" />
               </IonAvatar>
@@ -119,9 +119,9 @@ const ConversationPage = (props) => {
             message.type === "notification" ? (
               <NotificationCard
                 key={id}
-                user={name}
-                user_is_me={message.senderId === userId ? true : false}
-                content={message.content}
+                user={receiverUser}
+                isThisUser={message.senderId === userId ? true : false}
+                favorId={message.favorId}
               />
             ) : (
               <Message
