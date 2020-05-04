@@ -1,4 +1,4 @@
-import { fs } from "./firebase";
+import { fs, storage } from "./firebase";
 
 // https://capacitor.ionicframework.com/docs/apis/storage/
 // import { Plugins } from "@capacitor/core";
@@ -34,7 +34,7 @@ function getValue(path = "", ids = {}) {
       .doc(path)
       .get()
       .then((result) => {
-        return { ...result.data(), id: result.id};
+        return { ...result.data(), id: result.id };
       });
   }
   // Otherwise get collection
@@ -174,6 +174,14 @@ async function storeMessage(conversationId, data = {}, type = "msg") {
   ).then(() => messageId);
 }
 
+// https://firebase.google.com/docs/storage/web/upload-files
+async function storeUserPicture(userId, data = Blob) {
+  return storage
+    .ref(`/userPictures/${userId}.jpg`)
+    .put(data)
+    .then((snapshot) => snapshot.ref.getDownloadURL().then((url) => url));
+}
+
 // ...
 
 // export db functions
@@ -191,4 +199,5 @@ export {
   storeMessage,
   getUserConversation,
   getUserConversationList,
+  storeUserPicture,
 };
