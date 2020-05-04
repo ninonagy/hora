@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  IonText,
   IonContent,
   IonHeader,
   IonToolbar,
@@ -102,10 +101,13 @@ const ConversationPage = (props) => {
           <IonTitle>{name}</IonTitle>
           <IonButtons slot="end">
             <IonButton slot="end" routerLink={`/user/${userId}`}>
-              <IonAvatar class="messages-avatar">
+              <IonAvatar className="messages-avatar">
                 <img src={pictureLink} alt="Profile" />
               </IonAvatar>
-              <IonIcon class="button-profile" icon={chevronForwardOutline} />
+              <IonIcon
+                className="button-profile"
+                icon={chevronForwardOutline}
+              />
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -117,7 +119,8 @@ const ConversationPage = (props) => {
             message.type === "notification" ? (
               <NotificationCard
                 key={id}
-                user={message.senderId === userId ? "right" : "left"}
+                user={name}
+                user_is_me={message.senderId === userId ? true : false}
                 content={message.content}
               />
             ) : (

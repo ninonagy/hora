@@ -8,20 +8,14 @@ import {
   IonPage,
   IonButtons,
   IonBackButton,
-  IonItem,
   IonAvatar,
   IonIcon,
-  IonLabel,
-  IonBadge,
-  IonList,
   IonImg,
   IonButton,
   IonPopover,
   IonGrid,
   IonRow,
   IonCol,
-  IonCard,
-  IonCardContent,
 } from "@ionic/react";
 
 import "./FavorDetailPage.css";
@@ -73,7 +67,8 @@ const FavorDetailPage = ({ history, match }) => {
         conversationId,
         {
           senderId: sender,
-          content: `Pozdrav! ${name} ti želi pomoći.`,
+          content: favorId,
+          dateCreated: new Date().toISOString(),
         },
         "notification"
       )
@@ -113,14 +108,14 @@ const FavorDetailPage = ({ history, match }) => {
               <IonIcon icon={ellipsisHorizontal} />
             </IonButton>
           </IonButtons>
-          <IonTitle class="favor-title">Favor</IonTitle>
+          <IonTitle className="favor-title">Favor</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <IonGrid>
           <IonRow onClick={() => history.push(`/user/${favor.ownerId}`)}>
             <IonCol offset="1" size="3">
-              <IonAvatar class="favor-avatar">
+              <IonAvatar className="favor-avatar">
                 <IonImg src={user.pictureLink} />
               </IonAvatar>
             </IonCol>
@@ -131,11 +126,11 @@ const FavorDetailPage = ({ history, match }) => {
             </IonCol>
           </IonRow>
         </IonGrid>
-        <div class="favor-text">
+        <div className="favor-text">
           <h1>{title}</h1>
           <p>{description}</p>
         </div>
-        <div class="image-card-wrapper">
+        <div className="image-card-wrapper">
           <ImageCard
             url="http://placekitten.com/230/520"
             caption="This is Minnie"
@@ -160,7 +155,7 @@ const FavorDetailPage = ({ history, match }) => {
 
         <IonButton
           disabled={favor.ownerId === globalState.userId}
-          class="button-do-it"
+          className="button-do-it"
           size="large"
           color="dark"
           expand="block"

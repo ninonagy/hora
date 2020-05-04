@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   IonCard,
@@ -13,27 +13,56 @@ import {
 
 import * as db from "../db";
 
-const NotificationCard = ({ user, order, content }) => {
-  return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardSubtitle>user.username can do you a favor!</IonCardSubtitle>
-        <IonCardTitle>Zamjeniti žarulju u kući</IonCardTitle>
-      </IonCardHeader>
-      <IonCardContent>
-        {content}
-        <IonRow class="notification-card-buttons">
+const NotificationCard = ({ user, user_is_me, content }) => {
+  let [favor, setFavor] = useState({});
+
+  useEffect(() => {
+    db.getFavor(content).then((favor) => {
+      setFavor(favor);
+    });
+  }, [content]);
+
+  let { title, description } = favor;
+
+  const buttons = () => {
+    if (user_is_me) {
+      return (
+        <IonRow className="notification-card-buttons">
           <IonCol>
             <IonButton color="danger" expand="block" fill="outline">
-              Odbij
+              Cancel
+            </IonButton>
+          </IonCol>
+        </IonRow>
+      );
+    } else
+      return (
+        <IonRow className="notification-card-buttons">
+          <IonCol>
+            <IonButton color="danger" expand="block" fill="outline">
+              Decline
             </IonButton>
           </IonCol>
           <IonCol>
             <IonButton color="primary" expand="block" fill="solid">
-              Prihvati
+              Accept
             </IonButton>
           </IonCol>
         </IonRow>
+      );
+  };
+
+  return (
+    <IonCard>
+      <IonCardHeader>
+        <IonCardSubtitle>
+          {user}
+          {user_is_me ? " has to accept your favor." : " can do you a favor!"}
+        </IonCardSubtitle>
+        <IonCardTitle>{title}</IonCardTitle>
+      </IonCardHeader>
+      <IonCardContent>
+        {description} {buttons()}
       </IonCardContent>
     </IonCard>
   );

@@ -8,6 +8,8 @@
   font-weight: 500;
   font-size: 16px;
   border-radius: 15px;
+  overflow: hidden;
+  clear: both;
 }
 
 .wrapper {
@@ -18,7 +20,6 @@
   float: left;
   background-color: #f1f0f0;
   color: black;
-  clear: both;
   margin-right: 23%;
 }
 
@@ -26,9 +27,8 @@
   float: right;
   background-color: #0084ff;
   color: white;
-  clear: both;
-  margin-left: 23%;
   text-align: right;
+  margin-left: 23%;
 }
 
 .next {
