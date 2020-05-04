@@ -13,8 +13,19 @@ import {
   IonGrid,
   IonRow,
   IonCol,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonImg,
 } from "@ionic/react";
+
 import { withRouter } from "react-router";
+
+import { settingsOutline } from "ionicons/icons";
+
+import RatingIcons from "../components/RatingIcons";
+
+import "./ProfilePage.css";
 
 import useGlobalState from "../state";
 import * as db from "../db";
@@ -57,43 +68,51 @@ const ProfilePage = ({ match, isPublic }) => {
           <IonTitle>
             {name}, {getAge(birthDate)}
           </IonTitle>
+          <IonButtons slot="end">
+            <IonButton>
+              <IonIcon icon={settingsOutline} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonItem>
-          <IonAvatar>
-            <img src={pictureLink} alt="Avatar" />
-          </IonAvatar>
-          <IonGrid>
-            <IonRow>
-              <IonCol>
-                <IonText>{location}</IonText>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonText>Neki kratak opis</IonText>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </IonItem>
-
-        <IonItem>
-          <IonText>Vještine/Hobiji</IonText>
-          {skills.map((item) => (
-            <IonChip>
-              <IonLabel>{item}</IonLabel>
-            </IonChip>
-          ))}
-        </IonItem>
-
-        <IonItem>
-          <IonText>Novčići: {timeAvailable}</IonText>
-        </IonItem>
-
-        <IonItem>
-          <IonText>Ocjena: {rating}</IonText>
-        </IonItem>
+        <IonGrid class="profile-margin">
+          <IonRow class="ion-align-items-center">
+            <IonCol size="2" offset="4">
+              <IonAvatar className="profile-avatar">
+                <IonImg src={pictureLink} alt="Avatar" />
+              </IonAvatar>
+            </IonCol>
+            {/** I know this look terrible. I'm sorry. I'll update it asap. */}
+            <IonCol size="2" offset="3">
+              <div class="profile-coins">{timeAvailable}</div> coins
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol className="ion-text-center profile-name">{name}</IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol className="ion-text-center">
+              <RatingIcons rating={rating} />
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol className="ion-text-center profile-bio">
+              Stu(die)ing @ the uni. Doing crazy things. I have a dog! I love
+              helping everybody in need! Cooking is my passion! Oh and I love
+              walking my dogs: Kate and Jack.
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol className="ion-text-center profile-bio">
+              {skills.map((item) => (
+                <IonChip>
+                  <IonLabel>{item}</IonLabel>
+                </IonChip>
+              ))}
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </IonContent>
     </IonPage>
   );

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import {
-  IonText,
   IonContent,
   IonHeader,
   IonToolbar,
@@ -14,17 +13,11 @@ import {
   IonItemDivider,
   IonTextarea,
   IonButton,
-  IonButtons,
-  IonIcon,
   IonRange,
   IonDatetime,
-  IonChip,
-  IonThumbnail,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
-
-import { closeCircle } from "ionicons/icons";
 
 import * as db from "../db";
 import useGlobal from "../state";
@@ -63,7 +56,7 @@ const GivePage = (props) => {
 
       <IonContent>
         <form onSubmit={handleSubmit}>
-          <IonList class="ion-no-margin ion-no-padding">
+          <IonList className="ion-no-margin ion-no-padding">
             <IonItem>
               <IonLabel position="floating">Naslov</IonLabel>
               <IonInput

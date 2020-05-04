@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import { IonIcon, IonBadge } from '@ionic/react';
+import { IonIcon, IonBadge } from "@ionic/react";
 
-import { starOutline, star, starHalf } from 'ionicons/icons';
+import { starOutline, star, starHalf } from "ionicons/icons";
 
 const RatingIcons = ({ rating }) => {
   let count = Math.floor(rating);
