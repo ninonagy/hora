@@ -4,5 +4,6 @@ import { devConfig } from "./config";
 var app = firebase.initializeApp(devConfig);
 
 var fs = firebase.firestore(app);
+var storage = firebase.storage(app);
 
-export { firebase, fs };
+export { firebase, fs, storage };
