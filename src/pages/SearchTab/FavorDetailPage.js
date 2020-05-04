@@ -59,6 +59,7 @@ const FavorDetailPage = ({ history, match }) => {
   let { title, description, location, dateCreated } = favor;
 
   function handleHelp() {
+    debugger;
     let { name } = globalState.user;
     let sender = globalState.userId;
     let receiver = favor.ownerId;
@@ -67,8 +68,7 @@ const FavorDetailPage = ({ history, match }) => {
         conversationId,
         {
           senderId: sender,
-          content: favorId,
-          dateCreated: new Date().toISOString(),
+          favorId: favorId,
         },
         "notification"
       )
