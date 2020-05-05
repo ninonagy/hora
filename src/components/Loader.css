@@ -1,0 +1,13 @@
+.container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loader {
+  width: 28px;
+  height: 28px;
+  stroke: #444;
+  fill: #222;
+}

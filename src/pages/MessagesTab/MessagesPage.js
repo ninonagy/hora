@@ -11,6 +11,8 @@ import {
 import { withRouter } from "react-router";
 import MessagesCard from "../../components/MessagesCard";
 
+import Loader from "../../components/Loader";
+
 import * as db from "../../db";
 import useGlobal from "../../state";
 
@@ -26,22 +28,24 @@ const MessagesPage = (props) => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Messages</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <IonList inset="true">
-          {conversations.map((conversation) => (
-            <MessagesCard
-              key={conversation.id}
-              userId={conversation.receiverId}
-              link={`${props.match.url}/conversation/${conversation.id}`}
-            />
-          ))}
-        </IonList>
-      </IonContent>
+      <Loader data={conversations}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Messages</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <IonList inset="true">
+            {conversations.map((conversation) => (
+              <MessagesCard
+                key={conversation.id}
+                userId={conversation.receiverId}
+                link={`${props.match.url}/conversation/${conversation.id}`}
+              />
+            ))}
+          </IonList>
+        </IonContent>
+      </Loader>
     </IonPage>
   );
 };
