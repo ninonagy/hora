@@ -27,6 +27,8 @@ import { chevronUpCircle, chevronForwardOutline } from "ionicons/icons";
 import NotificationCard from "../../components/NotificationCard";
 import useGlobal from "../../state";
 
+import Loader from "../../components/Loader";
+
 import * as db from "../../db";
 import { fs } from "../../firebase";
 
@@ -93,75 +95,77 @@ const ConversationPage = (props) => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton text="Back" />
-          </IonButtons>
-          <IonTitle>{name}</IonTitle>
-          <IonButtons slot="end">
-            <IonButton slot="end" routerLink={`/user/${id}`}>
-              <IonAvatar className="messages-avatar">
-                <img src={pictureLink} alt="Profile" />
-              </IonAvatar>
-              <IonIcon
-                className="button-profile"
-                icon={chevronForwardOutline}
-              />
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-
-      <IonContent>
-        <IonList>
-          {messages.map((message, id) =>
-            message.type === "notification" ? (
-              <NotificationCard
-                key={id}
-                user={receiverUser}
-                isThisUser={message.senderId === userId ? true : false}
-                favorId={message.favorId}
-              />
-            ) : (
-              <Message
-                key={id}
-                user={message.senderId === userId ? "right" : "left"}
-                order={messageOrder(messages, id, id - 1)}
-                content={message.content}
-              />
-            )
-          )}
-        </IonList>
-      </IonContent>
-      <IonFooter className="ion-no-border">
-        <IonToolbar>
-          <IonRow className="ion-align-items-center">
-            <IonCol size="10">
-              <IonTextarea
-                inputMode={"text"}
-                value={messageText}
-                onIonChange={(e) => setMessageText(e.target.value.trim())}
-                spellCheck={false}
-                placeholder="Unesite poruku..."
-                className="message-input"
-                rows="1"
-              />
-            </IonCol>
-            <IonCol size="2">
-              <IonButton
-                onClick={handleTextarea}
-                expand="block"
-                fill="clear"
-                color="primary"
-                className="message-button"
-              >
-                <IonIcon className="sendIcon" icon={chevronUpCircle} />
+      <Loader data={messages}>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonBackButton text="Back" />
+            </IonButtons>
+            <IonTitle>{name}</IonTitle>
+            <IonButtons slot="end">
+              <IonButton slot="end" routerLink={`/user/${id}`}>
+                <IonAvatar className="messages-avatar">
+                  <img src={pictureLink} alt="Profile" />
+                </IonAvatar>
+                <IonIcon
+                  className="button-profile"
+                  icon={chevronForwardOutline}
+                />
               </IonButton>
-            </IonCol>
-          </IonRow>
-        </IonToolbar>
-      </IonFooter>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+
+        <IonContent>
+          <IonList>
+            {messages.map((message, id) =>
+              message.type === "notification" ? (
+                <NotificationCard
+                  key={id}
+                  user={receiverUser}
+                  isThisUser={message.senderId === userId ? true : false}
+                  favorId={message.favorId}
+                />
+              ) : (
+                <Message
+                  key={id}
+                  user={message.senderId === userId ? "right" : "left"}
+                  order={messageOrder(messages, id, id - 1)}
+                  content={message.content}
+                />
+              )
+            )}
+          </IonList>
+        </IonContent>
+        <IonFooter className="ion-no-border">
+          <IonToolbar>
+            <IonRow className="ion-align-items-center">
+              <IonCol size="10">
+                <IonTextarea
+                  inputMode={"text"}
+                  value={messageText}
+                  onIonChange={(e) => setMessageText(e.target.value.trim())}
+                  spellCheck={false}
+                  placeholder="Unesite poruku..."
+                  className="message-input"
+                  rows="1"
+                />
+              </IonCol>
+              <IonCol size="2">
+                <IonButton
+                  onClick={handleTextarea}
+                  expand="block"
+                  fill="clear"
+                  color="primary"
+                  className="message-button"
+                >
+                  <IonIcon className="sendIcon" icon={chevronUpCircle} />
+                </IonButton>
+              </IonCol>
+            </IonRow>
+          </IonToolbar>
+        </IonFooter>
+      </Loader>
     </IonPage>
   );
 };

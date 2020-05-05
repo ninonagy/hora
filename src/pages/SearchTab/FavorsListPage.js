@@ -10,6 +10,8 @@ import {
 
 import FavorCard from "../../components/FavorCard";
 
+import Loader from "../../components/Loader";
+
 import * as db from "../../db.js";
 
 const FavorsListPage = ({ match }) => {
@@ -27,21 +29,19 @@ const FavorsListPage = ({ match }) => {
 
   return (
     <IonPage>
-      <IonContent fullscreen="true">
-        <IonToolbar>
-          <IonTitle slot="start">HORA</IonTitle>
-        </IonToolbar>
+      <Loader data={favors}>
+        <IonContent fullscreen="true">
+          <IonToolbar>
+            <IonTitle slot="start">HORA</IonTitle>
+          </IonToolbar>
 
-        <IonList>
-          {favors.map((item) => (
-            <FavorCard
-              item={item}
-              key={item.id}
-              link={`/favor/${item.id}`}
-            />
-          ))}
-        </IonList>
-      </IonContent>
+          <IonList>
+            {favors.map((item) => (
+              <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />
+            ))}
+          </IonList>
+        </IonContent>
+      </Loader>
     </IonPage>
   );
 };

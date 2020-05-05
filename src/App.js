@@ -32,6 +32,11 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 
+import ConversationPage from "./pages/MessagesTab/ConversationPage";
+import FavorDetail from "./pages/SearchTab/FavorDetailPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicProfilePage from "./pages/PublicProfilePage";
+
 import Tabs from "./pages/Tabs";
 
 const SplashScreen = () => {
@@ -49,6 +54,19 @@ const App = () => {
         <Switch>
           <Redirect exact from="/" to="/home" />
           <Route exact path="/login" component={LoginPage} />
+          {/* Other routes */}
+          {/* Favor detail */}
+          <Route path="/favor/:favorId" component={FavorDetail} />
+          {/* Conversation page */}
+          <ProtectedRoute
+            path="/messages/conversation/:conversationId"
+            component={ConversationPage}
+          />
+          {/* Public profile */}
+          <Route
+            path="/user/:userId"
+            render={(props) => <PublicProfilePage {...props} />}
+          />
           <Tabs />
         </Switch>
       </IonReactRouter>

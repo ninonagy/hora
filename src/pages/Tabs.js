@@ -38,19 +38,7 @@ const Tabs = (props) => {
         <ProtectedRoute exact path="/:tab(messages)" component={MessagesPage} />
         <ProtectedRoute exact path="/:tab(profile)" component={ProfilePage} />
         <Redirect exact from="/home" to="/search" />
-        {/* Other routes */}
-        {/* Favor detail */}
-        <Route path="/favor/:favorId" component={FavorDetail} />
-        {/* Conversation page */}
-        <ProtectedRoute
-          path="/messages/conversation/:conversationId"
-          component={ConversationPage}
-        />
-        {/* Public profile */}
-        <Route
-          path="/user/:userId"
-          render={(props) => <PublicProfilePage {...props} />}
-        />
+        
         {/* No match */}
         <Route render={() => <IonPage>404 page</IonPage>} />
       </IonRouterOutlet>
