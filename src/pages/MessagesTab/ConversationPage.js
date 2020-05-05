@@ -23,10 +23,11 @@ import "./ConversationPage.css";
 
 import Message from "../../components/MessageCard";
 
-import { chevronUpCircle, chevronForwardOutline } from "ionicons/icons";
+import { chevronUpCircle, chevronForwardOutline, chevronBackOutline } from "ionicons/icons";
 import NotificationCard from "../../components/NotificationCard";
 import useGlobal from "../../state";
 
+import BackButton from "../../components/BackButton";
 import Loader from "../../components/Loader";
 
 import * as db from "../../db";
@@ -99,7 +100,7 @@ const ConversationPage = (props) => {
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonBackButton text="Back" />
+              <BackButton />
             </IonButtons>
             <IonTitle>{name}</IonTitle>
             <IonButtons slot="end">

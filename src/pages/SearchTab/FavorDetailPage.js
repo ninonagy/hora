@@ -28,6 +28,7 @@ import ImageCard from "../../components/ImageCard";
 
 import { ellipsisHorizontal } from "ionicons/icons";
 
+import BackButton from "../../components/BackButton";
 import Loader from "../../components/Loader";
 
 import * as db from "../../db";
@@ -100,7 +101,7 @@ const FavorDetailPage = ({ history, match }) => {
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonBackButton text="Back" />
+              <BackButton />
             </IonButtons>
             <IonButtons slot="end">
               <IonButton
