@@ -17,6 +17,7 @@ import {
   IonButton,
   IonIcon,
   IonImg,
+  IonBackButton,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -27,6 +28,7 @@ import RatingIcons from "../components/RatingIcons";
 
 import "./ProfilePage.css";
 
+import BackButton from "../components/BackButton";
 import Loader from "../components/Loader";
 
 import useGlobalState from "../state";
@@ -68,14 +70,19 @@ const ProfilePage = ({ match, isPublic }) => {
       <Loader data={user}>
         <IonHeader>
           <IonToolbar>
+            <IonButtons slot="start">
+              <BackButton />
+            </IonButtons>
             <IonTitle>
               {name}, {getAge(birthDate)}
             </IonTitle>
-            <IonButtons slot="end">
-              <IonButton>
-                <IonIcon icon={settingsOutline} />
-              </IonButton>
-            </IonButtons>
+            {!isPublic && (
+              <IonButtons slot="end">
+                <IonButton>
+                  <IonIcon icon={settingsOutline} />
+                </IonButton>
+              </IonButtons>
+            )}
           </IonToolbar>
         </IonHeader>
         <IonContent>

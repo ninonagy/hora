@@ -57,15 +57,15 @@ const App = () => {
           {/* Other routes */}
           {/* Favor detail */}
           <Route path="/favor/:favorId" component={FavorDetail} />
-          {/* Conversation page */}
-          <ProtectedRoute
-            path="/messages/conversation/:conversationId"
-            component={ConversationPage}
-          />
           {/* Public profile */}
           <Route
             path="/user/:userId"
             render={(props) => <PublicProfilePage {...props} />}
+          />
+          {/* Conversation page */}
+          <ProtectedRoute
+            path="/messages/conversation/:conversationId"
+            component={ConversationPage}
           />
           <Tabs />
         </Switch>

@@ -38,9 +38,6 @@ const Tabs = (props) => {
         <ProtectedRoute exact path="/:tab(messages)" component={MessagesPage} />
         <ProtectedRoute exact path="/:tab(profile)" component={ProfilePage} />
         <Redirect exact from="/home" to="/search" />
-        
-        {/* No match */}
-        <Route render={() => <IonPage>404 page</IonPage>} />
       </IonRouterOutlet>
 
       <IonTabBar slot="bottom">
