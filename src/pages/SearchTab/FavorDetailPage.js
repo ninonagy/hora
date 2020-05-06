@@ -57,7 +57,7 @@ const FavorDetailPage = ({ history, match }) => {
         setUser(user);
       });
     });
-  }, [favorId]);
+  }, []);
 
   let { title, description, location, dateCreated } = favor;
 

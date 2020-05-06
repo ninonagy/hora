@@ -22,7 +22,7 @@ const FavorCard = ({ item, link }) => {
   useEffect(() => {
     // get user name, profile picture, rating
     db.getUser(ownerId).then((user) => setUser(user));
-  }, [ownerId]);
+  }, []);
 
   return (
     <IonCard routerLink={link}>
