@@ -23,7 +23,11 @@ import "./ConversationPage.css";
 
 import Message from "../../components/MessageCard";
 
-import { chevronUpCircle, chevronForwardOutline, chevronBackOutline } from "ionicons/icons";
+import {
+  chevronUpCircle,
+  chevronForwardOutline,
+  chevronBackOutline,
+} from "ionicons/icons";
 import NotificationCard from "../../components/NotificationCard";
 import useGlobal from "../../state";
 
@@ -43,12 +47,13 @@ const ConversationPage = (props) => {
   let userId = globalState.userId;
 
   function updateConversation() {
-    fs.collection(
-      db.buildPath(db.paths.message, {
-        conversationId: conversationId,
-        messageId: "",
-      })
-    )
+    return fs
+      .collection(
+        db.buildPath(db.paths.message, {
+          conversationId: conversationId,
+          messageId: "",
+        })
+      )
       .orderBy("dateCreated", "asc")
       .onSnapshot((querySnapshot) => {
         let array = [];
@@ -60,13 +65,19 @@ const ConversationPage = (props) => {
   }
 
   useEffect(() => {
-    updateConversation();
-    // Get data from other user
-    db.getUserConversation(userId, conversationId).then((conversation) => {
-      db.getUser(conversation.receiverId).then((user) => {
-        setReceiverUser(user);
-      });
-    });
+    const runAsync = async () => {
+      // Get data from other user
+      let conversation = await db.getUserConversation(userId, conversationId);
+      let user = await db.getUser(conversation.receiverId);
+      setReceiverUser(user);
+    };
+
+    runAsync();
+
+    let unsubscribe = updateConversation();
+
+    // Remove listener when page is not active anymore
+    return () => unsubscribe();
   }, []);
 
   const messageOrder = (messages, id, idprev) => {
@@ -85,9 +96,6 @@ const ConversationPage = (props) => {
         content: messageText,
       }).then(() => {
         setMessageText("");
-        // Temporary solution
-        // Download again all messages, including newly created message
-        updateConversation();
       });
     }
   }
