@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef, useRef } from "react";
 import {
   IonContent,
   IonHeader,
@@ -39,6 +39,7 @@ import { fs } from "../../firebase";
 
 const ConversationPage = (props) => {
   const [globalState, globalActions] = useGlobal();
+  let messageListRef = useRef();
   let [messages, setMessages] = useState([]);
   let [messageText, setMessageText] = useState("");
   let [receiverUser, setReceiverUser] = useState({});
@@ -61,6 +62,7 @@ const ConversationPage = (props) => {
           array.push({ ...doc.data(), id: doc.id });
         });
         setMessages(array);
+        scrollToBottom();
       });
   }
 
@@ -100,6 +102,12 @@ const ConversationPage = (props) => {
     }
   }
 
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      messageListRef.current && messageListRef.current.scrollToBottom(500);
+    }, 50);
+  };
+
   let { id, name, pictureLink } = receiverUser;
 
   return (
@@ -125,7 +133,7 @@ const ConversationPage = (props) => {
           </IonToolbar>
         </IonHeader>
 
-        <IonContent>
+        <IonContent ref={messageListRef}>
           <IonList>
             {messages.map((message, id) =>
               message.type === "notification" ? (
@@ -146,6 +154,7 @@ const ConversationPage = (props) => {
             )}
           </IonList>
         </IonContent>
+
         <IonFooter className="ion-no-border">
           <IonToolbar>
             <IonRow className="ion-align-items-center">
