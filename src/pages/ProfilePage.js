@@ -47,7 +47,7 @@ const ProfilePage = ({ match, isPublic }) => {
     db.getUser(userId).then((user) => {
       setUser(user);
     });
-  }, [userId]);
+  }, []);
 
   let {
     name,
