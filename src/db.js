@@ -1,31 +1,13 @@
 import { fs, storage } from "./firebase";
 
+import { paths, buildPath, states } from "./scheme";
+import { userToUserKey } from "./utils";
+
 // https://capacitor.ionicframework.com/docs/apis/storage/
 // import { Plugins } from "@capacitor/core";
 // const { Storage } = Plugins;
 
-const paths = {
-  user: "/users/{userId}",
-  favor: "/favors/{favorId}",
-  activeConnection: "/activeConnection/{userId}",
-  conversation: "/conversations/{conversationId}",
-  userConversation: "/users/{userId}/conversations/{conversationId}",
-  message: "/conversations/{conversationId}/messages/{messageId}",
-  userFavorsCreated: "/users/{userId}/favorsCreated/{favorId}",
-  // ...
-};
-
-function buildPath(path = "", ids = {}) {
-  // ids = { userId: "u1" };
-  for (let label in ids) {
-    let idValue = ids[label];
-    path = path.replace("{" + label + "}", idValue);
-  }
-  return path;
-}
-
 function getValue(path = "", ids = {}) {
-  if (path === "") return;
   path = buildPath(path, ids);
   let segments = path.split("/").filter((i) => i !== "/" && i !== "");
   // If segment count is even then get document
@@ -54,15 +36,20 @@ function getValue(path = "", ids = {}) {
 }
 
 function setValue(path = "", ids = {}, value = {}) {
-  if (path === "") return;
   path = buildPath(path, ids);
+  value = { ...value, dateCreated: new Date().toISOString() };
   return fs.doc(path).set(value);
 }
 
 function updateValue(path = "", ids = {}, value = {}) {
-  if (path === "") return;
   path = buildPath(path, ids);
   return fs.doc(path).update(value);
+}
+
+function deleteDoc(path = "", ids = {}) {
+  if (paths === "") return;
+  path = buildPath(path, ids);
+  return fs.doc(path).delete();
 }
 
 // https://stackoverflow.com/questions/6248666/how-to-generate-short-uid-like-ax4j9z-in-js
@@ -100,6 +87,7 @@ async function getFavorsList() {
 async function storeFavor(data = {}) {
   let favorId = uid();
   let ownerId = data.ownerId;
+  data = { ...data, state: states.favor.free };
   return setValue(paths.favor, { favorId: favorId }, data).then(() =>
     // Store favor key to user
     setValue(
@@ -119,19 +107,18 @@ async function getUserByAuth(email, password) {
 
 // Start conversation thread
 async function storeConversation(senderId, receiverId) {
-  debugger;
-  let id = "";
-  id = senderId < receiverId ? senderId + receiverId : receiverId + senderId;
+  let id = userToUserKey(senderId, receiverId);
+  let fields = { active: true };
   return setValue(paths.conversation, { conversationId: id }, {}).then(() =>
     setValue(
       paths.userConversation,
       { userId: senderId, conversationId: id },
-      { receiverId: receiverId }
+      { receiverId: receiverId, ...fields }
     ).then(() => {
       return setValue(
         paths.userConversation,
         { userId: receiverId, conversationId: id },
-        { receiverId: senderId }
+        { receiverId: senderId, ...fields }
       ).then(() => id);
     })
   );
@@ -165,7 +152,7 @@ async function getMessages(conversationId) {
 
 // Store new message in conversation thread
 async function storeMessage(conversationId, data = {}, type = "msg") {
-  data = { ...data, type, dateCreated: new Date().toISOString() };
+  data = { ...data, type };
   let messageId = uid();
   return setValue(
     paths.message,
@@ -174,12 +161,27 @@ async function storeMessage(conversationId, data = {}, type = "msg") {
   ).then(() => messageId);
 }
 
+async function deleteMessage(conversationId, messageId) {
+  return deleteDoc(paths.message, {
+    conversationId,
+    messageId,
+  });
+}
+
 // https://firebase.google.com/docs/storage/web/upload-files
 async function storeUserPicture(userId, data = Blob) {
   return storage
     .ref(`/userPictures/${userId}.jpg`)
     .put(data)
     .then((snapshot) => snapshot.ref.getDownloadURL().then((url) => url));
+}
+
+async function setFavorState(favorId, state) {
+  return updateValue(paths.favor, { favorId }, { state });
+}
+
+async function storeUserActiveFavor(userId, favorId) {
+  return setValue(paths.userFavorsActive, { userId, favorId }, {});
 }
 
 // ...
@@ -191,10 +193,13 @@ export {
   getUser,
   setUser,
   getFavor,
+  setFavorState,
   storeFavor,
+  storeUserActiveFavor,
   getFavorsList,
   getUserByAuth,
   getMessages,
+  deleteMessage,
   storeConversation,
   storeMessage,
   getUserConversation,

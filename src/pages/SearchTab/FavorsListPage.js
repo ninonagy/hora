@@ -13,18 +13,28 @@ import FavorCard from "../../components/FavorCard";
 import Loader from "../../components/Loader";
 
 import * as db from "../../db.js";
+import { fs } from "../../firebase";
+import { buildPath, paths } from "../../scheme";
+import { arrayWithId } from "../../utils";
 
 const FavorsListPage = ({ match }) => {
   let [favors, setFavors] = useState([]);
 
   useEffect(() => {
-    db.getFavorsList().then((favors) => {
-      let list = favors.sort((item1, item2) => {
-        let diff = new Date(item1.dateCreated) - new Date(item2.dateCreated);
-        return -diff;
+    fs.collection(buildPath(paths.favor, { favorId: "" }))
+      .where("state", "==", "free")
+      .orderBy("dateCreated", "desc")
+      .get()
+      .then((result) => {
+        setFavors(arrayWithId(result));
       });
-      setFavors(list);
-    });
+    // db.getFavorsList().then((favors) => {
+    //   let list = favors.sort((item1, item2) => {
+    //     let diff = new Date(item1.dateCreated) - new Date(item2.dateCreated);
+    //     return -diff;
+    //   });
+    //   setFavors(list);
+    // });
   }, []);
 
   return (

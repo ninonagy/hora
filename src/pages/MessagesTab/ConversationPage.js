@@ -15,6 +15,7 @@ import {
   IonIcon,
   IonAvatar,
   IonList,
+  IonAlert,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -28,6 +29,7 @@ import {
   chevronForwardOutline,
   chevronBackOutline,
 } from "ionicons/icons";
+
 import NotificationCard from "../../components/NotificationCard";
 import useGlobal from "../../state";
 
@@ -37,12 +39,99 @@ import Loader from "../../components/Loader";
 import * as db from "../../db";
 import { fs } from "../../firebase";
 
+import * as scheme from "../../scheme";
+
+const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
+  const cancelHeaderText = cancelAlert.isThisUser
+    ? "Jesi li siguran da želiš odustati od usluge?"
+    : "Jesi li siguran da želiš odbaciti pomoć?";
+  const cancelText = cancelAlert.isThisUser ? "" : "";
+
+  const acceptHeaderText = "Želiš li prihvatiti pomoć?";
+  const acceptText = "";
+
+  return (
+    <>
+      <IonAlert
+        isOpen={cancelAlert.show}
+        onDidDismiss={onDismiss}
+        header={cancelHeaderText}
+        message={cancelText}
+        buttons={[
+          {
+            text: "Ne",
+            role: "cancel",
+            cssClass: "secondary",
+            handler: () => {},
+          },
+          {
+            text: "Da",
+            handler: async () => {
+              // Delete selected message from conversation
+              const message = cancelAlert.message;
+              await db.deleteMessage(conversationId, message.id);
+              // Set favor state from pending to free
+              await db.setFavorState(message.favorId, scheme.states.favor.free);
+            },
+          },
+        ]}
+      />
+      <IonAlert
+        isOpen={acceptAlert.show}
+        onDidDismiss={onDismiss}
+        header={acceptHeaderText}
+        message={acceptText}
+        buttons={[
+          {
+            text: "Ne",
+            role: "cancel",
+            cssClass: "secondary",
+            handler: () => {},
+          },
+          {
+            text: "Prihvati",
+            handler: async () => {
+              debugger;
+              const message = acceptAlert.message;
+              // Set favor state from pending to active
+              await db.setFavorState(
+                message.favorId,
+                scheme.states.favor.active
+              );
+              // Store this favor to user's active favor list
+              await db.storeUserActiveFavor(message.senderId, message.favorId);
+            },
+          },
+        ]}
+      />
+    </>
+  );
+};
+
+const messageOrder = (messages, id, idprev) => {
+  if (
+    messages[idprev] != null &&
+    messages[idprev].senderId === messages[id].senderId
+  )
+    return "next";
+};
+
 const ConversationPage = (props) => {
   const [globalState, globalActions] = useGlobal();
   let messageListRef = useRef();
   let [messages, setMessages] = useState([]);
   let [messageText, setMessageText] = useState("");
   let [receiverUser, setReceiverUser] = useState({});
+  let [cancelAlert, setCancelAlert] = useState({
+    show: false,
+    message: {},
+    isThisUser: null,
+  });
+  let [acceptAlert, setAcceptAlert] = useState({
+    show: false,
+    message: {},
+    isThisUser: null,
+  });
 
   let conversationId = props.match.params.conversationId;
   let userId = globalState.userId;
@@ -62,6 +151,9 @@ const ConversationPage = (props) => {
           array.push({ ...doc.data(), id: doc.id });
         });
         setMessages(array);
+        if (array.length === 0) {
+          props.history.replace("/messages");
+        }
         scrollToBottom();
       });
   }
@@ -82,14 +174,6 @@ const ConversationPage = (props) => {
     return () => unsubscribe();
   }, []);
 
-  const messageOrder = (messages, id, idprev) => {
-    if (
-      messages[idprev] != null &&
-      messages[idprev].senderId === messages[id].senderId
-    )
-      return "next";
-  };
-
   // Store message
   function handleTextarea() {
     if (messageText !== "") {
@@ -106,6 +190,11 @@ const ConversationPage = (props) => {
     setTimeout(() => {
       messageListRef.current && messageListRef.current.scrollToBottom(500);
     }, 50);
+  };
+
+  const handleAlertDismiss = () => {
+    if (cancelAlert.show) setCancelAlert({ show: false });
+    if (acceptAlert.show) setAcceptAlert({ show: false });
   };
 
   let { id, name, pictureLink } = receiverUser;
@@ -134,6 +223,12 @@ const ConversationPage = (props) => {
         </IonHeader>
 
         <IonContent ref={messageListRef}>
+          <Alerts
+            conversationId={conversationId}
+            cancelAlert={cancelAlert}
+            acceptAlert={acceptAlert}
+            onDismiss={handleAlertDismiss}
+          />
           <IonList>
             {messages.map((message, id) =>
               message.type === "notification" ? (
@@ -142,6 +237,20 @@ const ConversationPage = (props) => {
                   user={receiverUser}
                   isThisUser={message.senderId === userId ? true : false}
                   favorId={message.favorId}
+                  onUserCancel={() =>
+                    setCancelAlert({
+                      show: true,
+                      message,
+                      isThisUser: message.senderId === userId,
+                    })
+                  }
+                  onUserAccept={() =>
+                    setAcceptAlert({
+                      show: true,
+                      message,
+                      isThisUser: message.senderId === userId,
+                    })
+                  }
                 />
               ) : (
                 <Message

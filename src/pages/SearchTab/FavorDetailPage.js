@@ -33,6 +33,7 @@ import Loader from "../../components/Loader";
 
 import * as db from "../../db";
 import useGlobal from "../../state";
+import { states } from "../../scheme";
 
 const items = [
   { src: "http://placekitten.com/g/100/100", text: "this is my cat Minnie" },
@@ -61,12 +62,12 @@ const FavorDetailPage = ({ history, match }) => {
 
   let { title, description, location, dateCreated } = favor;
 
-  function handleHelp() {
-    debugger;
-    let { name } = globalState.user;
+  const handleHelp = async () => {
     let sender = globalState.userId;
     let receiver = favor.ownerId;
-    db.storeConversation(sender, receiver).then((conversationId) => {
+    let conversationId = await db.storeConversation(sender, receiver);
+    await db.setFavorState(favorId, states.favor.pending);
+    if (conversationId) {
       db.storeMessage(
         conversationId,
         {
@@ -82,8 +83,8 @@ const FavorDetailPage = ({ history, match }) => {
         .catch(() => {
           // TODO: Handle error
         });
-    });
-  }
+    }
+  };
 
   return (
     <IonPage>
