@@ -13,22 +13,33 @@ import MessagesCard from "../../components/MessagesCard";
 
 import Loader from "../../components/Loader";
 
-import * as db from "../../db";
 import useGlobal from "../../state";
+
+import { fs } from "../../firebase";
+import { paths, buildPath } from "../../db";
+import { arrayWithId } from "../../utils";
 
 const MessagesPage = (props) => {
   const [globalState, globalActions] = useGlobal();
   let [conversations, setConversations] = useState([]);
 
   useEffect(() => {
-    db.getUserConversationList(globalState.userId).then((list) =>
-      setConversations(list)
-    );
+    fs.collection(
+      buildPath(paths.userConversation, {
+        userId: globalState.userId,
+        conversationId: "",
+      })
+    )
+      .orderBy("dateCreated", "desc")
+      .get()
+      .then((result) => {
+        setConversations(arrayWithId(result));
+      });
   }, []);
 
   return (
     <IonPage>
-      <Loader data={conversations}>
+      <Loader data={conversations.length || true}>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Messages</IonTitle>
@@ -36,13 +47,16 @@ const MessagesPage = (props) => {
         </IonHeader>
         <IonContent>
           <IonList inset="true">
-            {conversations.map((conversation) => (
-              <MessagesCard
-                key={conversation.id}
-                userId={conversation.receiverId}
-                link={`${props.match.url}/conversation/${conversation.id}`}
-              />
-            ))}
+            {conversations.map(
+              (conversation) =>
+                conversation.active && (
+                  <MessagesCard
+                    key={conversation.id}
+                    userId={conversation.receiverId}
+                    link={`${props.match.url}/conversation/${conversation.id}`}
+                  />
+                )
+            )}
           </IonList>
         </IonContent>
       </Loader>

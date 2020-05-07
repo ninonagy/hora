@@ -13,7 +13,13 @@ import {
 
 import * as db from "../db";
 
-const NotificationCard = ({ user, isThisUser, favorId }) => {
+const NotificationCard = ({
+  user,
+  isThisUser,
+  favorId,
+  onUserCancel,
+  onUserAccept,
+}) => {
   let [favor, setFavor] = useState({});
 
   let userName = user.name;
@@ -31,7 +37,12 @@ const NotificationCard = ({ user, isThisUser, favorId }) => {
       return (
         <IonRow className="notification-card-buttons">
           <IonCol>
-            <IonButton color="danger" expand="block" fill="outline">
+            <IonButton
+              color="danger"
+              expand="block"
+              fill="outline"
+              onClick={onUserCancel}
+            >
               Cancel
             </IonButton>
           </IonCol>
@@ -41,12 +52,22 @@ const NotificationCard = ({ user, isThisUser, favorId }) => {
       return (
         <IonRow className="notification-card-buttons">
           <IonCol>
-            <IonButton color="danger" expand="block" fill="outline">
+            <IonButton
+              color="danger"
+              expand="block"
+              fill="outline"
+              onClick={onUserCancel}
+            >
               Decline
             </IonButton>
           </IonCol>
           <IonCol>
-            <IonButton color="primary" expand="block" fill="solid">
+            <IonButton
+              color="primary"
+              expand="block"
+              fill="solid"
+              onClick={onUserAccept}
+            >
               Accept
             </IonButton>
           </IonCol>
