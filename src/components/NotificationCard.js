@@ -11,6 +11,8 @@ import {
   IonButton,
 } from "@ionic/react";
 
+import Time from "./TimeCard";
+
 import * as db from "../db";
 
 const NotificationCard = ({
@@ -19,6 +21,8 @@ const NotificationCard = ({
   favorId,
   onUserCancel,
   onUserAccept,
+  showTime,
+  time,
 }) => {
   let [favor, setFavor] = useState({});
 
@@ -76,18 +80,21 @@ const NotificationCard = ({
   };
 
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardSubtitle>
-          {userName}
-          {isThisUser ? " has to accept your favor." : " can do you a favor!"}
-        </IonCardSubtitle>
-        <IonCardTitle>{title}</IonCardTitle>
-      </IonCardHeader>
-      <IonCardContent>
-        {description} {buttons()}
-      </IonCardContent>
-    </IonCard>
+    <div>
+      <Time showTime={showTime} time={time} />
+      <IonCard>
+        <IonCardHeader>
+          <IonCardSubtitle>
+            {userName}
+            {isThisUser ? " has to accept your favor." : " can do you a favor!"}
+          </IonCardSubtitle>
+          <IonCardTitle>{title}</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>
+          {description} {buttons()}
+        </IonCardContent>
+      </IonCard>
+    </div>
   );
 };
 

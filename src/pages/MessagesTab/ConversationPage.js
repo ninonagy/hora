@@ -114,11 +114,11 @@ const messageOrder = (messages, id, idprev) => {
 
 /*
 
-0 - doesn't show antyhing
-1 - shows time
-2 - shows date and time
+0 - does not display anything
+1 - displays time
+2 - displays date and time
 
-(it is not handling years)
+(it is not handling years (yet^^))
 
  */
 const showTime = (messages, id) => {
@@ -262,6 +262,8 @@ const ConversationPage = (props) => {
                   user={receiverUser}
                   isThisUser={message.senderId === userId ? true : false}
                   favorId={message.favorId}
+                  showTime={showTime(messages, id)}
+                  time={new Date(messages[id].dateCreated)}
                   onUserCancel={() =>
                     setCancelAlert({
                       show: true,
