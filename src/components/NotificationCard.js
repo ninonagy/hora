@@ -20,9 +20,9 @@ const NotificationCard = ({ user, user_is_me, content }) => {
     db.getFavor(content).then((favor) => {
       setFavor(favor);
     });
-  }, [content]);
+  }, []);
 
-  let { title, description } = favor;
+  let { title, description } = favor || {};
 
   const buttons = () => {
     if (user_is_me) {
