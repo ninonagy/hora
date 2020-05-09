@@ -13,11 +13,19 @@ import {
 
 import * as db from "../db";
 
-const NotificationCard = ({ user, user_is_me, content }) => {
+const NotificationCard = ({
+  user,
+  isThisUser,
+  favorId,
+  onUserCancel,
+  onUserAccept,
+}) => {
   let [favor, setFavor] = useState({});
 
+  let userName = user.name;
+
   useEffect(() => {
-    db.getFavor(content).then((favor) => {
+    db.getFavor(favorId).then((favor) => {
       setFavor(favor);
     });
   }, []);
@@ -25,11 +33,16 @@ const NotificationCard = ({ user, user_is_me, content }) => {
   let { title, description } = favor || {};
 
   const buttons = () => {
-    if (user_is_me) {
+    if (isThisUser) {
       return (
         <IonRow className="notification-card-buttons">
           <IonCol>
-            <IonButton color="danger" expand="block" fill="outline">
+            <IonButton
+              color="danger"
+              expand="block"
+              fill="outline"
+              onClick={onUserCancel}
+            >
               Cancel
             </IonButton>
           </IonCol>
@@ -39,12 +52,22 @@ const NotificationCard = ({ user, user_is_me, content }) => {
       return (
         <IonRow className="notification-card-buttons">
           <IonCol>
-            <IonButton color="danger" expand="block" fill="outline">
+            <IonButton
+              color="danger"
+              expand="block"
+              fill="outline"
+              onClick={onUserCancel}
+            >
               Decline
             </IonButton>
           </IonCol>
           <IonCol>
-            <IonButton color="primary" expand="block" fill="solid">
+            <IonButton
+              color="primary"
+              expand="block"
+              fill="solid"
+              onClick={onUserAccept}
+            >
               Accept
             </IonButton>
           </IonCol>
@@ -56,8 +79,8 @@ const NotificationCard = ({ user, user_is_me, content }) => {
     <IonCard>
       <IonCardHeader>
         <IonCardSubtitle>
-          {user}
-          {user_is_me ? " has to accept your favor." : " can do you a favor!"}
+          {userName}
+          {isThisUser ? " has to accept your favor." : " can do you a favor!"}
         </IonCardSubtitle>
         <IonCardTitle>{title}</IonCardTitle>
       </IonCardHeader>

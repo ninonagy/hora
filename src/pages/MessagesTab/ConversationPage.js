@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef, useRef } from "react";
 import {
   IonContent,
   IonHeader,
@@ -15,6 +15,7 @@ import {
   IonIcon,
   IonAvatar,
   IonList,
+  IonAlert,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -23,44 +24,155 @@ import "./ConversationPage.css";
 
 import Message from "../../components/MessageCard";
 
-import { chevronUpCircle, chevronForwardOutline } from "ionicons/icons";
+import {
+  chevronUpCircle,
+  chevronForwardOutline,
+  chevronBackOutline,
+} from "ionicons/icons";
+
 import NotificationCard from "../../components/NotificationCard";
 import useGlobal from "../../state";
 
+import BackButton from "../../components/BackButton";
+import Loader from "../../components/Loader";
+
 import * as db from "../../db";
+import { fs } from "../../firebase";
+
+import * as scheme from "../../scheme";
+
+const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
+  const cancelHeaderText = cancelAlert.isThisUser
+    ? "Jesi li siguran da želiš odustati od usluge?"
+    : "Jesi li siguran da želiš odbaciti pomoć?";
+  const cancelText = cancelAlert.isThisUser ? "" : "";
+
+  const acceptHeaderText = "Želiš li prihvatiti pomoć?";
+  const acceptText = "";
+
+  return (
+    <>
+      <IonAlert
+        isOpen={cancelAlert.show}
+        onDidDismiss={onDismiss}
+        header={cancelHeaderText}
+        message={cancelText}
+        buttons={[
+          {
+            text: "Ne",
+            role: "cancel",
+            cssClass: "secondary",
+            handler: () => {},
+          },
+          {
+            text: "Da",
+            handler: async () => {
+              // Delete selected message from conversation
+              const message = cancelAlert.message;
+              await db.deleteMessage(conversationId, message.id);
+              // Set favor state from pending to free
+              await db.setFavorState(message.favorId, scheme.states.favor.free);
+            },
+          },
+        ]}
+      />
+      <IonAlert
+        isOpen={acceptAlert.show}
+        onDidDismiss={onDismiss}
+        header={acceptHeaderText}
+        message={acceptText}
+        buttons={[
+          {
+            text: "Ne",
+            role: "cancel",
+            cssClass: "secondary",
+            handler: () => {},
+          },
+          {
+            text: "Prihvati",
+            handler: async () => {
+              debugger;
+              const message = acceptAlert.message;
+              // Set favor state from pending to active
+              await db.setFavorState(
+                message.favorId,
+                scheme.states.favor.active
+              );
+              // Store this favor to user's active favor list
+              await db.storeUserActiveFavor(message.senderId, message.favorId);
+            },
+          },
+        ]}
+      />
+    </>
+  );
+};
+
+const messageOrder = (messages, id, idprev) => {
+  if (
+    messages[idprev] != null &&
+    messages[idprev].senderId === messages[id].senderId
+  )
+    return "next";
+};
 
 const ConversationPage = (props) => {
   const [globalState, globalActions] = useGlobal();
+  let messageListRef = useRef();
   let [messages, setMessages] = useState([]);
   let [messageText, setMessageText] = useState("");
   let [receiverUser, setReceiverUser] = useState({});
+  let [cancelAlert, setCancelAlert] = useState({
+    show: false,
+    message: {},
+    isThisUser: null,
+  });
+  let [acceptAlert, setAcceptAlert] = useState({
+    show: false,
+    message: {},
+    isThisUser: null,
+  });
 
   let conversationId = props.match.params.conversationId;
   let userId = globalState.userId;
 
   function updateConversation() {
-    db.getConversation(conversationId).then((messages) => {
-      setMessages(messages);
-    });
+    return fs
+      .collection(
+        db.buildPath(db.paths.message, {
+          conversationId: conversationId,
+          messageId: "",
+        })
+      )
+      .orderBy("dateCreated", "asc")
+      .onSnapshot((querySnapshot) => {
+        let array = [];
+        querySnapshot.forEach((doc) => {
+          array.push({ ...doc.data(), id: doc.id });
+        });
+        setMessages(array);
+        if (array.length === 0) {
+          props.history.replace("/messages");
+        }
+        scrollToBottom();
+      });
   }
 
   useEffect(() => {
-    updateConversation();
-    // Get data from other user
-    db.getUserConversation(userId, conversationId).then((conversation) => {
-      db.getUser(conversation.receiverId).then((user) => {
-        setReceiverUser(user);
-      });
-    });
-  }, []);
+    const runAsync = async () => {
+      // Get data from other user
+      let conversation = await db.getUserConversation(userId, conversationId);
+      let user = await db.getUser(conversation.receiverId);
+      setReceiverUser(user);
+    };
 
-  const messageOrder = (messages, id, idprev) => {
-    if (
-      messages[idprev] != null &&
-      messages[idprev].senderId === messages[id].senderId
-    )
-      return "next";
-  };
+    runAsync();
+
+    let unsubscribe = updateConversation();
+
+    // Remove listener when page is not active anymore
+    return () => unsubscribe();
+  }, []);
 
   // Store message
   function handleTextarea() {
@@ -68,89 +180,119 @@ const ConversationPage = (props) => {
       db.storeMessage(conversationId, {
         senderId: userId,
         content: messageText,
-        dateCreated: new Date().toISOString(),
       }).then(() => {
         setMessageText("");
-        // Temporary solution
-        // Download again all messages, including newly created message
-        updateConversation();
       });
     }
   }
 
-  let { name, pictureLink } = receiverUser;
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      messageListRef.current && messageListRef.current.scrollToBottom(500);
+    }, 50);
+  };
+
+  const handleAlertDismiss = () => {
+    if (cancelAlert.show) setCancelAlert({ show: false });
+    if (acceptAlert.show) setAcceptAlert({ show: false });
+  };
+
+  let { id, name, pictureLink } = receiverUser;
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton text="Back" />
-          </IonButtons>
-          <IonTitle>{name}</IonTitle>
-          <IonButtons slot="end">
-            <IonButton slot="end" routerLink={`/user/${userId}`}>
-              <IonAvatar className="messages-avatar">
-                <img src={pictureLink} alt="Profile" />
-              </IonAvatar>
-              <IonIcon
-                className="button-profile"
-                icon={chevronForwardOutline}
-              />
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-
-      <IonContent>
-        <IonList>
-          {messages.map((message, id) =>
-            message.type === "notification" ? (
-              <NotificationCard
-                key={id}
-                user={name}
-                user_is_me={message.senderId === userId ? true : false}
-                content={message.content}
-              />
-            ) : (
-              <Message
-                key={id}
-                user={message.senderId === userId ? "right" : "left"}
-                order={messageOrder(messages, id, id - 1)}
-                content={message.content}
-              />
-            )
-          )}
-        </IonList>
-      </IonContent>
-      <IonFooter className="ion-no-border">
-        <IonToolbar>
-          <IonRow className="ion-align-items-center">
-            <IonCol size="10">
-              <IonTextarea
-                inputMode={"text"}
-                value={messageText}
-                onIonChange={(e) => setMessageText(e.target.value.trim())}
-                spellCheck={false}
-                placeholder="Unesite poruku..."
-                className="message-input"
-                rows="1"
-              />
-            </IonCol>
-            <IonCol size="2">
-              <IonButton
-                onClick={handleTextarea}
-                expand="block"
-                fill="clear"
-                color="primary"
-                className="message-button"
-              >
-                <IonIcon className="sendIcon" icon={chevronUpCircle} />
+      <Loader data={messages}>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <BackButton />
+            </IonButtons>
+            <IonTitle>{name}</IonTitle>
+            <IonButtons slot="end">
+              <IonButton slot="end" routerLink={`/user/${id}`}>
+                <IonAvatar className="messages-avatar">
+                  <img src={pictureLink} alt="Profile" />
+                </IonAvatar>
+                <IonIcon
+                  className="button-profile"
+                  icon={chevronForwardOutline}
+                />
               </IonButton>
-            </IonCol>
-          </IonRow>
-        </IonToolbar>
-      </IonFooter>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+
+        <IonContent ref={messageListRef}>
+          <Alerts
+            conversationId={conversationId}
+            cancelAlert={cancelAlert}
+            acceptAlert={acceptAlert}
+            onDismiss={handleAlertDismiss}
+          />
+          <IonList>
+            {messages.map((message, id) =>
+              message.type === "notification" ? (
+                <NotificationCard
+                  key={id}
+                  user={receiverUser}
+                  isThisUser={message.senderId === userId ? true : false}
+                  favorId={message.favorId}
+                  onUserCancel={() =>
+                    setCancelAlert({
+                      show: true,
+                      message,
+                      isThisUser: message.senderId === userId,
+                    })
+                  }
+                  onUserAccept={() =>
+                    setAcceptAlert({
+                      show: true,
+                      message,
+                      isThisUser: message.senderId === userId,
+                    })
+                  }
+                />
+              ) : (
+                <Message
+                  key={id}
+                  user={message.senderId === userId ? "right" : "left"}
+                  order={messageOrder(messages, id, id - 1)}
+                  content={message.content}
+                />
+              )
+            )}
+          </IonList>
+        </IonContent>
+
+        <IonFooter className="ion-no-border">
+          <IonToolbar>
+            <IonRow className="ion-align-items-center">
+              <IonCol size="10">
+                <IonTextarea
+                  inputMode={"text"}
+                  value={messageText}
+                  onIonChange={(e) => setMessageText(e.target.value.trim())}
+                  spellCheck={false}
+                  placeholder="Unesite poruku..."
+                  className="message-input"
+                  rows="1"
+                />
+              </IonCol>
+              <IonCol size="2">
+                <IonButton
+                  onClick={handleTextarea}
+                  expand="block"
+                  fill="clear"
+                  color="primary"
+                  className="message-button"
+                >
+                  <IonIcon className="sendIcon" icon={chevronUpCircle} />
+                </IonButton>
+              </IonCol>
+            </IonRow>
+          </IonToolbar>
+        </IonFooter>
+      </Loader>
     </IonPage>
   );
 };

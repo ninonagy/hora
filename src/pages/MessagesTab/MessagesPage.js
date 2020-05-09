@@ -11,37 +11,55 @@ import {
 import { withRouter } from "react-router";
 import MessagesCard from "../../components/MessagesCard";
 
-import * as db from "../../db";
+import Loader from "../../components/Loader";
+
 import useGlobal from "../../state";
+
+import { fs } from "../../firebase";
+import { paths, buildPath } from "../../db";
+import { arrayWithId } from "../../utils";
 
 const MessagesPage = (props) => {
   const [globalState, globalActions] = useGlobal();
   let [conversations, setConversations] = useState([]);
 
   useEffect(() => {
-    db.getUserConversationList(globalState.userId).then((list) =>
-      setConversations(list)
-    );
+    fs.collection(
+      buildPath(paths.userConversation, {
+        userId: globalState.userId,
+        conversationId: "",
+      })
+    )
+      .orderBy("dateCreated", "desc")
+      .get()
+      .then((result) => {
+        setConversations(arrayWithId(result));
+      });
   }, []);
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Messages</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <IonList inset="true">
-          {conversations.map((conversation) => (
-            <MessagesCard
-              key={conversation.id}
-              userId={conversation.receiverId}
-              link={`${props.match.url}/conversation/${conversation.id}`}
-            />
-          ))}
-        </IonList>
-      </IonContent>
+      <Loader data={conversations.length || true}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Messages</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <IonList inset="true">
+            {conversations.map(
+              (conversation) =>
+                conversation.active && (
+                  <MessagesCard
+                    key={conversation.id}
+                    userId={conversation.receiverId}
+                    link={`${props.match.url}/conversation/${conversation.id}`}
+                  />
+                )
+            )}
+          </IonList>
+        </IonContent>
+      </Loader>
     </IonPage>
   );
 };
