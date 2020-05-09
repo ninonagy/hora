@@ -32,6 +32,9 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 
+/* Global css */
+import "./pages/hora.css";
+
 import ConversationPage from "./pages/MessagesTab/ConversationPage";
 import FavorDetail from "./pages/SearchTab/FavorDetailPage";
 import ProtectedRoute from "./components/ProtectedRoute";
