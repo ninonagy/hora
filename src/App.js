@@ -12,6 +12,8 @@ import { IonApp, IonPage } from "@ionic/react";
 import useGlobalState from "./state";
 
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage/RegisterPage";
+import RegisterPage2 from "./pages/RegisterPage/Register2";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -57,6 +59,8 @@ const App = () => {
         <Switch>
           <Redirect exact from="/" to="/home" />
           <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/register" component={RegisterPage} />
+          <Route exact path="/register/2" component={RegisterPage2} />
           {/* Other routes */}
           {/* Favor detail */}
           <Route path="/favor/:favorId" component={FavorDetail} />

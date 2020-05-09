@@ -1,3 +1,7 @@
+.wrapper {
+  width: 100%;
+}
+
 .message {
   display: inline-block;
   padding: 7px 12px;
@@ -12,8 +16,8 @@
   clear: both;
 }
 
-.wrapper {
-  width: 100%;
+.message p {
+  margin: 0;
 }
 
 .left {
@@ -29,6 +33,7 @@
   color: white;
   text-align: right;
   margin-left: 23%;
+  text-align: left;
 }
 
 .next {

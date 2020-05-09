@@ -27,10 +27,12 @@ const LoginPage = (props) => {
   let [isAuth, setIsAuth] = useState(false);
 
   // demo
+  /*
   useEffect(() => {
     setUserId("u1");
   }, []);
   handleLogin();
+*/
 
   function handleLogin() {
     if (userId && !globalState.isAuthenticated) {
@@ -105,6 +107,15 @@ const LoginPage = (props) => {
               PRIJAVA
             </IonButton>
           </IonCard>
+          <IonButton
+            fill="clear"
+            color="dark"
+            className="login-button"
+            expand="block"
+            onClick={() => props.history.push("/register")}
+          >
+            ili se registriraj
+          </IonButton>
         </IonContent>
       </IonPage>
     );
