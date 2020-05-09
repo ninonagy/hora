@@ -65,3 +65,13 @@
   color: var(--ion-color-light-shade);
   margin-right: -5px;
 }
+
+.date {
+  color: var(--ion-color-medium-tint);
+  font-weight: 600;
+}
+
+.hour {
+  color: var(--ion-color-medium-tint);
+  font-weight: 400;
+}

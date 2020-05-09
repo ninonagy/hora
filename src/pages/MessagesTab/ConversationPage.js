@@ -22,16 +22,12 @@ import { withRouter } from "react-router";
 
 import "./ConversationPage.css";
 
-import Message from "../../components/MessageCard";
+import { chevronUpCircle, chevronForwardOutline } from "ionicons/icons";
 
-import {
-  chevronUpCircle,
-  chevronForwardOutline,
-  chevronBackOutline,
-} from "ionicons/icons";
-
-import NotificationCard from "../../components/NotificationCard";
 import useGlobal from "../../state";
+
+import Message from "../../components/MessageCard";
+import NotificationCard from "../../components/NotificationCard";
 
 import BackButton from "../../components/BackButton";
 import Loader from "../../components/Loader";
@@ -114,6 +110,35 @@ const messageOrder = (messages, id, idprev) => {
     messages[idprev].senderId === messages[id].senderId
   )
     return "next";
+};
+
+/*
+
+0 - doesn't show antyhing
+1 - shows time
+2 - shows date and time
+
+(it is not handling years)
+
+ */
+const showTime = (messages, id) => {
+  var idPrev = id - 1;
+  if (messages[idPrev] != null) {
+    var currentMessage = new Date(messages[id].dateCreated);
+    var prevMessage = new Date(messages[idPrev].dateCreated);
+
+    if (
+      currentMessage.getDate() == prevMessage.getDate() &&
+      currentMessage.getMonth() == prevMessage.getMonth()
+    ) {
+      var diff =
+        currentMessage.getHours() * 60 +
+        currentMessage.getMinutes() -
+        (prevMessage.getHours() * 60 + prevMessage.getMinutes());
+      if (diff > 60) return 1;
+      else return 0;
+    } else return 2;
+  } else return 2;
 };
 
 const ConversationPage = (props) => {
@@ -257,6 +282,8 @@ const ConversationPage = (props) => {
                   key={id}
                   user={message.senderId === userId ? "right" : "left"}
                   order={messageOrder(messages, id, id - 1)}
+                  showTime={showTime(messages, id)}
+                  time={new Date(messages[id].dateCreated)}
                   content={message.content}
                 />
               )
