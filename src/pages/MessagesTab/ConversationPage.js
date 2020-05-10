@@ -69,6 +69,7 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
             handler: async () => {
               // Delete selected message from conversation
               const message = cancelAlert.message;
+              // TODO: Delete message?
               await db.deleteMessage(conversationId, message.id);
               // Set favor state from pending to free
               await db.setFavorState(message.favorId, scheme.states.favor.free);
@@ -91,15 +92,12 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
           {
             text: "Prihvati",
             handler: async () => {
-              debugger;
               const message = acceptAlert.message;
               // Set favor state from pending to active
               await db.setFavorState(
                 message.favorId,
                 scheme.states.favor.active
               );
-              // Store this favor to user's active favor list
-              await db.storeUserActiveFavor(message.senderId, message.favorId);
             },
           },
         ]}

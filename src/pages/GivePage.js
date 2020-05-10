@@ -33,12 +33,11 @@ const GivePage = (props) => {
     e.preventDefault();
     let userId = globalState.userId;
     let { location } = globalState.user;
-    db.storeFavor({
+    db.createFavor({
       ownerId: userId,
       title: title,
       description: description,
       location: location,
-      dateCreated: new Date().toISOString(),
       dateDue: dateTime.toISOString(),
     }).then((favorId) => {
       // Forward user to the public favor page

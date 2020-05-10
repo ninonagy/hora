@@ -2,6 +2,12 @@
   "name": "app",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
     "@capacitor/core": "1.5.2",
     "@ionic/react": "^5.0.0",
@@ -25,12 +31,6 @@
     "react-scripts": "3.4.0",
     "typescript": "3.7.4",
     "use-global-hook": "^0.1.12"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

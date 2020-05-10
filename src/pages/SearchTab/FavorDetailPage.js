@@ -66,7 +66,12 @@ const FavorDetailPage = ({ history, match }) => {
     let sender = globalState.userId;
     let receiver = favor.ownerId;
     let conversationId = await db.storeConversation(sender, receiver);
-    await db.setFavorState(favorId, states.favor.pending);
+    // Connect favor with user that will be doing it
+    // and change state from free to pending
+    await db.updateFavor(favorId, {
+      userId: sender,
+      state: states.favor.pending,
+    });
     if (conversationId) {
       db.storeMessage(
         conversationId,

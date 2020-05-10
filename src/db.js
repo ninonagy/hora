@@ -47,7 +47,6 @@ function updateValue(path = "", ids = {}, value = {}) {
 }
 
 function deleteDoc(path = "", ids = {}) {
-  if (paths === "") return;
   path = buildPath(path, ids);
   return fs.doc(path).delete();
 }
@@ -84,11 +83,11 @@ async function getFavorsList() {
   return getFavor("").then((data) => data);
 }
 
-async function storeFavor(data = {}) {
+async function createFavor(data = {}) {
   let favorId = uid();
   let ownerId = data.ownerId;
-  data = { ...data, state: states.favor.free };
-  return setValue(paths.favor, { favorId: favorId }, data).then(() =>
+  data = { ...data, userId: null, state: states.favor.free };
+  return setValue(paths.favor, { favorId }, data).then(() =>
     // Store favor key to user
     setValue(
       paths.userFavorsCreated,
@@ -96,6 +95,10 @@ async function storeFavor(data = {}) {
       {}
     ).then(() => favorId)
   );
+}
+
+async function updateFavor(favorId, data = {}) {
+  return updateValue(paths.favor, { favorId }, data);
 }
 
 // Return validated user
@@ -180,10 +183,6 @@ async function setFavorState(favorId, state) {
   return updateValue(paths.favor, { favorId }, { state });
 }
 
-async function storeUserActiveFavor(userId, favorId) {
-  return setValue(paths.userFavorsActive, { userId, favorId }, {});
-}
-
 // ...
 
 // export db functions
@@ -192,10 +191,11 @@ export {
   buildPath,
   getUser,
   setUser,
+  updateUser,
   getFavor,
+  updateFavor,
   setFavorState,
-  storeFavor,
-  storeUserActiveFavor,
+  createFavor,
   getFavorsList,
   getUserByAuth,
   getMessages,
