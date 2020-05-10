@@ -16,6 +16,7 @@ import Time from "./TimeCard";
 import * as db from "../db";
 
 const NotificationCard = ({
+  action,
   user,
   isThisUser,
   favorId,
@@ -37,46 +38,48 @@ const NotificationCard = ({
   let { title, description } = favor || {};
 
   const buttons = () => {
-    if (isThisUser) {
-      return (
-        <IonRow className="notification-card-buttons">
-          <IonCol>
-            <IonButton
-              color="danger"
-              expand="block"
-              fill="outline"
-              onClick={onUserCancel}
-            >
-              Cancel
-            </IonButton>
-          </IonCol>
-        </IonRow>
-      );
-    } else
-      return (
-        <IonRow className="notification-card-buttons">
-          <IonCol>
-            <IonButton
-              color="danger"
-              expand="block"
-              fill="outline"
-              onClick={onUserCancel}
-            >
-              Decline
-            </IonButton>
-          </IonCol>
-          <IonCol>
-            <IonButton
-              color="primary"
-              expand="block"
-              fill="solid"
-              onClick={onUserAccept}
-            >
-              Accept
-            </IonButton>
-          </IonCol>
-        </IonRow>
-      );
+    if (!action) {
+      if (isThisUser) {
+        return (
+          <IonRow className="notification-card-buttons">
+            <IonCol>
+              <IonButton
+                color="danger"
+                expand="block"
+                fill="outline"
+                onClick={onUserCancel}
+              >
+                Cancel
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        );
+      } else
+        return (
+          <IonRow className="notification-card-buttons">
+            <IonCol>
+              <IonButton
+                color="danger"
+                expand="block"
+                fill="outline"
+                onClick={onUserCancel}
+              >
+                Decline
+              </IonButton>
+            </IonCol>
+            <IonCol>
+              <IonButton
+                color="primary"
+                expand="block"
+                fill="solid"
+                onClick={onUserAccept}
+              >
+                Accept
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        );
+    }
   };
 
   return (

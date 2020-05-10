@@ -68,6 +68,16 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
               await db.deleteMessage(conversationId, message.id);
               // Set favor state from pending to free
               await db.setFavorState(message.favorId, scheme.states.favor.free);
+              await fs
+                .doc(
+                  scheme.buildPath(db.paths.message, {
+                    conversationId: conversationId,
+                    messageId: message.id,
+                  })
+                )
+                .update({
+                  action: true,
+                });
             },
           },
         ]}
@@ -87,7 +97,6 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
           {
             text: "Prihvati",
             handler: async () => {
-              debugger;
               const message = acceptAlert.message;
               // Set favor state from pending to active
               await db.setFavorState(
@@ -96,6 +105,16 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
               );
               // Store this favor to user's active favor list
               await db.storeUserActiveFavor(message.senderId, message.favorId);
+              await fs
+                .doc(
+                  scheme.buildPath(db.paths.message, {
+                    conversationId: conversationId,
+                    messageId: message.id,
+                  })
+                )
+                .update({
+                  action: true,
+                });
             },
           },
         ]}
@@ -262,6 +281,7 @@ const ConversationPage = (props) => {
                   user={receiverUser}
                   isThisUser={message.senderId === userId ? true : false}
                   favorId={message.favorId}
+                  action={message.action}
                   showTime={showTime(messages, id)}
                   time={new Date(messages[id].dateCreated)}
                   onUserCancel={() =>

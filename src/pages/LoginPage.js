@@ -27,12 +27,11 @@ const LoginPage = (props) => {
   let [isAuth, setIsAuth] = useState(false);
 
   // demo
-  /*
+
   useEffect(() => {
     setUserId("u1");
   }, []);
   handleLogin();
-*/
 
   function handleLogin() {
     if (userId && !globalState.isAuthenticated) {
