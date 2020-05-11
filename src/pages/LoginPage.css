@@ -20,8 +20,7 @@
   font-size: 25px;
   font-family: "Raleway", sans-serif;
   font-weight: 500;
-  margin-top: 20%;
-  padding-left: 20px;
+  margin: 20% 20px 30px;
 }
 
 .login-card {
@@ -60,6 +59,15 @@
 .selected {
   background-color: var(--ion-color-medium);
   color: white;
+}
+
+.now {
+  --ripple-color: transparent;
+  --background-hover: transparent;
+}
+
+.checkbox {
+  display: none;
 }
 
 .col1 {

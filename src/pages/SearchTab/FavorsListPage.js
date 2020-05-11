@@ -7,9 +7,10 @@ import {
   IonTitle,
   IonList,
   IonIcon,
+  IonBadge,
 } from "@ionic/react";
 
-import { earthOutline } from "ionicons/icons";
+import { heart } from "ionicons/icons";
 
 import "./FavorListPage.css";
 
@@ -49,7 +50,13 @@ const FavorsListPage = ({ match }) => {
           <IonToolbar>
             <IonTitle slot="start">HORA</IonTitle>
           </IonToolbar>
-          <h2 className="sectionHeading">Help someone!</h2>
+          <span className="sectionHeading">Your active favors</span>
+          <IonList>
+            {favors.slice(0, 2).map((item) => (
+              <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />
+            ))}
+          </IonList>
+          <span className="sectionHeading">Help someone!</span>
           <IonList>
             {favors.map((item) => (
               <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />

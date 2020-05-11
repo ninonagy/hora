@@ -168,6 +168,13 @@ async function deleteMessage(conversationId, messageId) {
   });
 }
 
+//store user
+async function storeUser(data = {}) {
+  data = { ...data };
+  let userId = uid();
+  return setValue(paths.user, { userId: userId }, data).then(() => userId);
+}
+
 // https://firebase.google.com/docs/storage/web/upload-files
 async function storeUserPicture(userId, data = Blob) {
   return storage
@@ -202,6 +209,8 @@ export {
   deleteMessage,
   storeConversation,
   storeMessage,
+  storeUser,
+  updateUser,
   getUserConversation,
   getUserConversationList,
   storeUserPicture,
