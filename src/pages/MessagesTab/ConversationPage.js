@@ -22,16 +22,17 @@ import { withRouter } from "react-router";
 
 import "./ConversationPage.css";
 
-import Message from "../../components/MessageCard";
-
 import {
   chevronUpCircle,
   chevronForwardOutline,
   chevronBackOutline,
 } from "ionicons/icons";
 
-import NotificationCard from "../../components/NotificationCard";
 import useGlobal from "../../state";
+
+import Message from "../../components/MessageCard";
+import NotificationCard from "../../components/NotificationCard";
+import SmallNotification from "../../components/SmallNotificationCard";
 
 import BackButton from "../../components/BackButton";
 import Loader from "../../components/Loader";
@@ -41,7 +42,13 @@ import { fs } from "../../firebase";
 
 import * as scheme from "../../scheme";
 
-const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
+const Alerts = ({
+  conversationId,
+  cancelAlert,
+  acceptAlert,
+  onDismiss,
+  userId,
+}) => {
   const cancelHeaderText = cancelAlert.isThisUser
     ? "Jesi li siguran da želiš odustati od usluge?"
     : "Jesi li siguran da želiš odbaciti pomoć?";
@@ -73,6 +80,24 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
               await db.deleteMessage(conversationId, message.id);
               // Set favor state from pending to free
               await db.setFavorState(message.favorId, scheme.states.favor.free);
+              await fs
+                .doc(
+                  scheme.buildPath(db.paths.message, {
+                    conversationId: conversationId,
+                    messageId: message.id,
+                  })
+                )
+                .update({
+                  action: true,
+                });
+              await db.storeMessage(
+                conversationId,
+                {
+                  senderId: userId,
+                  favorId: message.favorId,
+                },
+                "smallNotification"
+              );
             },
           },
         ]}
@@ -98,6 +123,24 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
                 message.favorId,
                 scheme.states.favor.active
               );
+              await fs
+                .doc(
+                  scheme.buildPath(db.paths.message, {
+                    conversationId: conversationId,
+                    messageId: message.id,
+                  })
+                )
+                .update({
+                  action: true,
+                });
+              await db.storeMessage(
+                conversationId,
+                {
+                  senderId: userId,
+                  favorId: message.favorId,
+                },
+                "smallNotification"
+              );
             },
           },
         ]}
@@ -112,6 +155,35 @@ const messageOrder = (messages, id, idprev) => {
     messages[idprev].senderId === messages[id].senderId
   )
     return "next";
+};
+
+/*
+
+0 - does not display anything
+1 - displays time
+2 - displays date and time
+
+(it is not handling years (yet^^))
+
+ */
+const showTime = (messages, id) => {
+  var idPrev = id - 1;
+  if (messages[idPrev] != null) {
+    var currentMessage = new Date(messages[id].dateCreated);
+    var prevMessage = new Date(messages[idPrev].dateCreated);
+
+    if (
+      currentMessage.getDate() == prevMessage.getDate() &&
+      currentMessage.getMonth() == prevMessage.getMonth()
+    ) {
+      var diff =
+        currentMessage.getHours() * 60 +
+        currentMessage.getMinutes() -
+        (prevMessage.getHours() * 60 + prevMessage.getMinutes());
+      if (diff > 60) return 1;
+      else return 0;
+    } else return 2;
+  } else return 2;
 };
 
 const ConversationPage = (props) => {
@@ -226,6 +298,7 @@ const ConversationPage = (props) => {
             cancelAlert={cancelAlert}
             acceptAlert={acceptAlert}
             onDismiss={handleAlertDismiss}
+            userId={userId}
           />
           <IonList>
             {messages.map((message, id) =>
@@ -235,6 +308,9 @@ const ConversationPage = (props) => {
                   user={receiverUser}
                   isThisUser={message.senderId === userId ? true : false}
                   favorId={message.favorId}
+                  action={message.action}
+                  showTime={showTime(messages, id)}
+                  time={new Date(messages[id].dateCreated)}
                   onUserCancel={() =>
                     setCancelAlert({
                       show: true,
@@ -250,11 +326,23 @@ const ConversationPage = (props) => {
                     })
                   }
                 />
+              ) : message.type === "smallNotification" ? (
+                <SmallNotification
+                  key={id}
+                  user={receiverUser}
+                  isThisUser={message.senderId === userId ? true : false}
+                  favorId={message.favorId}
+                  action={message.action}
+                  showTime={showTime(messages, id)}
+                  time={new Date(messages[id].dateCreated)}
+                />
               ) : (
                 <Message
                   key={id}
                   user={message.senderId === userId ? "right" : "left"}
                   order={messageOrder(messages, id, id - 1)}
+                  showTime={showTime(messages, id)}
+                  time={new Date(messages[id].dateCreated)}
                   content={message.content}
                 />
               )

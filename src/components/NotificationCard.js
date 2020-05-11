@@ -11,14 +11,19 @@ import {
   IonButton,
 } from "@ionic/react";
 
+import Time from "./TimeCard";
+
 import * as db from "../db";
 
 const NotificationCard = ({
+  action,
   user,
   isThisUser,
   favorId,
   onUserCancel,
   onUserAccept,
+  showTime,
+  time,
 }) => {
   let [favor, setFavor] = useState({});
 
@@ -30,64 +35,69 @@ const NotificationCard = ({
     });
   }, []);
 
-  let { title, description } = favor;
+  let { title, description } = favor || {};
 
   const buttons = () => {
-    if (isThisUser) {
-      return (
-        <IonRow className="notification-card-buttons">
-          <IonCol>
-            <IonButton
-              color="danger"
-              expand="block"
-              fill="outline"
-              onClick={onUserCancel}
-            >
-              Cancel
-            </IonButton>
-          </IonCol>
-        </IonRow>
-      );
-    } else
-      return (
-        <IonRow className="notification-card-buttons">
-          <IonCol>
-            <IonButton
-              color="danger"
-              expand="block"
-              fill="outline"
-              onClick={onUserCancel}
-            >
-              Decline
-            </IonButton>
-          </IonCol>
-          <IonCol>
-            <IonButton
-              color="primary"
-              expand="block"
-              fill="solid"
-              onClick={onUserAccept}
-            >
-              Accept
-            </IonButton>
-          </IonCol>
-        </IonRow>
-      );
+    if (!action) {
+      if (isThisUser) {
+        return (
+          <IonRow className="notification-card-buttons">
+            <IonCol>
+              <IonButton
+                color="danger"
+                expand="block"
+                fill="outline"
+                onClick={onUserCancel}
+              >
+                Cancel
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        );
+      } else
+        return (
+          <IonRow className="notification-card-buttons">
+            <IonCol>
+              <IonButton
+                color="danger"
+                expand="block"
+                fill="outline"
+                onClick={onUserCancel}
+              >
+                Decline
+              </IonButton>
+            </IonCol>
+            <IonCol>
+              <IonButton
+                color="primary"
+                expand="block"
+                fill="solid"
+                onClick={onUserAccept}
+              >
+                Accept
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        );
+    }
   };
 
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardSubtitle>
-          {userName}
-          {isThisUser ? " has to accept your favor." : " can do you a favor!"}
-        </IonCardSubtitle>
-        <IonCardTitle>{title}</IonCardTitle>
-      </IonCardHeader>
-      <IonCardContent>
-        {description} {buttons()}
-      </IonCardContent>
-    </IonCard>
+    <div>
+      <Time showTime={showTime} time={time} />
+      <IonCard>
+        <IonCardHeader>
+          <IonCardSubtitle>
+            {userName}
+            {isThisUser ? " has to accept your favor." : " can do you a favor!"}
+          </IonCardSubtitle>
+          <IonCardTitle>{title}</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>
+          {description} {buttons()}
+        </IonCardContent>
+      </IonCard>
+    </div>
   );
 };
 

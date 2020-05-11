@@ -16,6 +16,13 @@
   padding-left: 20px;
 }
 
+.description {
+  font-size: 25px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 500;
+  margin: 20% 20px 30px;
+}
+
 .login-card {
   padding: 10px 15px 0px;
 }
@@ -34,6 +41,33 @@
   font-weight: 800;
   letter-spacing: 0.1em;
   margin: 10px 0px;
+}
+
+.category {
+  font-size: 15px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin: 3px 3px;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: white;
+  color: var(--ion-color-medium);
+  border: 1px solid var(--ion-color-medium);
+}
+
+.selected {
+  background-color: var(--ion-color-medium);
+  color: white;
+}
+
+.now {
+  --ripple-color: transparent;
+  --background-hover: transparent;
+}
+
+.checkbox {
+  display: none;
 }
 
 .col1 {

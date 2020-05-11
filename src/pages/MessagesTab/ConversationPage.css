@@ -1,3 +1,7 @@
+.wrapper {
+  width: 100%;
+}
+
 .message {
   display: inline-block;
   padding: 7px 12px;
@@ -16,6 +20,10 @@
   width: 100%;
 }
 
+.message p {
+  margin: 0;
+}
+
 .left {
   float: left;
   background-color: #f1f0f0;
@@ -29,6 +37,7 @@
   color: white;
   text-align: right;
   margin-left: 23%;
+  text-align: left;
 }
 
 .next {
@@ -64,4 +73,14 @@
 .button-profile {
   color: var(--ion-color-light-shade);
   margin-right: -5px;
+}
+
+.date {
+  color: var(--ion-color-medium-tint);
+  font-weight: 600;
+}
+
+.hour {
+  color: var(--ion-color-medium-tint);
+  font-weight: 400;
 }

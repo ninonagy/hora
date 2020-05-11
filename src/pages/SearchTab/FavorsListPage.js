@@ -6,7 +6,13 @@ import {
   IonToolbar,
   IonTitle,
   IonList,
+  IonIcon,
+  IonBadge,
 } from "@ionic/react";
+
+import { heart } from "ionicons/icons";
+
+import "./FavorListPage.css";
 
 import FavorCard from "../../components/FavorCard";
 
@@ -44,7 +50,13 @@ const FavorsListPage = ({ match }) => {
           <IonToolbar>
             <IonTitle slot="start">HORA</IonTitle>
           </IonToolbar>
-
+          <span className="sectionHeading">Your active favors</span>
+          <IonList>
+            {favors.slice(0, 2).map((item) => (
+              <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />
+            ))}
+          </IonList>
+          <span className="sectionHeading">Help someone!</span>
           <IonList>
             {favors.map((item) => (
               <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />

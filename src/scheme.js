@@ -19,7 +19,7 @@ function buildPath(path = "", ids = {}) {
   return path;
 }
 
-// States that are assigned to documents
+// States that are assigned to values
 const states = {
   favor: {
     free: "free",

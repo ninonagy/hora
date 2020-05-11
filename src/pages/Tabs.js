@@ -22,7 +22,7 @@ import FavorsList from "./SearchTab/FavorsListPage";
 import FavorDetail from "./SearchTab/FavorDetailPage";
 
 import {
-  searchOutline,
+  homeOutline,
   addCircleOutline,
   chatbubblesOutline,
   personOutline,
@@ -42,7 +42,7 @@ const Tabs = (props) => {
 
       <IonTabBar slot="bottom">
         <IonTabButton tab="search" href="/search">
-          <IonIcon icon={searchOutline} />
+          <IonIcon icon={homeOutline} />
         </IonTabButton>
 
         <IonTabButton tab="give" href="/give">

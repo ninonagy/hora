@@ -105,6 +105,15 @@ const LoginPage = (props) => {
               PRIJAVA
             </IonButton>
           </IonCard>
+          <IonButton
+            fill="clear"
+            color="dark"
+            className="login-button"
+            expand="block"
+            onClick={() => props.history.push("/register")}
+          >
+            ili se registriraj
+          </IonButton>
         </IonContent>
       </IonPage>
     );

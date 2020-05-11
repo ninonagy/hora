@@ -66,11 +66,6 @@ async function getUser(id) {
   return getValue(paths.user, { userId: id });
 }
 
-async function setUser(data = {}) {
-  let id = uid();
-  return setValue(paths.user, { userId: id }, data).then(() => id);
-}
-
 async function updateUser(id, data = {}) {
   return updateValue(paths.user, { userId: id }, data).then(() => id);
 }
@@ -171,6 +166,12 @@ async function deleteMessage(conversationId, messageId) {
   });
 }
 
+async function storeUser(data = {}) {
+  data = { ...data };
+  let userId = uid();
+  return setValue(paths.user, { userId: userId }, data).then(() => userId);
+}
+
 // https://firebase.google.com/docs/storage/web/upload-files
 async function storeUserPicture(userId, data = Blob) {
   return storage
@@ -183,6 +184,10 @@ async function setFavorState(favorId, state) {
   return updateValue(paths.favor, { favorId }, { state });
 }
 
+async function storeUserActiveFavor(userId, favorId) {
+  return setValue(paths.userFavorsActive, { userId, favorId }, {});
+}
+
 // ...
 
 // export db functions
@@ -190,12 +195,13 @@ export {
   paths,
   buildPath,
   getUser,
-  setUser,
+  storeUser,
   updateUser,
   getFavor,
   updateFavor,
   setFavorState,
   createFavor,
+  storeUserActiveFavor,
   getFavorsList,
   getUserByAuth,
   getMessages,
