@@ -97,8 +97,6 @@ describe("onFavorStateChange", () => {
       .orderBy("dateCreated", "desc")
       .get();
 
-    console.log(result.docs.length);
-
     const notification = result.docs[0].data();
     expect(notification.status).to.be.equal("pending");
   });
