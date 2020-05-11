@@ -1,10 +1,10 @@
 {
   "name": "functions",
-  "main": "lib/functions/src/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "build": "tsc",
-    "test": "mocha -r ts-node/register tests/**/*.test.ts",
+    "build": "./node_modules/.bin/tsc",
+    "test-functions": "mocha -r ts-node/register tests/**/*.test.ts",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
