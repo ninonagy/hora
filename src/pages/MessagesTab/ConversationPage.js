@@ -28,6 +28,7 @@ import useGlobal from "../../state";
 
 import Message from "../../components/MessageCard";
 import NotificationCard from "../../components/NotificationCard";
+import SmallNotification from "../../components/SmallNotificationCard";
 
 import BackButton from "../../components/BackButton";
 import Loader from "../../components/Loader";
@@ -37,7 +38,13 @@ import { fs } from "../../firebase";
 
 import * as scheme from "../../scheme";
 
-const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
+const Alerts = ({
+  conversationId,
+  cancelAlert,
+  acceptAlert,
+  onDismiss,
+  userId,
+}) => {
   const cancelHeaderText = cancelAlert.isThisUser
     ? "Jesi li siguran da želiš odustati od usluge?"
     : "Jesi li siguran da želiš odbaciti pomoć?";
@@ -45,7 +52,6 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
 
   const acceptHeaderText = "Želiš li prihvatiti pomoć?";
   const acceptText = "";
-
   return (
     <>
       <IonAlert
@@ -78,6 +84,15 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
                 .update({
                   action: true,
                 });
+
+              db.storeMessage(
+                conversationId,
+                {
+                  senderId: userId,
+                  favorId: message.favorId,
+                },
+                "smallNotification"
+              );
             },
           },
         ]}
@@ -115,6 +130,14 @@ const Alerts = ({ conversationId, cancelAlert, acceptAlert, onDismiss }) => {
                 .update({
                   action: true,
                 });
+              db.storeMessage(
+                conversationId,
+                {
+                  senderId: userId,
+                  favorId: message.favorId,
+                },
+                "smallNotification"
+              );
             },
           },
         ]}
@@ -272,6 +295,7 @@ const ConversationPage = (props) => {
             cancelAlert={cancelAlert}
             acceptAlert={acceptAlert}
             onDismiss={handleAlertDismiss}
+            userId={userId}
           />
           <IonList>
             {messages.map((message, id) =>
@@ -298,6 +322,16 @@ const ConversationPage = (props) => {
                       isThisUser: message.senderId === userId,
                     })
                   }
+                />
+              ) : message.type === "smallNotification" ? (
+                <SmallNotification
+                  key={id}
+                  user={receiverUser}
+                  isThisUser={message.senderId === userId ? true : false}
+                  favorId={message.favorId}
+                  action={message.action}
+                  showTime={showTime(messages, id)}
+                  time={new Date(messages[id].dateCreated)}
                 />
               ) : (
                 <Message
