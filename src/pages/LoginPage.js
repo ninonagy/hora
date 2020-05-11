@@ -27,7 +27,6 @@ const LoginPage = (props) => {
   let [isAuth, setIsAuth] = useState(false);
 
   // demo
-
   useEffect(() => {
     setUserId("u1");
   }, []);

@@ -16,6 +16,10 @@
   clear: both;
 }
 
+.wrapper {
+  width: 100%;
+}
+
 .message p {
   margin: 0;
 }

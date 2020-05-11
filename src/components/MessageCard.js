@@ -1,7 +1,6 @@
 import React from "react";
 
 import { IonRow } from "@ionic/react";
-
 import Time from "./TimeCard";
 
 const MessageCard = ({ user, order, content, showTime, time }) => {

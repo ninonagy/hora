@@ -22,7 +22,11 @@ import { withRouter } from "react-router";
 
 import "./ConversationPage.css";
 
-import { chevronUpCircle, chevronForwardOutline } from "ionicons/icons";
+import {
+  chevronUpCircle,
+  chevronForwardOutline,
+  chevronBackOutline,
+} from "ionicons/icons";
 
 import useGlobal from "../../state";
 
@@ -52,6 +56,7 @@ const Alerts = ({
 
   const acceptHeaderText = "Želiš li prihvatiti pomoć?";
   const acceptText = "";
+
   return (
     <>
       <IonAlert
@@ -71,6 +76,7 @@ const Alerts = ({
             handler: async () => {
               // Delete selected message from conversation
               const message = cancelAlert.message;
+              // TODO: Delete message?
               await db.deleteMessage(conversationId, message.id);
               // Set favor state from pending to free
               await db.setFavorState(message.favorId, scheme.states.favor.free);
@@ -84,8 +90,7 @@ const Alerts = ({
                 .update({
                   action: true,
                 });
-
-              db.storeMessage(
+              await db.storeMessage(
                 conversationId,
                 {
                   senderId: userId,
@@ -118,8 +123,6 @@ const Alerts = ({
                 message.favorId,
                 scheme.states.favor.active
               );
-              // Store this favor to user's active favor list
-              await db.storeUserActiveFavor(message.senderId, message.favorId);
               await fs
                 .doc(
                   scheme.buildPath(db.paths.message, {
@@ -130,7 +133,7 @@ const Alerts = ({
                 .update({
                   action: true,
                 });
-              db.storeMessage(
+              await db.storeMessage(
                 conversationId,
                 {
                   senderId: userId,

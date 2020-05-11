@@ -7,7 +7,7 @@ const paths = {
   userConversation: "/users/{userId}/conversations/{conversationId}",
   message: "/conversations/{conversationId}/messages/{messageId}",
   userFavorsCreated: "/users/{userId}/favorsCreated/{favorId}",
-  userFavorsActive: "/users/{userId}/favorsActive/{favorId}"
+  userFavorsActive: "/users/{userId}/favorsActive/{favorId}",
   // ...
 };
 
@@ -25,7 +25,16 @@ const states = {
     free: "free",
     pending: "pending",
     active: "active",
+    done: "done",
   },
 };
 
-export { paths, buildPath, states };
+// Types
+const types = {
+  message: {
+    message: "msg",
+    notification: "notification",
+  },
+};
+
+export { paths, buildPath, states, types };
