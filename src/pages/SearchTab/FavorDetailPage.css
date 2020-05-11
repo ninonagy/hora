@@ -1,3 +1,43 @@
-IonLabel{
-    color:blue;
+.favor-title {
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.favor-avatar {
+  width: 75px;
+  height: 75px;
+}
+
+.favor-text {
+  padding-left: 20px;
+  padding-right: 40px;
+}
+
+.favor-text h1 {
+  font-size: 35px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 500;
+  color: var(--ion-color-dark);
+}
+
+.favor-text p {
+  font-family: "Open Sans", sans-serif;
+  color: var(--ion-color-dark-tint);
+  line-height: 1.5;
+}
+
+.image-card-wrapper {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  -webkit-scrollbar: none;
+  margin-left: 20px;
+}
+
+.button-do-it {
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
 }

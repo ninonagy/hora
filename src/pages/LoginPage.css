@@ -1,0 +1,119 @@
+.heading {
+  font-size: 100px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 900;
+  padding: 0;
+  margin: 0;
+  animation: text-shadow 2s ease-in-out;
+  padding-left: 20px;
+}
+
+.heading2 {
+  font-size: 35px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 700;
+  margin-top: 20%;
+  padding-left: 20px;
+}
+
+.description {
+  font-size: 25px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 500;
+  margin: 20% 20px 30px;
+}
+
+.login-card {
+  padding: 10px 15px 0px;
+}
+
+.login-input {
+  font-size: 15px;
+  border-radius: 15px;
+  background: var(--ion-color-light);
+  --padding-start: 15px !important;
+  margin-top: 10px;
+}
+
+.login-button {
+  font-size: 15px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin: 10px 0px;
+}
+
+.category {
+  font-size: 15px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin: 3px 3px;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: white;
+  color: var(--ion-color-medium);
+  border: 1px solid var(--ion-color-medium);
+}
+
+.selected {
+  background-color: var(--ion-color-medium);
+  color: white;
+}
+
+.now {
+  --ripple-color: transparent;
+  --background-hover: transparent;
+}
+
+.checkbox {
+  display: none;
+}
+
+.col1 {
+  background-color: #0c2ffb;
+}
+
+.col2 {
+  background-color: #2cfcfd;
+}
+
+.col3 {
+  background-color: #fb203b;
+}
+
+.col4 {
+  background-color: #fefc4b;
+}
+
+@keyframes text-shadow {
+  0% {
+    text-shadow: 0 0 0 #0c2ffb, 0 0 0 #2cfcfd, 0 0 0 #fb203b, 0 0 0 #fefc4b;
+  }
+
+  20% {
+    text-shadow: 0 0.125em 0 #0c2ffb, 0 0.25em 0 #2cfcfd, 0 -0.125em 0 #fb203b,
+      0 -0.25em 0 #fefc4b;
+  }
+
+  40% {
+    text-shadow: 0 -0.0625em 0 #0c2ffb, 0 -0.125em 0 #2cfcfd,
+      0 0.0625em 0 #fb203b, 0 0.125em 0 #fefc4b;
+  }
+
+  60% {
+    text-shadow: 0 0.03125em 0 #0c2ffb, 0 0.0625em 0 #2cfcfd,
+      0 -0.03125em 0 #fb203b, 0 -0.0625em 0 #fefc4b;
+  }
+
+  80% {
+    text-shadow: 0 0 0 #0c2ffb, 0 0 0 #2cfcfd, 0 0 0 #fb203b, 0 0 0 #fefc4b;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

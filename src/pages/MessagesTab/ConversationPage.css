@@ -1,0 +1,86 @@
+.wrapper {
+  width: 100%;
+}
+
+.message {
+  display: inline-block;
+  padding: 7px 12px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 5px;
+  margin-top: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  border-radius: 15px;
+  overflow: hidden;
+  clear: both;
+}
+
+.wrapper {
+  width: 100%;
+}
+
+.message p {
+  margin: 0;
+}
+
+.left {
+  float: left;
+  background-color: #f1f0f0;
+  color: black;
+  margin-right: 23%;
+}
+
+.right {
+  float: right;
+  background-color: #0084ff;
+  color: white;
+  text-align: right;
+  margin-left: 23%;
+  text-align: left;
+}
+
+.next {
+  margin-top: -2px;
+}
+
+.message-input {
+  border-radius: 15px;
+  background: var(--ion-color-light);
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 10px;
+}
+
+.message-button {
+  --padding-start: 0em;
+  --padding-end: 0em;
+}
+
+.sendIcon {
+  font-size: 35px;
+}
+
+.notification-card-buttons {
+  margin-top: 10px;
+}
+
+.messages-avatar {
+  height: 30px;
+  width: 30px;
+}
+
+.button-profile {
+  color: var(--ion-color-light-shade);
+  margin-right: -5px;
+}
+
+.date {
+  color: var(--ion-color-medium-tint);
+  font-weight: 600;
+}
+
+.hour {
+  color: var(--ion-color-medium-tint);
+  font-weight: 400;
+}

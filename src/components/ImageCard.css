@@ -1,0 +1,29 @@
+.image-card {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: inline-block;
+  word-break: break-all;
+}
+
+.image-card img {
+  border-radius: 15px;
+}
+
+.image-card .portrait {
+  height: 187.5px;
+  width: 140.25px;
+  object-fit: cover;
+}
+
+.image-card .landscape {
+  height: 187.5px;
+  width: 250px;
+  object-fit: cover;
+}
+
+.image-card p {
+  margin-left: 12px;
+  margin-top: 7px;
+  font-size: 14px;
+  color: grey;
+}

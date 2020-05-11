@@ -1,0 +1,32 @@
+.profile-margin {
+  margin-top: 50px;
+}
+
+.profile-avatar {
+  width: 30vw;
+  height: 30vw;
+}
+
+.profile-name {
+  font-family: "Raleway", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-size: 20px;
+}
+
+.profile-bio {
+  font-family: "Open Sans", sans-serif;
+  color: var(--ion-color-medium-shade);
+  font-size: 15px;
+  margin: 0 20px;
+}
+
+.profile-coins {
+  background-color: var(--ion-color-warning-tint);
+  border-radius: 100px;
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 40px;
+}

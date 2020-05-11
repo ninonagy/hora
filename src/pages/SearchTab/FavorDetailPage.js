@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import {
   IonText,
   IonContent,
@@ -8,77 +8,173 @@ import {
   IonPage,
   IonButtons,
   IonBackButton,
-  IonItem,
   IonAvatar,
   IonIcon,
-  IonLabel,
-  IonBadge,
-  IonList,
   IonImg,
-  IonButton
-} from '@ionic/react';
+  IonButton,
+  IonPopover,
+  IonGrid,
+  IonRow,
+  IonCol,
+} from "@ionic/react";
 
-import './FavorDetailPage.css';
+import "./FavorDetailPage.css";
 
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router";
 
-import RatingIcons from '../../components/RatingIcons';
+import RatingIcons from "../../components/RatingIcons";
 
-import * as db from '../../db';
+import ImageCard from "../../components/ImageCard";
+
+import { ellipsisHorizontal } from "ionicons/icons";
+
+import BackButton from "../../components/BackButton";
+import Loader from "../../components/Loader";
+
+import * as db from "../../db";
+import useGlobal from "../../state";
+import { states } from "../../scheme";
 
 const items = [
-  { src: 'http://placekitten.com/g/100/100', text: 'this is my cat Minnie' },
-  { src: 'http://placekitten.com/g/101/100', text: 'this is my cat John' }
+  { src: "http://placekitten.com/g/100/100", text: "this is my cat Minnie" },
+  { src: "http://placekitten.com/g/101/100", text: "this is my cat John" },
 ];
 
-const getAge = birthDate =>
+const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
-const FavorDetailPage = ({ match }) => {
-  let favorId = match.params.id;
+const FavorDetailPage = ({ history, match }) => {
+  const [globalState, globalActions] = useGlobal();
+  let favorId = match.params.favorId;
 
-  let { ownerId, title, description, location, dateCreated } = db.getFavor(
-    favorId
-  );
+  let [favor, setFavor] = useState({});
+  let [user, setUser] = useState({});
+  const [showPopover, setShowPopover] = useState(false);
 
-  let user = db.getUser(ownerId);
+  useEffect(() => {
+    db.getFavor(favorId).then((favor) => {
+      db.getUser(favor.ownerId).then((user) => {
+        setFavor(favor);
+        setUser(user);
+      });
+    });
+  }, []);
+
+  let { title, description, location, dateCreated } = favor;
+
+  const handleHelp = async () => {
+    let sender = globalState.userId;
+    let receiver = favor.ownerId;
+    let conversationId = await db.storeConversation(sender, receiver);
+    // Connect favor with user that will be doing it
+    // and change state from free to pending
+    await db.updateFavor(favorId, {
+      userId: sender,
+      state: states.favor.pending,
+    });
+    if (conversationId) {
+      db.storeMessage(
+        conversationId,
+        {
+          senderId: sender,
+          favorId: favorId,
+        },
+        "notification"
+      )
+        .then(() => {
+          // When conversation thread is created and message stored, forward user to chat
+          history.push(`/messages/conversation/${conversationId}`);
+        })
+        .catch(() => {
+          // TODO: Handle error
+        });
+    }
+  };
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton text="Back" />
-          </IonButtons>
-          <IonTitle>{title}</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <IonItem>
-          <IonAvatar slot="start">
-            <IonImg src={user.pictureLink} />
-          </IonAvatar>
-          <IonLabel>
-            {user.name}, {getAge(user.birthDate)}
-          </IonLabel>
-          <IonBadge color="warning">
-            <RatingIcons rating={user.rating} />
-          </IonBadge>
-        </IonItem>
-        <h1>{title}</h1>
-        <p>{description}</p>
-        <IonList>
-          {items.map((image, i) => (
-            <IonItem key={i}>
-              <IonImg src={image.src} />
-              <IonLabel>{image.text}</IonLabel>
-            </IonItem>
-          ))}
-        </IonList>
-        <IonButton color="dark" expand="block">
-          HELP
-        </IonButton>
-      </IonContent>
+      <Loader data={favor}>
+        <IonPopover
+          isOpen={showPopover.open}
+          event={showPopover.event}
+          onDidDismiss={(e) => setShowPopover({ open: false })}
+        >
+          <ion-list>
+            <ion-item>Report</ion-item>
+            <ion-item>Share</ion-item>
+          </ion-list>
+        </IonPopover>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <BackButton />
+            </IonButtons>
+            <IonButtons slot="end">
+              <IonButton
+                onClick={(e) =>
+                  setShowPopover({ open: true, event: e.nativeEvent })
+                }
+              >
+                <IonIcon icon={ellipsisHorizontal} />
+              </IonButton>
+            </IonButtons>
+            <IonTitle className="favor-title">Favor</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <IonGrid>
+            <IonRow onClick={() => history.push(`/user/${favor.ownerId}`)}>
+              <IonCol offset="1" size="3">
+                <IonAvatar className="favor-avatar">
+                  <IonImg src={user.pictureLink} />
+                </IonAvatar>
+              </IonCol>
+              <IonCol>
+                {user.name}, {getAge(user.birthDate)}
+                <br />
+                <RatingIcons rating={user.rating} />
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+          <div className="favor-text">
+            <h1>{title}</h1>
+            <p>{description}</p>
+          </div>
+          <div className="image-card-wrapper">
+            <ImageCard
+              url="http://placekitten.com/230/520"
+              caption="This is Minnie"
+              orientation="portrait"
+            />
+            <ImageCard
+              url="http://placekitten.com/421/230"
+              caption="Haha! Cute Maxie!"
+              orientation="landscape"
+            />
+            <ImageCard
+              url="http://placekitten.com/250/500"
+              caption="(:"
+              orientation="portrait"
+            />
+            <ImageCard
+              url="http://placekitten.com/230/230"
+              caption="Ohhh look at Foxie!"
+              orientation="landscape"
+            />
+          </div>
+
+          <IonButton
+            disabled={favor.ownerId === globalState.userId}
+            className="button-do-it"
+            size="large"
+            color="dark"
+            expand="block"
+            onClick={handleHelp}
+          >
+            HELP
+          </IonButton>
+        </IonContent>
+      </Loader>
     </IonPage>
   );
 };
