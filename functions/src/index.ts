@@ -7,10 +7,16 @@ admin.initializeApp();
 
 const fs = admin.firestore();
 
-function setUserNotification(userId: string, data: Object) {
+function setUserNotification(userId: String, data: Object) {
   return fs
     .collection(`/users/${userId}/notifications`)
     .add({ ...data, dateCreated: new Date().toISOString() });
+}
+
+function setUserActiveFavor(userId: String, favorId: String) {
+  return fs
+    .doc(`/users/${userId}/favorsActive/${favorId}/`)
+    .set({ dateCreated: new Date().toISOString() });
 }
 
 // Handle favor state change
@@ -60,12 +66,14 @@ export const onFavorStateChange = functions.firestore
             break;
           case "active":
             if (stateOld === "pending") {
-              // TODO: Notify user that owner accepted his favor request
+              // Notify user that owner accepted his favor request
               const notification = setUserNotification(userId, {
                 favorId: favorId,
                 status: "accepted",
               });
-              return Promise.all([notification]);
+              // Set favor key to active collection
+              const active = setUserActiveFavor(userId, favorId);
+              return Promise.all([active, notification]);
             }
             break;
           case "done":

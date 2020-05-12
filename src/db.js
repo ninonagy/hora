@@ -184,10 +184,6 @@ async function setFavorState(favorId, state) {
   return updateValue(paths.favor, { favorId }, { state });
 }
 
-async function storeUserActiveFavor(userId, favorId) {
-  return setValue(paths.userFavorsActive, { userId, favorId }, {});
-}
-
 // ...
 
 // export db functions
@@ -201,7 +197,6 @@ export {
   updateFavor,
   setFavorState,
   createFavor,
-  storeUserActiveFavor,
   getFavorsList,
   getUserByAuth,
   getMessages,

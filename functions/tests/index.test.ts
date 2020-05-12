@@ -69,7 +69,7 @@ describe("onFavorStateChange", () => {
     expect(id).to.be.equal(favorId);
   });
 
-  it("should notify owner that he needs to accept favor request", async () => {
+  it("should notify Jojo that he needs to accept favor request", async () => {
     const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
       {
         ownerId: Jojo,
@@ -101,7 +101,7 @@ describe("onFavorStateChange", () => {
     expect(notification.status).to.be.equal("pending");
   });
 
-  it("should notify user that owner accepted his favor request", async () => {
+  it("should notify Loki that Jojo accepted his favor request", async () => {
     const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
       {
         ownerId: Jojo,
@@ -133,7 +133,18 @@ describe("onFavorStateChange", () => {
     expect(notification.status).to.be.equal("accepted");
   });
 
-  it("should notify owner that user completed favor", async () => {
+  it("should set favor in Loki's active favor collection", async () => {
+    const result = await admin
+      .firestore()
+      .collection(`/users/${Loki}/favorsActive`)
+      .orderBy("dateCreated", "desc")
+      .get();
+
+    const activeFavorId = result.docs[0].ref.id;
+    expect(activeFavorId).to.be.equal(`${favorId}`);
+  });
+
+  it("should notify Jojo that Loki completed favor", async () => {
     const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
       {
         ownerId: Jojo,
