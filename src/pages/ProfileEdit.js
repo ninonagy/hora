@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  IonText,
   IonItem,
   IonChip,
   IonLabel,
@@ -17,12 +16,12 @@ import {
   IonButton,
   IonIcon,
   IonImg,
-  IonBackButton,
   IonList,
   IonInput,
   IonItemDivider,
   IonDatetime,
   IonTextarea,
+  IonAlert,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -44,32 +43,23 @@ const ProfileEdit = ({ history }) => {
 
   let userId = globalState.userId;
 
+  const [showInvalidEmailAddress, setInvalidEmailAddress] = useState(false);
+
   useEffect(() => {
     db.getUser(userId).then((user) => {
       setUser(user);
     });
   }, []);
 
-  let {
-    name,
-    surname,
-    email,
-    bio,
-    birthDate,
-    location,
-    rating,
-    timeSpent,
-    timeEarned,
-    skills,
-    pictureLink,
-  } = user;
+  let { skills } = user;
 
   skills = skills || [];
 
-  let timeAvailable = timeEarned - timeSpent;
-
   function handleEdit() {
-    db.updateUser(userId, user).then(history.push(`/profile`));
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (re.test(user.email.toLowerCase()))
+      db.updateUser(userId, user).then(history.push(`/profile`));
+    else setInvalidEmailAddress(true);
   }
 
   function getBirthDate(birthDate) {
@@ -96,11 +86,18 @@ const ProfileEdit = ({ history }) => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
+          <IonAlert
+            isOpen={showInvalidEmailAddress}
+            onDidDismiss={() => setInvalidEmailAddress(false)}
+            header={"Greška!"}
+            message={user.email + " nije ispravna email adresa!"}
+            buttons={["OK"]}
+          />
           <IonGrid class="profile-margin">
             <IonRow class="ion-align-items-center">
               <IonCol size="2" offset="4">
                 <IonAvatar className="profile-avatar">
-                  <IonImg src={pictureLink} alt="Avatar" />
+                  <IonImg src={user.pictureLink} alt="Avatar" />
                 </IonAvatar>
               </IonCol>
             </IonRow>

@@ -1,28 +1,17 @@
 import React, { useEffect, useState } from "react";
 import {
-  IonText,
   IonItem,
-  IonChip,
   IonLabel,
   IonContent,
   IonHeader,
   IonToolbar,
   IonTitle,
   IonPage,
-  IonAvatar,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonButtons,
   IonButton,
   IonIcon,
-  IonImg,
-  IonBackButton,
   IonList,
   IonInput,
-  IonItemDivider,
-  IonDatetime,
-  IonTextarea,
   IonAlert,
 } from "@ionic/react";
 
@@ -57,24 +46,6 @@ const ProfileEditPassword = ({ history }) => {
       setUser(user);
     });
   }, []);
-
-  let {
-    name,
-    surname,
-    email,
-    bio,
-    birthDate,
-    location,
-    rating,
-    timeSpent,
-    timeEarned,
-    skills,
-    pictureLink,
-  } = user;
-
-  skills = skills || [];
-
-  let timeAvailable = timeEarned - timeSpent;
 
   function handlePasswordEdit() {
     if (currPasswordState != user.password) setWrongPasswordAlert(true);
