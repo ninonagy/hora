@@ -52,9 +52,7 @@ const ProfileEditPassword = ({ history }) => {
     else if (passwordState && passwordState != repeatPasswordState)
       setPasswordsNotMatching(true);
     else
-      db.updateUser(userId, { password: passwordState }).then(
-        history.push(`/profile/edit`)
-      );
+      db.updateUser(userId, { password: passwordState }).then(history.goBack());
   }
 
   return (

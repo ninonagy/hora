@@ -41,8 +41,6 @@ import ConversationPage from "./pages/MessagesTab/ConversationPage";
 import FavorDetail from "./pages/SearchTab/FavorDetailPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicProfilePage from "./pages/PublicProfilePage";
-import ProfileEdit from "./pages/ProfileEdit";
-import ProfileEditPassword from "./pages/ProfileEditPassword";
 
 import Tabs from "./pages/Tabs";
 
@@ -63,12 +61,6 @@ const App = () => {
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/register/2" component={RegisterPage2} />
-          <Route exact path="/profile/edit" component={ProfileEdit} />
-          <Route
-            exact
-            path="/profile/edit/password"
-            component={ProfileEditPassword}
-          />
 
           {/* Other routes */}
           {/* Favor detail */}

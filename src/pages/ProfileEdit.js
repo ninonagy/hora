@@ -36,20 +36,16 @@ import Loader from "../components/Loader";
 import useGlobalState from "../state";
 import * as db from "../db";
 
-const ProfileEdit = ({ history }) => {
+const ProfileEdit = ({ history, location }) => {
   const [globalState, globalActions] = useGlobalState();
 
   let [user, setUser] = useState({});
 
-  let userId = globalState.userId;
-
   const [showInvalidEmailAddress, setInvalidEmailAddress] = useState(false);
 
   useEffect(() => {
-    db.getUser(userId).then((user) => {
-      setUser(user);
-    });
-  }, []);
+    setUser(globalState.user);
+  }, [globalState.user]);
 
   let { skills } = user;
 
@@ -58,7 +54,7 @@ const ProfileEdit = ({ history }) => {
   function handleEdit() {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(user.email.toLowerCase()))
-      db.updateUser(userId, user).then(history.push(`/profile`));
+      db.updateUser(user.id, user).then(history.goBack());
     else setInvalidEmailAddress(true);
   }
 
@@ -108,15 +104,6 @@ const ProfileEdit = ({ history }) => {
                 </IonButton>
               </IonCol>
             </IonRow>
-            <IonRow>
-              <IonCol className="ion-text-center profile-bio">
-                {skills.map((item) => (
-                  <IonChip>
-                    <IonLabel>{item}</IonLabel>
-                  </IonChip>
-                ))}
-              </IonCol>
-            </IonRow>
           </IonGrid>
           <IonList className="ion-no-margin ion-no-padding">
             <IonItem>
@@ -145,6 +132,27 @@ const ProfileEdit = ({ history }) => {
                 onIonChange={(e) => setUser({ ...user, bio: e.target.value })}
               />
             </IonItem>
+
+            <IonRow className="editSkills">
+              <IonCol className="ion-text-center">
+                {skills.map((item) => (
+                  <IonChip>
+                    <IonLabel>{item}</IonLabel>
+                  </IonChip>
+                ))}
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol className="ion-text-center">
+                <IonButton
+                  fill="clear"
+                  color="primary"
+                  onClick={() => history.push("/profile/edit/skills")}
+                >
+                  Uredi vještine
+                </IonButton>
+              </IonCol>
+            </IonRow>
 
             <IonItemDivider />
 

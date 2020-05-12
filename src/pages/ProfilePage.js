@@ -47,10 +47,11 @@ const ProfilePage = ({ history, match, isPublic }) => {
     db.getUser(userId).then((user) => {
       setUser(user);
     });
-  }, []);
+  }, [globalState.user]);
 
   let {
     name,
+    surname,
     email,
     bio,
     birthDate,
@@ -74,9 +75,7 @@ const ProfilePage = ({ history, match, isPublic }) => {
             <IonButtons slot="start">
               <BackButton />
             </IonButtons>
-            <IonTitle>
-              {name}, {getAge(birthDate)}
-            </IonTitle>
+            <IonTitle>Profile</IonTitle>
             {!isPublic && (
               <IonButtons slot="end">
                 <IonButton onClick={() => history.push("profile/edit")}>
@@ -100,7 +99,9 @@ const ProfilePage = ({ history, match, isPublic }) => {
               </IonCol>
             </IonRow>
             <IonRow>
-              <IonCol className="ion-text-center profile-name">{name}</IonCol>
+              <IonCol className="ion-text-center profile-name">
+                {name}, {getAge(birthDate)}
+              </IonCol>
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center">
