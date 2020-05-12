@@ -133,17 +133,6 @@ describe("onFavorStateChange", () => {
     expect(notification.status).to.be.equal("accepted");
   });
 
-  it("should set favor in Loki's active favor collection", async () => {
-    const result = await admin
-      .firestore()
-      .collection(`/users/${Loki}/favorsActive`)
-      .orderBy("dateCreated", "desc")
-      .get();
-
-    const activeFavorId = result.docs[0].ref.id;
-    expect(activeFavorId).to.be.equal(`${favorId}`);
-  });
-
   it("should notify Jojo that Loki completed favor", async () => {
     const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
       {

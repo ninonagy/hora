@@ -13,12 +13,6 @@ function setUserNotification(userId: String, data: Object) {
     .add({ ...data, dateCreated: new Date().toISOString() });
 }
 
-function setUserActiveFavor(userId: String, favorId: String) {
-  return fs
-    .doc(`/users/${userId}/favorsActive/${favorId}/`)
-    .set({ dateCreated: new Date().toISOString() });
-}
-
 // Handle favor state change
 export const onFavorStateChange = functions.firestore
   .document("/favors/{favorId}")
@@ -71,9 +65,7 @@ export const onFavorStateChange = functions.firestore
                 favorId: favorId,
                 status: "accepted",
               });
-              // Set favor key to active collection
-              const active = setUserActiveFavor(userId, favorId);
-              return Promise.all([active, notification]);
+              return Promise.all([notification]);
             }
             break;
           case "done":
