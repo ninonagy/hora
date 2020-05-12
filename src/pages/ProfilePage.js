@@ -37,7 +37,7 @@ import * as db from "../db";
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
-const ProfilePage = ({ match, isPublic }) => {
+const ProfilePage = ({ history, match, isPublic }) => {
   const [globalState, globalActions] = useGlobalState();
   let [user, setUser] = useState({});
 
@@ -52,6 +52,7 @@ const ProfilePage = ({ match, isPublic }) => {
   let {
     name,
     email,
+    bio,
     birthDate,
     location,
     rating,
@@ -78,7 +79,7 @@ const ProfilePage = ({ match, isPublic }) => {
             </IonTitle>
             {!isPublic && (
               <IonButtons slot="end">
-                <IonButton>
+                <IonButton onClick={() => history.push("profile/edit")}>
                   <IonIcon icon={settingsOutline} />
                 </IonButton>
               </IonButtons>
@@ -107,11 +108,7 @@ const ProfilePage = ({ match, isPublic }) => {
               </IonCol>
             </IonRow>
             <IonRow>
-              <IonCol className="ion-text-center profile-bio">
-                Stu(die)ing @ the uni. Doing crazy things. I have a dog! I love
-                helping everybody in need! Cooking is my passion! Oh and I love
-                walking my dogs: Kate and Jack.
-              </IonCol>
+              <IonCol className="ion-text-center profile-bio">{bio}</IonCol>
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center profile-bio">
