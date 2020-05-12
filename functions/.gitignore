@@ -9,4 +9,4 @@ node_modules/
 
 /lib
 firebase-debug.log
-service_account.json
+service-account.json
