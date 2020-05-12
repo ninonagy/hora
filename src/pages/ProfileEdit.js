@@ -29,8 +29,6 @@ import { withRouter } from "react-router";
 
 import { checkmarkOutline } from "ionicons/icons";
 
-import RatingIcons from "../components/RatingIcons";
-
 import "./ProfilePage.css";
 
 import BackButton from "../components/BackButton";
@@ -46,20 +44,9 @@ const ProfileEdit = ({ history }) => {
 
   let userId = globalState.userId;
 
-  let [nameState, setName] = useState();
-  let [surnameState, setSurname] = useState();
-  let [bioState, setBio] = useState();
-  let [dateState, setDate] = useState(new Date());
-  let [emailState, setEmail] = useState();
-
   useEffect(() => {
     db.getUser(userId).then((user) => {
       setUser(user);
-      //    setName(user.name);
-      //    setSurname(user.surname);
-      //    setBio(user.bio);
-      //    setEmail(user.email);
-      //    setDate(new Date(user.birthDate));
     });
   }, []);
 
@@ -167,7 +154,7 @@ const ProfileEdit = ({ history }) => {
             <IonItem>
               <IonLabel position="stacked">E-mail</IonLabel>
               <IonInput
-                inputmode="email"
+                type="email"
                 value={user.email}
                 onIonChange={(e) => setUser({ ...user, email: e.target.value })}
               />
@@ -189,7 +176,13 @@ const ProfileEdit = ({ history }) => {
                 }
               ></IonDatetime>
             </IonItem>
-            <IonItemDivider />
+            <IonButton
+              fill="clear"
+              color="primary"
+              onClick={() => history.push("/profile/edit/password")}
+            >
+              Promijeni password
+            </IonButton>
           </IonList>
         </IonContent>
       </Loader>
