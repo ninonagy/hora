@@ -18,47 +18,58 @@ import FavorCard from "../../components/FavorCard";
 
 import Loader from "../../components/Loader";
 
-import * as db from "../../db.js";
 import { fs } from "../../firebase";
-import { buildPath, paths } from "../../scheme";
+import { buildPath, paths, states } from "../../scheme";
 import { arrayWithId } from "../../utils";
+import useGlobal from "../../state";
 
-const FavorsListPage = ({ match }) => {
-  let [favors, setFavors] = useState([]);
+const FavorsListPage = (props) => {
+  let [favorsFree, setFavorsFree] = useState([]);
+  let [userFavorsActive, setUserFavorsActive] = useState([]);
+  const [globalState, {}] = useGlobal();
 
   useEffect(() => {
+    // Get free favors
     fs.collection(buildPath(paths.favor, { favorId: "" }))
-      .where("state", "==", "free")
+      .where("state", "==", states.favor.free)
       .orderBy("dateCreated", "desc")
       .get()
       .then((result) => {
-        setFavors(arrayWithId(result));
+        setFavorsFree(arrayWithId(result));
       });
-    // db.getFavorsList().then((favors) => {
-    //   let list = favors.sort((item1, item2) => {
-    //     let diff = new Date(item1.dateCreated) - new Date(item2.dateCreated);
-    //     return -diff;
-    //   });
-    //   setFavors(list);
-    // });
+
+    // Get user's active favors
+    fs.collection(
+      buildPath(paths.favor, {
+        userId: globalState.userId,
+        favorId: "",
+      })
+    )
+      .where("userId", "==", globalState.userId)
+      .where("state", "==", states.favor.active)
+      .orderBy("dateCreated", "desc")
+      .get()
+      .then((result) => {
+        setUserFavorsActive(arrayWithId(result));
+      });
   }, []);
 
   return (
     <IonPage>
-      <Loader data={favors}>
+      <Loader data={favorsFree}>
         <IonContent fullscreen="true">
           <IonToolbar>
             <IonTitle slot="start">HORA</IonTitle>
           </IonToolbar>
           <span className="sectionHeading">Your active favors</span>
           <IonList>
-            {favors.slice(0, 2).map((item) => (
+            {userFavorsActive.map((item) => (
               <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />
             ))}
           </IonList>
           <span className="sectionHeading">Help someone!</span>
           <IonList>
-            {favors.map((item) => (
+            {favorsFree.map((item) => (
               <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />
             ))}
           </IonList>
