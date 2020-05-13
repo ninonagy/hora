@@ -41,12 +41,14 @@ const ProfilePage = ({ history, match, isPublic }) => {
   const [globalState, globalActions] = useGlobalState();
   let [user, setUser] = useState({});
 
-  let userId = isPublic ? match.params.userId : globalState.userId;
-
   useEffect(() => {
-    db.getUser(userId).then((user) => {
-      setUser(user);
-    });
+    if (isPublic) {
+      db.getUser(match.params.userId).then((user) => {
+        setUser(user);
+      });
+    } else {
+      setUser(globalState.user);
+    }
   }, [globalState.user]);
 
   let {
