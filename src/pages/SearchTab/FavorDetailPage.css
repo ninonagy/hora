@@ -1,9 +1,3 @@
-.favor-title {
-  font-family: "Raleway", sans-serif;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-}
-
 .favor-avatar {
   width: 75px;
   height: 75px;
@@ -36,8 +30,11 @@
   margin-left: 20px;
 }
 
-.button-do-it {
+.bigButton {
   margin-top: 20px;
   margin-left: 20px;
   margin-right: 20px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.1em;
 }
