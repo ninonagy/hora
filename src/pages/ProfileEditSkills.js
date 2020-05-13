@@ -34,7 +34,7 @@ const ProfileEditSkills = ({ history }) => {
 
   useEffect(() => {
     setSkills(user.skills);
-  }, []);
+  });
 
   function updateUser() {
     user.skills = skills;

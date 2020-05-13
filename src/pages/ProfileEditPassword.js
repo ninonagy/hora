@@ -45,7 +45,7 @@ const ProfileEditPassword = ({ history }) => {
     db.getUser(userId).then((user) => {
       setUser(user);
     });
-  }, []);
+  });
 
   function handlePasswordEdit() {
     if (currPasswordState != user.password) setWrongPasswordAlert(true);

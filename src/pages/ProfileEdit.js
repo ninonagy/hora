@@ -53,9 +53,10 @@ const ProfileEdit = ({ history, location }) => {
 
   function handleEdit() {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (re.test(user.email.toLowerCase()))
+    if (re.test(user.email.toLowerCase())) {
+      globalActions.setUser(user);
       db.updateUser(user.id, user).then(history.goBack());
-    else setInvalidEmailAddress(true);
+    } else setInvalidEmailAddress(true);
   }
 
   function getBirthDate(birthDate) {
