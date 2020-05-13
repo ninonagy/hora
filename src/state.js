@@ -18,6 +18,14 @@ const actions = {
   setUser: (store, user) => {
     store.setState({ user: user });
   },
+  getUserAvailableTime: (store) => {
+    let availableTime = null;
+    if (store.state.isAuthenticated) {
+      const { timeEarned, timeSpent } = store.state.user;
+      return timeEarned - timeSpent;
+    }
+    return availableTime;
+  },
 };
 
 const useGlobal = globalHook(React, initialState, actions);

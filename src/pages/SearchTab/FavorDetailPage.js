@@ -35,16 +35,12 @@ import * as db from "../../db";
 import useGlobal from "../../state";
 import { states } from "../../scheme";
 
-const items = [
-  { src: "http://placekitten.com/g/100/100", text: "this is my cat Minnie" },
-  { src: "http://placekitten.com/g/101/100", text: "this is my cat John" },
-];
-
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
 const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
+  let [isAbleToHelp, setIsAbleToHelp] = useState();
   let favorId = match.params.favorId;
 
   let [favor, setFavor] = useState({});
@@ -56,6 +52,11 @@ const FavorDetailPage = ({ history, match }) => {
       db.getUser(favor.ownerId).then((user) => {
         setFavor(favor);
         setUser(user);
+        
+        setIsAbleToHelp(
+          globalState.userId !== favor.ownerId &&
+            globalActions.getUserAvailableTime() > 0
+        );
       });
     });
   }, []);
@@ -164,7 +165,7 @@ const FavorDetailPage = ({ history, match }) => {
           </div>
 
           <IonButton
-            disabled={favor.ownerId === globalState.userId}
+            disabled={isAbleToHelp === false}
             className="button-do-it"
             size="large"
             color="dark"
