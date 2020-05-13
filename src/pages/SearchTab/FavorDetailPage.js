@@ -64,7 +64,7 @@ const FavorDetailPage = ({ history, match }) => {
         setIsActive(favor.state == "active");
       });
     });
-  }, []);
+  });
 
   let { title, description, location, dateCreated, state } = favor;
 

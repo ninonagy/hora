@@ -1,0 +1,12 @@
+.image {
+  margin-top: 40%;
+  margin-left: 10%;
+  width: 80%;
+}
+
+.give-text {
+  font-family: "Open Sans", sans-serif;
+  color: var(--ion-color-medium-shade);
+  font-size: 15px;
+  margin: 0 20px;
+}
