@@ -37,21 +37,25 @@ import * as db from "../db";
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
-const ProfilePage = ({ match, isPublic }) => {
+const ProfilePage = ({ history, match, isPublic }) => {
   const [globalState, globalActions] = useGlobalState();
   let [user, setUser] = useState({});
 
-  let userId = isPublic ? match.params.userId : globalState.userId;
-
   useEffect(() => {
-    db.getUser(userId).then((user) => {
-      setUser(user);
-    });
-  }, []);
+    if (isPublic) {
+      db.getUser(match.params.userId).then((user) => {
+        setUser(user);
+      });
+    } else {
+      setUser(globalState.user);
+    }
+  }, [globalState.user]);
 
   let {
     name,
+    surname,
     email,
+    bio,
     birthDate,
     location,
     rating,
@@ -73,12 +77,10 @@ const ProfilePage = ({ match, isPublic }) => {
             <IonButtons slot="start">
               <BackButton />
             </IonButtons>
-            <IonTitle>
-              {name}, {getAge(birthDate)}
-            </IonTitle>
+            <IonTitle>Profile</IonTitle>
             {!isPublic && (
               <IonButtons slot="end">
-                <IonButton>
+                <IonButton onClick={() => history.push("profile/edit")}>
                   <IonIcon icon={settingsOutline} />
                 </IonButton>
               </IonButtons>
@@ -99,7 +101,9 @@ const ProfilePage = ({ match, isPublic }) => {
               </IonCol>
             </IonRow>
             <IonRow>
-              <IonCol className="ion-text-center profile-name">{name}</IonCol>
+              <IonCol className="ion-text-center profile-name">
+                {name}, {getAge(birthDate)}
+              </IonCol>
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center">
@@ -107,11 +111,7 @@ const ProfilePage = ({ match, isPublic }) => {
               </IonCol>
             </IonRow>
             <IonRow>
-              <IonCol className="ion-text-center profile-bio">
-                Stu(die)ing @ the uni. Doing crazy things. I have a dog! I love
-                helping everybody in need! Cooking is my passion! Oh and I love
-                walking my dogs: Kate and Jack.
-              </IonCol>
+              <IonCol className="ion-text-center profile-bio">{bio}</IonCol>
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center profile-bio">

@@ -21,6 +21,11 @@
   margin: 0 20px;
 }
 
+.editSkills {
+  padding: 0;
+  margin: 20px 0 -10px;
+}
+
 .profile-coins {
   background-color: var(--ion-color-warning-tint);
   border-radius: 100px;

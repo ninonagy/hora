@@ -61,6 +61,7 @@ const App = () => {
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/register/2" component={RegisterPage2} />
+
           {/* Other routes */}
           {/* Favor detail */}
           <Route path="/favor/:favorId" component={FavorDetail} />

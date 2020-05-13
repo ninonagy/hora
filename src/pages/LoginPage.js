@@ -28,7 +28,7 @@ const LoginPage = (props) => {
 
   // demo
   useEffect(() => {
-    setUserId("u1");
+    setUserId("k7fwnf");
   }, []);
   handleLogin();
 

@@ -20,6 +20,9 @@ import ProfilePage from "./ProfilePage";
 
 import FavorsList from "./SearchTab/FavorsListPage";
 import FavorDetail from "./SearchTab/FavorDetailPage";
+import ProfileEdit from "./ProfileEdit";
+import ProfileEditPassword from "./ProfileEditPassword";
+import ProfileEditSkills from "./ProfileEditSkills";
 
 import {
   homeOutline,
@@ -37,6 +40,19 @@ const Tabs = (props) => {
         <ProtectedRoute exact path="/:tab(give)" component={GivePage} />
         <ProtectedRoute exact path="/:tab(messages)" component={MessagesPage} />
         <ProtectedRoute exact path="/:tab(profile)" component={ProfilePage} />
+
+        <Route exact path="/profile/edit" component={ProfileEdit} />
+        <Route
+          exact
+          path="/profile/edit/password"
+          component={ProfileEditPassword}
+        />
+        <Route
+          exact
+          path="/profile/edit/skills"
+          component={ProfileEditSkills}
+        />
+
         <Redirect exact from="/home" to="/search" />
       </IonRouterOutlet>
 
