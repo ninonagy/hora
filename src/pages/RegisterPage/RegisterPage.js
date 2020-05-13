@@ -8,6 +8,9 @@ import {
   IonInput,
   IonRow,
   IonCol,
+  IonAlert,
+  IonDatetime,
+  IonLabel,
 } from "@ionic/react";
 import { withRouter, Redirect } from "react-router";
 
@@ -22,24 +25,37 @@ const RegisterPage = (props) => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
 
   let [userId, setUserId] = useState();
   let [isAuth, setIsAuth] = useState(false);
 
+  const [showInvalidEmailAddress, setInvalidEmailAddress] = useState(false);
+  const [showPasswordsNotMatching, setPasswordsNotMatching] = useState(false);
+  const [showAllFieldsAreRequired, setAllFieldsAreRequired] = useState(false);
+
   function handleRegistration() {
-    if (name && surname && email && password && password == password2) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!re.test(email.toLowerCase())) {
+      setInvalidEmailAddress(true);
+    } else if (password != password2) {
+      setPasswordsNotMatching(true);
+    } else if (name && surname && email && password && password2) {
       db.storeUser({
         name: name,
         surname: surname,
         email: email,
         password: password,
+        birthDate: birthDate,
+        location: "Zagreb",
+        bio: "Hello! 👋",
         pictureLink: "https://api.adorable.io/avatars/110/" + email + ".png",
       }).then(() => {
         logInUser();
       });
-    } else alert("nesto si zeznuo frende!");
+    } else setAllFieldsAreRequired(true);
   }
 
   function logInUser() {
@@ -68,6 +84,27 @@ const RegisterPage = (props) => {
         </IonRow>
       </IonHeader>
       <IonContent>
+        <IonAlert
+          isOpen={showInvalidEmailAddress}
+          onDidDismiss={() => setInvalidEmailAddress(false)}
+          header={"Greška!"}
+          message={email + " nije ispravna email adresa!"}
+          buttons={["OK"]}
+        />
+        <IonAlert
+          isOpen={showPasswordsNotMatching}
+          onDidDismiss={() => setPasswordsNotMatching(false)}
+          header={"Greška!"}
+          message={"Passwordi se ne podudaraju!"}
+          buttons={["OK"]}
+        />
+        <IonAlert
+          isOpen={showAllFieldsAreRequired}
+          onDidDismiss={() => setAllFieldsAreRequired(false)}
+          header={"Greška!"}
+          message={"Sva polja su obavezna!"}
+          buttons={["OK"]}
+        />
         <h2 className="heading2">hip hip</h2>
         <h1 className="heading">HORA</h1>
         <IonCard className="login-card">
@@ -88,6 +125,18 @@ const RegisterPage = (props) => {
             placeholder="e-mail"
             onIonChange={(e) => setEmail(e.target.value)}
           ></IonInput>
+
+          <IonDatetime
+            monthShortNames="siječnja, veljače, ožujka, travnja, svibnja, lipnja, srpnja, kolovoza, rujna, listopada, studenog, prosinca"
+            display-format="DD. MMM YYYY."
+            picker-format="DD. MMM YYYY."
+            max={new Date().toISOString()}
+            className="login-input"
+            placeholder="datum rođenja"
+            onIonChange={(e) =>
+              setBirthDate(new Date(e.target.value).toISOString())
+            }
+          ></IonDatetime>
 
           <IonInput
             className="login-input"
