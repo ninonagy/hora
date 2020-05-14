@@ -77,15 +77,11 @@ describe("Favor life cycle test", () => {
 
   it("should take one coin from Jojo", async () => {
     const user = await admin.firestore().doc(`/users/${Jojo}`).get();
-    expect(user.data()?.timeSpent).to.be.equal(1);
-    expect(user.data()?.timeEarned).to.be.equal(2);
-  });
-
-  it("Loki should be able to send favor request", async () => {
-    await admin.firestore().doc(`/favors/${favorId}`).update({
-      userId: Loki,
-      state: "pending",
-    });
+    const timeEarned = user.data()?.timeEarned;
+    const timeSpent = user.data()?.timeSpent;
+    expect(timeEarned).to.be.equal(3);
+    expect(timeSpent).to.be.equal(1);
+    expect(timeEarned - timeSpent).to.be.equal(2);
   });
 
   it("should notify Jojo that he needs to accept favor request", async () => {
@@ -152,12 +148,6 @@ describe("Favor life cycle test", () => {
     expect(notification.status).to.be.equal("accepted");
   });
 
-  it("Loki should be able to tell Jojo that he finished doing favor", async () => {
-    await admin.firestore().doc(`/favors/${favorId}`).update({
-      state: "review",
-    });
-  });
-
   it("should notify Jojo that Loki completed favor", async () => {
     const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
       {
@@ -192,7 +182,10 @@ describe("Favor life cycle test", () => {
 
   it("should give one coin to Loki", async () => {
     const user = await admin.firestore().doc(`/users/${Loki}`).get();
-    expect(user.data()?.timeEarned).to.be.equal(4);
-    expect(user.data()?.timeSpent).to.be.equal(0);
+    const timeEarned = user.data()?.timeEarned;
+    const timeSpent = user.data()?.timeSpent;
+    expect(timeEarned).to.be.equal(4);
+    expect(timeSpent).to.be.equal(0);
+    expect(timeEarned - timeSpent).to.be.equal(4);
   });
 });

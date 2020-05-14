@@ -25,7 +25,6 @@ export const onFavorCreate = functions.firestore
       // Take one coin from the user
       return fs.doc(`/users/${ownerId}`).update({
         timeSpent: incrementValue,
-        timeEarned: decrementValue,
       });
     }
 
@@ -80,7 +79,6 @@ export const onFavorStateChange = functions.firestore
           // Give back a coin
           const coinUpdate = fs.doc(`/users/${ownerId}`).update({
             timeSpent: decrementValue,
-            timeEarned: incrementValue,
           });
           return Promise.all([notification, coinUpdate]);
         } else if (from("pending").to("active")) {
