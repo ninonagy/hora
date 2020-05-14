@@ -19,6 +19,7 @@ import "../LoginPage.css";
 import * as db from "../../db";
 
 import useGlobal from "../../state";
+import { authService } from "../../services";
 
 const RegisterPage = (props) => {
   const [globalState, globalActions] = useGlobal();
@@ -59,13 +60,11 @@ const RegisterPage = (props) => {
   }
 
   function logInUser() {
-    db.getUserByAuth(email, password)
+    authService
+      .login(email, password)
       .then((user) => {
-        // Set user session
-        globalActions.setAuthUser(user.id);
-        // Set user data in global store
-        globalActions.setUser(user);
         setIsAuth(true);
+        globalActions.setAuthUser(user);
         props.history.push(`/register/2/`);
       })
       .catch(() => {
