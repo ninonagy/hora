@@ -21,6 +21,7 @@ const NotificationCard = ({
   isThisUser,
   favorId,
   onUserCancel,
+  onUserDecline,
   onUserAccept,
   showTime,
   time,
@@ -62,7 +63,7 @@ const NotificationCard = ({
                 color="danger"
                 expand="block"
                 fill="outline"
-                onClick={onUserCancel}
+                onClick={onUserDecline}
               >
                 Decline
               </IonButton>

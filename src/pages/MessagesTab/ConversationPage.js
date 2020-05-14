@@ -45,6 +45,7 @@ import * as scheme from "../../scheme";
 const Alerts = ({
   conversationId,
   cancelAlert,
+  declineAlert,
   acceptAlert,
   onDismiss,
   userId,
@@ -78,6 +79,46 @@ const Alerts = ({
               const message = cancelAlert.message;
               // TODO: Delete message?
               await db.deleteMessage(conversationId, message.id);
+              // Set favor state from pending to free
+              await db.setFavorState(message.favorId, scheme.states.favor.free);
+              await fs
+                .doc(
+                  scheme.buildPath(db.paths.message, {
+                    conversationId: conversationId,
+                    messageId: message.id,
+                  })
+                )
+                .update({
+                  action: true,
+                });
+              await db.storeMessage(
+                conversationId,
+                {
+                  senderId: userId,
+                  favorId: message.favorId,
+                },
+                "smallNotification"
+              );
+            },
+          },
+        ]}
+      />
+      <IonAlert
+        isOpen={declineAlert.show}
+        onDidDismiss={onDismiss}
+        header="Jesi li siguran da želiš odbaciti pomoć?"
+        message=""
+        buttons={[
+          {
+            text: "Ne",
+            role: "cancel",
+            cssClass: "secondary",
+            handler: () => {},
+          },
+          {
+            text: "Da",
+            handler: async () => {
+              const message = declineAlert.message;
               // Set favor state from pending to free
               await db.setFavorState(message.favorId, scheme.states.favor.free);
               await fs
@@ -197,6 +238,11 @@ const ConversationPage = (props) => {
     message: {},
     isThisUser: null,
   });
+  let [declineAlert, setDeclineAlert] = useState({
+    show: false,
+    message: {},
+    isThisUser: null,
+  });
   let [acceptAlert, setAcceptAlert] = useState({
     show: false,
     message: {},
@@ -264,6 +310,7 @@ const ConversationPage = (props) => {
 
   const handleAlertDismiss = () => {
     if (cancelAlert.show) setCancelAlert({ show: false });
+    if (declineAlert.show) setDeclineAlert({ show: false });
     if (acceptAlert.show) setAcceptAlert({ show: false });
   };
 
@@ -296,6 +343,7 @@ const ConversationPage = (props) => {
           <Alerts
             conversationId={conversationId}
             cancelAlert={cancelAlert}
+            declineAlert={declineAlert}
             acceptAlert={acceptAlert}
             onDismiss={handleAlertDismiss}
             userId={userId}
@@ -313,6 +361,13 @@ const ConversationPage = (props) => {
                   time={new Date(messages[id].dateCreated)}
                   onUserCancel={() =>
                     setCancelAlert({
+                      show: true,
+                      message,
+                      isThisUser: message.senderId === userId,
+                    })
+                  }
+                  onUserDecline={() =>
+                    setDeclineAlert({
                       show: true,
                       message,
                       isThisUser: message.senderId === userId,
