@@ -13,6 +13,8 @@ import { withRouter, Redirect } from "react-router";
 
 import "./LoginPage.css";
 
+import { getPassHash } from "../utils";
+
 import useGlobal from "../state";
 import { authService } from "../services";
 
@@ -75,7 +77,7 @@ const LoginPage = (props) => {
               className="login-input"
               placeholder="password"
               type="password"
-              onIonChange={(e) => setPassword(e.target.value)}
+              onIonChange={(e) => setPassword(getPassHash(e.target.value))}
             ></IonInput>
 
             <IonButton

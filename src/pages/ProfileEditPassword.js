@@ -19,9 +19,9 @@ import { withRouter } from "react-router";
 
 import { checkmarkOutline } from "ionicons/icons";
 
-import CryptoJS from "crypto-js";
-
 import "./ProfilePage.css";
+
+import { getPassHash } from "../utils";
 
 import BackButton from "../components/BackButton";
 import Loader from "../components/Loader";
@@ -54,22 +54,10 @@ const ProfileEditPassword = ({ history }) => {
     else if (passwordState && passwordState != repeatPasswordState)
       setPasswordsNotMatching(true);
     else
-      db.updateUser(userId, { password: passwordState }).then(history.goBack());
+      db.updateUser(userId, { password: passwordState }).then(() =>
+        history.goBack()
+      );
   }
-
-  /* 
-    We are aware storing passwords this way is
-    far from perfect, but it is much easier to test things
-    this way. It will be upgraded very soon.
-  */
-
-  const getPassHash = (pass) => {
-    const hash = CryptoJS.SHA256(pass);
-    const secret_buffer = CryptoJS.enc.Base64.parse("secret");
-    const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA512, secret_buffer);
-    hmac.update(hash, secret_buffer);
-    return hmac.finalize().toString(CryptoJS.enc.Base64);
-  };
 
   return (
     <IonPage>
