@@ -41,13 +41,13 @@ const Tabs = (props) => {
         <ProtectedRoute exact path="/:tab(messages)" component={MessagesPage} />
         <ProtectedRoute exact path="/:tab(profile)" component={ProfilePage} />
 
-        <Route exact path="/profile/edit" component={ProfileEdit} />
-        <Route
+        <ProtectedRoute exact path="/profile/edit" component={ProfileEdit} />
+        <ProtectedRoute
           exact
           path="/profile/edit/password"
           component={ProfileEditPassword}
         />
-        <Route
+        <ProtectedRoute
           exact
           path="/profile/edit/skills"
           component={ProfileEditSkills}

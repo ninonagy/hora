@@ -13,47 +13,29 @@ import { withRouter, Redirect } from "react-router";
 
 import "./LoginPage.css";
 
-import * as db from "../db";
-
 import useGlobal from "../state";
+import { authService } from "../services";
 
 const LoginPage = (props) => {
   const [globalState, globalActions] = useGlobal();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  let [userId, setUserId] = useState();
   let [isAuth, setIsAuth] = useState(false);
 
-  // demo
   useEffect(() => {
-    setUserId("lpv9m0");
-  }, []);
-  handleLogin();
-
-  function handleLogin() {
-    if (userId && !globalState.isAuthenticated) {
-      db.getUser(userId)
-        .then((user) => {
-          // TODO: Password verification
-          // Set user session
-          globalActions.setAuthUser(userId);
-          // Set user data in global store
-          globalActions.setUser(user);
-          setIsAuth(true);
-        })
-        .catch((error) => {});
+    // Try to get user from local storage
+    let user = authService.getUserValue();
+    if (user && !isAuth) {
+      globalActions.setAuthUser(user);
+      setIsAuth(true);
     }
-  }
+  }, []);
 
   function logInUser() {
-    db.getUserByAuth(email, password)
+    authService
+      .login(email, password)
       .then((user) => {
-        // Set user session
-        globalActions.setAuthUser(user.id);
-        // Set user data in global store
-        globalActions.setUser(user);
+        globalActions.setAuthUser(user);
         setIsAuth(true);
       })
       .catch(() => {
@@ -64,7 +46,8 @@ const LoginPage = (props) => {
   if (isAuth) {
     let { state } = props.location;
     let path = "/home";
-    if (state) path = state.from.pathname;
+    if (state?.from) path = state.from.pathname;
+    // Forward user to previous page or to default page
     return <Redirect to={path} />;
   } else {
     return (
