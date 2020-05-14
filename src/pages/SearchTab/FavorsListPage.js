@@ -54,6 +54,11 @@ const FavorsListPage = (props) => {
       });
   }, []);
 
+  function showFavors() {
+    if (userFavorsActive[0])
+      return <span className="sectionHeading">Your active favors</span>;
+  }
+
   return (
     <IonPage>
       <Loader data={favorsFree}>
@@ -61,7 +66,7 @@ const FavorsListPage = (props) => {
           <IonToolbar>
             <IonTitle slot="start">HORA</IonTitle>
           </IonToolbar>
-          <span className="sectionHeading">Your active favors</span>
+          {showFavors()}
           <IonList>
             {userFavorsActive.map((item) => (
               <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />

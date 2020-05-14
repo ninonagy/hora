@@ -26,7 +26,12 @@ import RatingIcons from "../../components/RatingIcons";
 
 import ImageCard from "../../components/ImageCard";
 
-import { ellipsisHorizontal } from "ionicons/icons";
+import {
+  ellipsisHorizontal,
+  checkmarkCircleOutline,
+  closeCircleOutline,
+  chatbubbleEllipsesOutline,
+} from "ionicons/icons";
 
 import BackButton from "../../components/BackButton";
 import Loader from "../../components/Loader";
@@ -41,6 +46,7 @@ const getAge = (birthDate) =>
 const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
   let [isAbleToHelp, setIsAbleToHelp] = useState();
+  let [isActive, setIsActive] = useState();
   let favorId = match.params.favorId;
 
   let [favor, setFavor] = useState({});
@@ -52,16 +58,15 @@ const FavorDetailPage = ({ history, match }) => {
       db.getUser(favor.ownerId).then((user) => {
         setFavor(favor);
         setUser(user);
-        
-        setIsAbleToHelp(
-          globalState.userId !== favor.ownerId &&
-            globalActions.getUserAvailableTime() > 0
-        );
+
+        setIsAbleToHelp(globalState.userId !== favor.ownerId);
+
+        setIsActive(favor.state == "active");
       });
     });
-  }, []);
+  });
 
-  let { title, description, location, dateCreated } = favor;
+  let { title, description, location, dateCreated, state } = favor;
 
   const handleHelp = async () => {
     let sender = globalState.userId;
@@ -92,6 +97,46 @@ const FavorDetailPage = ({ history, match }) => {
     }
   };
 
+  function returnHelpButton() {
+    if (isAbleToHelp === true && isActive === false) {
+      return (
+        <IonButton
+          disabled={isAbleToHelp === false}
+          className="bigButton"
+          size="large"
+          color="dark"
+          expand="block"
+          onClick={handleHelp}
+        >
+          Help {user.name}
+        </IonButton>
+      );
+    }
+  }
+
+  function returnActiveFavorButtons() {
+    if (isActive)
+      return (
+        <IonRow>
+          <IonCol>
+            <IonButton expand="block" color="danger" fill="outline">
+              <IonIcon icon={closeCircleOutline} />
+            </IonButton>
+          </IonCol>
+          <IonCol>
+            <IonButton expand="block" color="success" fill="outline">
+              <IonIcon icon={checkmarkCircleOutline} />
+            </IonButton>
+          </IonCol>
+          <IonCol>
+            <IonButton expand="block" fill="outline">
+              <IonIcon icon={chatbubbleEllipsesOutline} />
+            </IonButton>
+          </IonCol>
+        </IonRow>
+      );
+  }
+
   return (
     <IonPage>
       <Loader data={favor}>
@@ -119,7 +164,7 @@ const FavorDetailPage = ({ history, match }) => {
                 <IonIcon icon={ellipsisHorizontal} />
               </IonButton>
             </IonButtons>
-            <IonTitle className="favor-title">Favor</IonTitle>
+            <IonTitle>Favor</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>
@@ -163,17 +208,10 @@ const FavorDetailPage = ({ history, match }) => {
               orientation="landscape"
             />
           </div>
-
-          <IonButton
-            disabled={isAbleToHelp === false}
-            className="button-do-it"
-            size="large"
-            color="dark"
-            expand="block"
-            onClick={handleHelp}
-          >
-            HELP
-          </IonButton>
+          <IonGrid>
+            {returnHelpButton()}
+            {returnActiveFavorButtons()}
+          </IonGrid>
         </IonContent>
       </Loader>
     </IonPage>
