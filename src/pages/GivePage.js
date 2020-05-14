@@ -17,6 +17,8 @@ import {
   IonDatetime,
   IonRow,
   IonCol,
+  IonSelect,
+  IonSelectOption,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -29,10 +31,12 @@ import { closeCircle } from "ionicons/icons";
 
 const GivePage = (props) => {
   const [globalState, globalActions] = useGlobal();
+  let [skillList, setSkillList] = useState({});
   let [title, setTitle] = useState("");
   let [description, setDescription] = useState("");
   let [dateTime, setDateTime] = useState(new Date());
   let [timeEstimation, setTimeEstimation] = useState(30);
+  let [selectedSkills, setSelectedSkills] = useState([]);
 
   let user = globalState.user;
   let timeAvailable = user.timeEarned - user.timeSpent;
@@ -46,12 +50,19 @@ const GivePage = (props) => {
       title: title,
       description: description,
       location: location,
+      skills: selectedSkills,
       dateDue: dateTime.toISOString(),
     }).then((favorId) => {
       // Forward user to the public favor page
       props.history.push(`/favor/${favorId}`);
     });
   }
+
+  useEffect(() => {
+    db.getSkillsList().then((skills) => {
+      setSkillList(skills.all);
+    });
+  }, []);
 
   if (timeAvailable > 0)
     return (
@@ -115,6 +126,20 @@ const GivePage = (props) => {
                   }
                   onIonChange={(e) => setDateTime(new Date(e.target.value))}
                 ></IonDatetime>
+              </IonItem>
+              <IonItem>
+                <IonLabel>Potrebne vještine</IonLabel>
+                <IonSelect
+                  value={selectedSkills}
+                  multiple={true}
+                  cancelText="Odustani"
+                  okText="Odaberi"
+                  onIonChange={(e) => setSelectedSkills(e.detail.value)}
+                >
+                  {Object.entries(skillList).map(([id, skill]) => (
+                    <IonSelectOption value={id}>{skill}</IonSelectOption>
+                  ))}
+                </IonSelect>
               </IonItem>
 
               {/* <IonItem>

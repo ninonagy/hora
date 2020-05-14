@@ -8,6 +8,7 @@ const paths = {
   message: "/conversations/{conversationId}/messages/{messageId}",
   userFavorsCreated: "/users/{userId}/favorsCreated/{favorId}",
   userFavorsActive: "/users/{userId}/favorsActive/{favorId}",
+  skills: "/lists/skills",
   // ...
 };
 

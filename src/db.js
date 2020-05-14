@@ -51,6 +51,10 @@ function deleteDoc(path = "", ids = {}) {
   return fs.doc(path).delete();
 }
 
+async function getSkillsList() {
+  return getValue(paths.skills);
+}
+
 // https://stackoverflow.com/questions/6248666/how-to-generate-short-uid-like-ax4j9z-in-js
 function uid() {
   var firstPart = (Math.random() * 46656) | 0;
@@ -205,6 +209,7 @@ export {
   storeUser,
   updateUser,
   getFavor,
+  getSkillsList,
   updateFavor,
   setFavorState,
   createFavor,

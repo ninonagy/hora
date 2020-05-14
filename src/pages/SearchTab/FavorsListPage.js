@@ -20,6 +20,8 @@ import FavorCard from "../../components/FavorCard";
 
 import Loader from "../../components/Loader";
 
+import * as db from "../../db";
+
 import { fs } from "../../firebase";
 import { buildPath, paths, states } from "../../scheme";
 import { arrayWithId } from "../../utils";
@@ -28,10 +30,17 @@ import useGlobal from "../../state";
 const FavorsListPage = (props) => {
   let [favorsFree, setFavorsFree] = useState([]);
   let [userFavorsActive, setUserFavorsActive] = useState([]);
+  let [skillList, setSkillList] = useState({});
   const [globalState, {}] = useGlobal();
 
   useEffect(() => {
     updateFavorList();
+  }, []);
+  
+  useEffect(() => {
+    db.getSkillsList().then((skills) => {
+      setSkillList(skills.all);
+    });
   }, []);
 
   async function updateFavorList() {
@@ -76,7 +85,7 @@ const FavorsListPage = (props) => {
           <span className="sectionHeading">Your active favors</span>
           <IonList>
             {userFavorsActive.map((item) => (
-              <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />
+              <FavorCard skillList={skillList} item={item} key={item.id} link={`/favor/${item.id}`} />
             ))}
           </IonList>
         </>
@@ -89,7 +98,7 @@ const FavorsListPage = (props) => {
         <span className="sectionHeading">Help someone!</span>
         <IonList>
           {favorsFree.map((item) => (
-            <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />
+            <FavorCard skillList={skillList} item={item} key={item.id} link={`/favor/${item.id}`} />
           ))}
         </IonList>
       </>

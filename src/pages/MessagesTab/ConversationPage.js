@@ -285,7 +285,7 @@ const ConversationPage = (props) => {
   const scrollToBottom = () => {
     setTimeout(() => {
       messageListRef.current && messageListRef.current.scrollToBottom(500);
-    }, 300);
+    }, 250);
   };
 
   const handleAlertDismiss = () => {
@@ -397,6 +397,7 @@ const ConversationPage = (props) => {
                   placeholder="Unesite poruku..."
                   className="message-input"
                   rows="1"
+                  onClick={scrollToBottom}
                 />
               </IonCol>
               <IonCol size="2">

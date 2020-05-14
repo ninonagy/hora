@@ -18,12 +18,19 @@ import * as db from "../../db";
 const Register2 = (props) => {
   const [globalState, globalActions] = useGlobal();
   let [skills, setSkills] = useState([]);
+  let [skillList, setSkillList] = useState({});
 
   let user = globalState.user;
 
   useEffect(() => {
     if (user.skills != null) setSkills(user.skills);
   });
+
+  useEffect(() => {
+    db.getSkillsList().then((skills) => {
+      setSkillList(skills.all);
+    });
+  }, []);
 
   function updateUser() {
     user.skills = skills;
@@ -48,7 +55,11 @@ const Register2 = (props) => {
         <h2 className="description">
           Molimo te da odabereš načine na koje možeš pomoći drugima! (:
         </h2>
-        <SkillsEdit skills={skills} onChange={(skills) => setSkills(skills)} />
+        <SkillsEdit
+          skillList={skillList}
+          skills={skills}
+          onChange={(skills) => setSkills(skills)}
+        />
         <IonRow className="ion-justify-content-center">
           <IonButton
             fill="clear"
