@@ -16,6 +16,7 @@ import {
   IonGrid,
   IonRow,
   IonCol,
+  IonAlert,
 } from "@ionic/react";
 
 import "./FavorDetailPage.css";
@@ -38,7 +39,8 @@ import Loader from "../../components/Loader";
 
 import * as db from "../../db";
 import useGlobal from "../../state";
-import { states } from "../../scheme";
+import { states, types, triggers } from "../../scheme";
+import { userToUserKey } from "../../utils";
 
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
@@ -47,7 +49,12 @@ const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
   let [isAbleToHelp, setIsAbleToHelp] = useState();
   let [isActive, setIsActive] = useState();
-  let favorId = match.params.favorId;
+
+  // alerts
+  let [showAbortAlert, setShowAbortAlert] = useState(false);
+  let [showDoneAlert, setShowDoneAlert] = useState(false);
+
+  const favorId = match.params.favorId;
 
   let [favor, setFavor] = useState({});
   let [user, setUser] = useState({});
@@ -64,7 +71,7 @@ const FavorDetailPage = ({ history, match }) => {
         setIsActive(favor.state == "active");
       });
     });
-  });
+  }, []);
 
   let { title, description, location, dateCreated, state } = favor;
 
@@ -119,17 +126,38 @@ const FavorDetailPage = ({ history, match }) => {
       return (
         <IonRow>
           <IonCol>
-            <IonButton expand="block" color="danger" fill="outline">
+            <IonButton
+              expand="block"
+              color="danger"
+              fill="outline"
+              onClick={() => setShowAbortAlert(true)}
+            >
               <IonIcon icon={closeCircleOutline} />
             </IonButton>
           </IonCol>
           <IonCol>
-            <IonButton expand="block" color="success" fill="outline">
+            <IonButton
+              expand="block"
+              color="success"
+              fill="outline"
+              onClick={() => setShowDoneAlert(true)}
+            >
               <IonIcon icon={checkmarkCircleOutline} />
             </IonButton>
           </IonCol>
           <IonCol>
-            <IonButton expand="block" fill="outline">
+            <IonButton
+              expand="block"
+              fill="outline"
+              onClick={() => {
+                // Forward to conversation page
+                const conversationId = userToUserKey(
+                  favor.ownerId,
+                  favor.userId
+                );
+                history.push(`/messages/conversation/${conversationId}`);
+              }}
+            >
               <IonIcon icon={chatbubbleEllipsesOutline} />
             </IonButton>
           </IonCol>
@@ -168,6 +196,75 @@ const FavorDetailPage = ({ history, match }) => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
+          <IonAlert
+            isOpen={showAbortAlert}
+            onDidDismiss={() => setShowAbortAlert(false)}
+            header={"Jesi li siguran da više ne želiš pomoći?"}
+            buttons={[
+              {
+                text: "Ne",
+                role: "cancel",
+                cssClass: "secondary",
+                handler: () => {},
+              },
+              {
+                text: "Da",
+                handler: async () => {
+                  const { ownerId, userId } = favor;
+                  const conversationId = userToUserKey(ownerId, userId);
+                  // Set favor state from active to free
+                  await db.setFavorState(favorId, states.favor.free);
+                  await db.storeMessage(
+                    conversationId,
+                    {
+                      senderId: userId,
+                      favorId: favorId,
+                      trigger: triggers.abort,
+                    },
+                    types.message.smallNotification
+                  );
+                  // Hide buttons
+                  setIsAbleToHelp(false);
+                  setIsActive(false);
+                },
+              },
+            ]}
+          />
+          <IonAlert
+            isOpen={showDoneAlert}
+            onDidDismiss={() => setShowDoneAlert(false)}
+            header={"Želiš li obavijestiti vlasnika da si gotov s uslugom?"}
+            buttons={[
+              {
+                text: "Ne",
+                role: "cancel",
+                cssClass: "secondary",
+                handler: () => {},
+              },
+              {
+                text: "Da",
+                handler: async () => {
+                  debugger;
+                  const { ownerId, userId } = favor;
+                  const conversationId = userToUserKey(ownerId, userId);
+                  // Set favor state from active to done
+                  await db.setFavorState(favorId, states.favor.done);
+                  await db.storeMessage(
+                    conversationId,
+                    {
+                      senderId: userId,
+                      favorId: favorId,
+                      trigger: triggers.done,
+                    },
+                    types.message.smallNotification
+                  );
+                  // Hide buttons
+                  setIsAbleToHelp(false);
+                  setIsActive(false);
+                },
+              },
+            ]}
+          />
           <IonGrid>
             <IonRow onClick={() => history.push(`/user/${favor.ownerId}`)}>
               <IonCol offset="1" size="3">

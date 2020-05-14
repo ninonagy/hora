@@ -98,7 +98,7 @@ const FavorsListPage = (props) => {
 
   return (
     <IonPage>
-      <Loader data={favorsFree && userFavorsActive}>
+      <Loader data={favorsFree}>
         <IonContent fullscreen="true">
           <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
             <IonRefresherContent
