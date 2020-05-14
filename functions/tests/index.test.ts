@@ -9,7 +9,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions-test";
 
 // Cloud functions
-import { onFavorStateChange, onFavorCreate } from "../src/index";
+import { onFavorStateChange, onFavorCreate, onUserCreate } from "../src/index";
 
 // Connect to local firestore emulator
 // Start emulator -> firebase emulators:start --only firestore
@@ -33,18 +33,23 @@ const testEnv = functions(
 describe("Favor life cycle test", () => {
   const wrapped = testEnv.wrap(onFavorStateChange);
   const wrappedOnFavorCreate = testEnv.wrap(onFavorCreate);
+  const wrappedOnUserCreate = testEnv.wrap(onUserCreate);
   const Jojo = "u1"; // owner
   const Loki = "u2"; // user
   const favorId = "test_favor";
+
+  before(async () => {
+    await admin.firestore().doc(`/users/${Jojo}`).delete();
+    await admin.firestore().doc(`/users/${Loki}`).delete();
+    await admin.firestore().doc(`/favors/${favorId}`).delete();
+  });
 
   it("should create user Jojo", async () => {
     const id = await admin
       .firestore()
       .doc(`/users/${Jojo}`)
-      .set({
+      .create({
         name: "Jojo",
-        timeSpent: 0,
-        timeEarned: 3,
       })
       .then(() => Jojo);
     expect(id).to.be.equal(Jojo);
@@ -54,13 +59,39 @@ describe("Favor life cycle test", () => {
     const id = await admin
       .firestore()
       .doc(`/users/${Loki}`)
-      .set({
+      .create({
         name: "Loki",
-        timeSpent: 0,
-        timeEarned: 3,
       })
       .then(() => Loki);
     expect(id).to.be.equal(Loki);
+  });
+
+  it("should set initial coins", async () => {
+    const snapJojo = testEnv.firestore.makeDocumentSnapshot(
+      {
+        name: Jojo,
+        timeEarned: 0,
+        timeSpent: 0,
+      },
+      `/users/${Jojo}`
+    );
+    const snapLoki = testEnv.firestore.makeDocumentSnapshot(
+      {
+        name: Loki,
+        timeEarned: 0,
+        timeSpent: 0,
+      },
+      `/users/${Loki}`
+    );
+
+    await wrappedOnUserCreate(snapJojo);
+    await wrappedOnUserCreate(snapLoki);
+
+    const userJojo = await admin.firestore().doc(`/users/${Jojo}`).get();
+    const userLoki = await admin.firestore().doc(`/users/${Loki}`).get();
+
+    expect(userJojo.data()?.timeEarned).to.be.equal(3);
+    expect(userLoki.data()?.timeEarned).to.be.equal(3);
   });
 
   it("Jojo should create new favor", async () => {

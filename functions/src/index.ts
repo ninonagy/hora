@@ -16,6 +16,22 @@ function setUserNotification(userId: String, data: Object) {
 const incrementValue = admin.firestore.FieldValue.increment(1.0);
 const decrementValue = admin.firestore.FieldValue.increment(-1.0);
 
+export const onUserCreate = functions.firestore
+  .document("/users/{userId}")
+  .onCreate((snapshot) => {
+    const userId = snapshot.id;
+    if (userId) {
+      // Give user 3 coins
+      const setInitialCoins = fs.doc(`/users/${userId}`).update({
+        timeEarned: 3,
+        timeSpent: 0,
+      });
+      return Promise.all([setInitialCoins]);
+    }
+
+    return "No userId set!";
+  });
+
 // Handle new favor
 export const onFavorCreate = functions.firestore
   .document("/favors/{favorId}")
