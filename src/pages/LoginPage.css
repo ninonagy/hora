@@ -70,6 +70,13 @@
   display: none;
 }
 
+.register-warninig {
+  font-family: "Open Sans", sans-serif;
+  color: var(--ion-color-medium-shade);
+  font-size: 15px;
+  margin: 20px 20px 0;
+}
+
 .col1 {
   background-color: #0c2ffb;
 }

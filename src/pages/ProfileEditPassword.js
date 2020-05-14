@@ -19,6 +19,8 @@ import { withRouter } from "react-router";
 
 import { checkmarkOutline } from "ionicons/icons";
 
+import CryptoJS from "crypto-js";
+
 import "./ProfilePage.css";
 
 import BackButton from "../components/BackButton";
@@ -54,6 +56,20 @@ const ProfileEditPassword = ({ history }) => {
     else
       db.updateUser(userId, { password: passwordState }).then(history.goBack());
   }
+
+  /* 
+    We are aware storing passwords this way is
+    far from perfect, but it is much easier to test things
+    this way. It will be upgraded very soon.
+  */
+
+  const getPassHash = (pass) => {
+    const hash = CryptoJS.SHA256(pass);
+    const secret_buffer = CryptoJS.enc.Base64.parse("secret");
+    const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA512, secret_buffer);
+    hmac.update(hash, secret_buffer);
+    return hmac.finalize().toString(CryptoJS.enc.Base64);
+  };
 
   return (
     <IonPage>
@@ -92,7 +108,9 @@ const ProfileEditPassword = ({ history }) => {
               <IonInput
                 type="password"
                 pattern="password"
-                onIonChange={(e) => setCurrPassword(e.target.value)}
+                onIonChange={(e) =>
+                  setCurrPassword(getPassHash(e.target.value))
+                }
               />
             </IonItem>
 
@@ -101,7 +119,7 @@ const ProfileEditPassword = ({ history }) => {
               <IonInput
                 type="password"
                 pattern="password"
-                onIonChange={(e) => setPassword(e.target.value)}
+                onIonChange={(e) => setPassword(getPassHash(e.target.value))}
               />
             </IonItem>
 
@@ -110,7 +128,9 @@ const ProfileEditPassword = ({ history }) => {
               <IonInput
                 type="password"
                 pattern="password"
-                onIonChange={(e) => setRepeatPassword(e.target.value)}
+                onIonChange={(e) =>
+                  setRepeatPassword(getPassHash(e.target.value))
+                }
               />
             </IonItem>
           </IonList>
