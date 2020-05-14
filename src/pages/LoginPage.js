@@ -13,8 +13,6 @@ import { withRouter, Redirect } from "react-router";
 
 import "./LoginPage.css";
 
-import * as db from "../db";
-
 import useGlobal from "../state";
 import { authService } from "../services";
 
@@ -48,7 +46,8 @@ const LoginPage = (props) => {
   if (isAuth) {
     let { state } = props.location;
     let path = "/home";
-    if (state) path = state.from.pathname;
+    if (state?.from) path = state.from.pathname;
+    // Forward user to previous page or to default page
     return <Redirect to={path} />;
   } else {
     return (

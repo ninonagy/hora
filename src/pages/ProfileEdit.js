@@ -35,6 +35,7 @@ import Loader from "../components/Loader";
 
 import useGlobalState from "../state";
 import * as db from "../db";
+import { authService } from "../services";
 
 const ProfileEdit = ({ history, location }) => {
   const [globalState, globalActions] = useGlobalState();
@@ -64,6 +65,12 @@ const ProfileEdit = ({ history, location }) => {
     return (
       date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
     );
+  }
+
+  function logoutUser() {
+    authService.logout();
+    globalActions.setAuthUser(null);
+    history.replace("/login");
   }
 
   return (
@@ -182,13 +189,22 @@ const ProfileEdit = ({ history, location }) => {
                 }
               ></IonDatetime>
             </IonItem>
-            <IonButton
-              fill="clear"
-              color="primary"
-              onClick={() => history.push("/profile/edit/password")}
-            >
-              Promijeni password
-            </IonButton>
+            <IonGrid>
+              <IonRow>
+                <IonButton
+                  fill="clear"
+                  color="primary"
+                  onClick={() => history.push("/profile/edit/password")}
+                >
+                  Promijeni password
+                </IonButton>
+              </IonRow>
+              <IonRow>
+                <IonButton fill="clear" color="primary" onClick={logoutUser}>
+                  Logout
+                </IonButton>
+              </IonRow>
+            </IonGrid>
           </IonList>
         </IonContent>
       </Loader>
