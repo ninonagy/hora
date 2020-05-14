@@ -41,7 +41,10 @@ describe("Favor life cycle test", () => {
   before(async () => {
     await admin.firestore().doc(`/users/${Jojo}`).delete();
     await admin.firestore().doc(`/users/${Loki}`).delete();
+    await admin.firestore().doc(`/users/horacije`).delete();
     await admin.firestore().doc(`/favors/${favorId}`).delete();
+    await admin.firestore().doc(`/conversations/horacijeu1`).delete();
+    await admin.firestore().doc(`/conversations/horacijeu2`).delete();
   });
 
   it("should create user Jojo", async () => {
