@@ -143,9 +143,9 @@ const ProfileEdit = ({ history, location }) => {
 
             <IonRow className="editSkills">
               <IonCol className="ion-text-center">
-                {skills.map((item) => (
+                {skills.map((skill) => (
                   <IonChip>
-                    <IonLabel>{skillList[item]}</IonLabel>
+                    <IonLabel>{skillList[skill]}</IonLabel>
                   </IonChip>
                 ))}
               </IonCol>
