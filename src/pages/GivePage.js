@@ -163,7 +163,9 @@ const GivePage = (props) => {
         </IonHeader>
 
         <IonContent>
-          {//using illustration from https://undraw.co/}
+          {
+            //using illustration from https://undraw.co/
+          }
           <img className="image" src="../assets/sad.svg" />
           <IonRow>
             <IonCol className="ion-text-center profile-bio">
