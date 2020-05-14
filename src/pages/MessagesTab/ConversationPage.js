@@ -305,7 +305,7 @@ const ConversationPage = (props) => {
   const scrollToBottom = () => {
     setTimeout(() => {
       messageListRef.current && messageListRef.current.scrollToBottom(500);
-    }, 50);
+    }, 300);
   };
 
   const handleAlertDismiss = () => {
