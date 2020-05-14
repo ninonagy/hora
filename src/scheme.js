@@ -20,22 +20,32 @@ function buildPath(path = "", ids = {}) {
   return path;
 }
 
-// States that are assigned to values
+// Favor states
 const states = {
   favor: {
     free: "free",
     pending: "pending",
     active: "active",
+    // review: "review",
     done: "done",
   },
 };
 
-// Types
+// Message types
 const types = {
   message: {
     message: "msg",
     notification: "notification",
+    smallNotification: "smallNotification",
   },
 };
 
-export { paths, buildPath, states, types };
+// Notification triggers
+const triggers = {
+  accept: "accept",
+  decline: "decline",
+  abort: "abort",
+  done: "done",
+};
+
+export { paths, buildPath, states, types, triggers };

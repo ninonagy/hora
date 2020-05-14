@@ -40,7 +40,7 @@ import Loader from "../../components/Loader";
 import * as db from "../../db";
 import { fs } from "../../firebase";
 
-import * as scheme from "../../scheme";
+import { buildPath, states, triggers, types } from "../../scheme";
 
 const Alerts = ({
   conversationId,
@@ -75,29 +75,24 @@ const Alerts = ({
           {
             text: "Da",
             handler: async () => {
-              // Delete selected message from conversation
               const message = cancelAlert.message;
-              // TODO: Delete message?
+              // Delete notification message
               await db.deleteMessage(conversationId, message.id);
               // Set favor state from pending to free
-              await db.setFavorState(message.favorId, scheme.states.favor.free);
-              await fs
-                .doc(
-                  scheme.buildPath(db.paths.message, {
-                    conversationId: conversationId,
-                    messageId: message.id,
-                  })
-                )
-                .update({
-                  action: true,
-                });
+              await db.setFavorState(message.favorId, states.favor.free);
+              // Mark notification message as activated
+              await db.updateMessage(conversationId, message.id, {
+                action: true,
+              });
+              // Send small notification as a result of action
               await db.storeMessage(
                 conversationId,
                 {
                   senderId: userId,
                   favorId: message.favorId,
+                  trigger: triggers.abort
                 },
-                "smallNotification"
+                types.message.smallNotification
               );
             },
           },
@@ -120,24 +115,18 @@ const Alerts = ({
             handler: async () => {
               const message = declineAlert.message;
               // Set favor state from pending to free
-              await db.setFavorState(message.favorId, scheme.states.favor.free);
-              await fs
-                .doc(
-                  scheme.buildPath(db.paths.message, {
-                    conversationId: conversationId,
-                    messageId: message.id,
-                  })
-                )
-                .update({
-                  action: true,
-                });
+              await db.setFavorState(message.favorId, states.favor.free);
+              await db.updateMessage(conversationId, message.id, {
+                action: true,
+              });
               await db.storeMessage(
                 conversationId,
                 {
                   senderId: userId,
                   favorId: message.favorId,
+                  trigger: triggers.decline
                 },
-                "smallNotification"
+                types.message.smallNotification
               );
             },
           },
@@ -160,27 +149,18 @@ const Alerts = ({
             handler: async () => {
               const message = acceptAlert.message;
               // Set favor state from pending to active
-              await db.setFavorState(
-                message.favorId,
-                scheme.states.favor.active
-              );
-              await fs
-                .doc(
-                  scheme.buildPath(db.paths.message, {
-                    conversationId: conversationId,
-                    messageId: message.id,
-                  })
-                )
-                .update({
-                  action: true,
-                });
+              await db.setFavorState(message.favorId, states.favor.active);
+              await db.updateMessage(conversationId, message.id, {
+                action: true,
+              });
               await db.storeMessage(
                 conversationId,
                 {
                   senderId: userId,
                   favorId: message.favorId,
+                  trigger: triggers.accept
                 },
-                "smallNotification"
+                types.message.smallNotification
               );
             },
           },

@@ -8,9 +8,11 @@ import {
   IonList,
   IonIcon,
   IonBadge,
+  IonRefresher,
+  IonRefresherContent,
 } from "@ionic/react";
 
-import { heart } from "ionicons/icons";
+import { chevronDownCircleOutline } from "ionicons/icons";
 
 import "./FavorListPage.css";
 
@@ -32,71 +34,93 @@ const FavorsListPage = (props) => {
   const [globalState, {}] = useGlobal();
 
   useEffect(() => {
-    // Get free favors
-    fs.collection(buildPath(paths.favor, { favorId: "" }))
-      .where("state", "==", states.favor.free)
-      .orderBy("dateCreated", "desc")
-      .get()
-      .then((result) => {
-        setFavorsFree(arrayWithId(result));
-      });
-
-    // Get user's active favors
-    fs.collection(
-      buildPath(paths.favor, {
-        userId: globalState.userId,
-        favorId: "",
-      })
-    )
-      .where("userId", "==", globalState.userId)
-      .where("state", "==", states.favor.active)
-      .orderBy("dateCreated", "desc")
-      .get()
-      .then((result) => {
-        setUserFavorsActive(arrayWithId(result));
-      });
+    updateFavorList();
   }, []);
-
+  
   useEffect(() => {
     db.getSkillsList().then((skills) => {
       setSkillList(skills.all);
     });
   }, []);
 
-  function showFavors() {
-    if (userFavorsActive[0])
-      return <span className="sectionHeading">Your active favors</span>;
+  async function updateFavorList() {
+    // Get free favors
+    setFavorsFree(
+      arrayWithId(
+        await fs
+          .collection(buildPath(paths.favor, { favorId: "" }))
+          .where("state", "==", states.favor.free)
+          .orderBy("dateCreated", "desc")
+          .get()
+      )
+    );
+
+    // Get user's active favors
+    setUserFavorsActive(
+      arrayWithId(
+        await fs
+          .collection(
+            buildPath(paths.favor, {
+              userId: globalState.userId,
+              favorId: "",
+            })
+          )
+          .where("userId", "==", globalState.userId)
+          .where("state", "==", states.favor.active)
+          .orderBy("dateCreated", "desc")
+          .get()
+      )
+    );
+  }
+
+  async function handleRefresh(event) {
+    await updateFavorList();
+    event.target.complete();
+  }
+
+  function showUserActiveFavors() {
+    if (userFavorsActive.length)
+      return (
+        <>
+          <span className="sectionHeading">Your active favors</span>
+          <IonList>
+            {userFavorsActive.map((item) => (
+              <FavorCard skillList={skillList} item={item} key={item.id} link={`/favor/${item.id}`} />
+            ))}
+          </IonList>
+        </>
+      );
+  }
+
+  function showFreeFavors() {
+    return (
+      <>
+        <span className="sectionHeading">Help someone!</span>
+        <IonList>
+          {favorsFree.map((item) => (
+            <FavorCard skillList={skillList} item={item} key={item.id} link={`/favor/${item.id}`} />
+          ))}
+        </IonList>
+      </>
+    );
   }
 
   return (
     <IonPage>
       <Loader data={favorsFree}>
         <IonContent fullscreen="true">
+          <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+            <IonRefresherContent
+              pullingIcon={chevronDownCircleOutline}
+              pullingText="Pull to refresh"
+              refreshingSpinner="circular"
+            />
+          </IonRefresher>
           <IonToolbar>
             <IonTitle slot="start">HORA</IonTitle>
           </IonToolbar>
-          {showFavors()}
-          <IonList>
-            {userFavorsActive.map((item) => (
-              <FavorCard
-                skillList={skillList}
-                item={item}
-                key={item.id}
-                link={`/favor/${item.id}`}
-              />
-            ))}
-          </IonList>
-          <span className="sectionHeading">Help someone!</span>
-          <IonList>
-            {favorsFree.map((item) => (
-              <FavorCard
-                skillList={skillList}
-                item={item}
-                key={item.id}
-                link={`/favor/${item.id}`}
-              />
-            ))}
-          </IonList>
+          {showUserActiveFavors()}
+          {showFreeFavors()}
         </IonContent>
       </Loader>
     </IonPage>

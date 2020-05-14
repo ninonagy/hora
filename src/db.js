@@ -163,6 +163,17 @@ async function storeMessage(conversationId, data = {}, type = "msg") {
   ).then(() => messageId);
 }
 
+async function updateMessage(conversationId, messageId, data = {}) {
+  return updateValue(
+    paths.message,
+    {
+      conversationId,
+      messageId,
+    },
+    data
+  );
+}
+
 async function deleteMessage(conversationId, messageId) {
   return deleteDoc(paths.message, {
     conversationId,
@@ -205,6 +216,7 @@ export {
   getFavorsList,
   getUserByAuth,
   getMessages,
+  updateMessage,
   deleteMessage,
   storeConversation,
   storeMessage,
