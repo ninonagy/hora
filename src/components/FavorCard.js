@@ -15,8 +15,8 @@ import RatingIcons from "../components/RatingIcons";
 
 import * as db from "../db";
 
-const FavorCard = ({ item, link }) => {
-  let { ownerId, title, description } = item;
+const FavorCard = ({ skillList, item, link }) => {
+  let { ownerId, title, description, skills } = item;
   let [user, setUser] = useState({});
 
   useEffect(() => {
@@ -41,12 +41,12 @@ const FavorCard = ({ item, link }) => {
       <IonCardContent>
         {description}
         <br />
-        <IonChip>
-          <IonLabel>tag1</IonLabel>
-        </IonChip>
-        <IonChip>
-          <IonLabel>tag2</IonLabel>
-        </IonChip>
+
+        {skills.map((skill) => (
+          <IonChip>
+            <IonLabel>{skillList[skill]}</IonLabel>
+          </IonChip>
+        ))}
       </IonCardContent>
     </IonCard>
   );
