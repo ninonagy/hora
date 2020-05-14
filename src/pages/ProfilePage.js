@@ -40,6 +40,7 @@ const getAge = (birthDate) =>
 const ProfilePage = ({ history, match, isPublic }) => {
   const [globalState, globalActions] = useGlobalState();
   let [user, setUser] = useState({});
+  let [skillList, setSkillList] = useState({});
 
   useEffect(() => {
     if (isPublic) {
@@ -50,6 +51,12 @@ const ProfilePage = ({ history, match, isPublic }) => {
       setUser(globalState.user);
     }
   }, [globalState.user]);
+
+  useEffect(() => {
+    db.getSkillsList().then((skills) => {
+      setSkillList(skills.all);
+    });
+  }, []);
 
   let {
     name,
@@ -115,9 +122,9 @@ const ProfilePage = ({ history, match, isPublic }) => {
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center profile-bio">
-                {skills.map((item) => (
+                {skills.map((skill) => (
                   <IonChip>
-                    <IonLabel>{item}</IonLabel>
+                    <IonLabel>{skillList[skill]}</IonLabel>
                   </IonChip>
                 ))}
               </IonCol>

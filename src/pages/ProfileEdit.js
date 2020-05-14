@@ -41,12 +41,19 @@ const ProfileEdit = ({ history, location }) => {
   const [globalState, globalActions] = useGlobalState();
 
   let [user, setUser] = useState({});
+  let [skillList, setSkillList] = useState({});
 
   const [showInvalidEmailAddress, setInvalidEmailAddress] = useState(false);
 
   useEffect(() => {
     setUser(globalState.user);
   }, [globalState.user]);
+
+  useEffect(() => {
+    db.getSkillsList().then((skills) => {
+      setSkillList(skills.all);
+    });
+  }, []);
 
   let { skills } = user;
 
@@ -143,9 +150,9 @@ const ProfileEdit = ({ history, location }) => {
 
             <IonRow className="editSkills">
               <IonCol className="ion-text-center">
-                {skills.map((item) => (
+                {skills.map((skill) => (
                   <IonChip>
-                    <IonLabel>{item}</IonLabel>
+                    <IonLabel>{skillList[skill]}</IonLabel>
                   </IonChip>
                 ))}
               </IonCol>
