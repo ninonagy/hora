@@ -244,7 +244,6 @@ const FavorDetailPage = ({ history, match }) => {
               {
                 text: "Da",
                 handler: async () => {
-                  debugger;
                   const { ownerId, userId } = favor;
                   const conversationId = userToUserKey(ownerId, userId);
                   // Set favor state from active to done

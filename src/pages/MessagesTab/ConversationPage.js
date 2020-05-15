@@ -90,7 +90,7 @@ const Alerts = ({
                 {
                   senderId: userId,
                   favorId: message.favorId,
-                  trigger: triggers.abort
+                  trigger: triggers.abort,
                 },
                 types.message.smallNotification
               );
@@ -124,7 +124,7 @@ const Alerts = ({
                 {
                   senderId: userId,
                   favorId: message.favorId,
-                  trigger: triggers.decline
+                  trigger: triggers.decline,
                 },
                 types.message.smallNotification
               );
@@ -158,7 +158,7 @@ const Alerts = ({
                 {
                   senderId: userId,
                   favorId: message.favorId,
-                  trigger: triggers.accept
+                  trigger: triggers.accept,
                 },
                 types.message.smallNotification
               );
@@ -368,6 +368,7 @@ const ConversationPage = (props) => {
                   isThisUser={message.senderId === userId ? true : false}
                   favorId={message.favorId}
                   action={message.action}
+                  trigger={message.trigger}
                   showTime={showTime(messages, id)}
                   time={new Date(messages[id].dateCreated)}
                 />
