@@ -11,6 +11,8 @@ import {
   IonChip,
 } from "@ionic/react";
 
+import "./FavorCard.css";
+
 import RatingIcons from "../components/RatingIcons";
 
 import * as db from "../db";
@@ -26,12 +28,12 @@ const FavorCard = ({ skillList, item, link }) => {
 
   return (
     <IonCard routerLink={link}>
-      <IonItem>
-        <IonAvatar slot="start">
+      <IonItem lines="full">
+        <IonAvatar slot="start" className="favorCard-avatar">
           <img src={user.pictureLink} alt="Profile" />
         </IonAvatar>
         <IonLabel>{user.name}</IonLabel>
-        <RatingIcons rating={user.rating} />
+        <RatingIcons timeEarned={user.timeEarned} timeSpent={user.timeSpent} />
       </IonItem>
 
       <IonCardHeader>

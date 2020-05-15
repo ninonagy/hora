@@ -36,7 +36,7 @@ const FavorsListPage = (props) => {
   useEffect(() => {
     updateFavorList();
   }, []);
-  
+
   useEffect(() => {
     db.getSkillsList().then((skills) => {
       setSkillList(skills.all);
@@ -85,7 +85,12 @@ const FavorsListPage = (props) => {
           <span className="sectionHeading">Your active favors</span>
           <IonList>
             {userFavorsActive.map((item) => (
-              <FavorCard skillList={skillList} item={item} key={item.id} link={`/favor/${item.id}`} />
+              <FavorCard
+                skillList={skillList}
+                item={item}
+                key={item.id}
+                link={`/favor/${item.id}`}
+              />
             ))}
           </IonList>
         </>
@@ -98,7 +103,12 @@ const FavorsListPage = (props) => {
         <span className="sectionHeading">Help someone!</span>
         <IonList>
           {favorsFree.map((item) => (
-            <FavorCard skillList={skillList} item={item} key={item.id} link={`/favor/${item.id}`} />
+            <FavorCard
+              skillList={skillList}
+              item={item}
+              key={item.id}
+              link={`/favor/${item.id}`}
+            />
           ))}
         </IonList>
       </>
@@ -112,7 +122,8 @@ const FavorsListPage = (props) => {
           <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
             <IonRefresherContent
               pullingIcon={chevronDownCircleOutline}
-              pullingText="Pull to refresh"
+              pullingText="Osvježi"
+              refreshingText="Osvježavanje"
               refreshingSpinner="circular"
             />
           </IonRefresher>
