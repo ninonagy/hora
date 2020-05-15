@@ -41,6 +41,7 @@ import * as db from "../../db";
 import { fs } from "../../firebase";
 
 import { buildPath, states, triggers, types } from "../../scheme";
+import { arrayWithId } from "../../utils";
 
 const Alerts = ({
   conversationId,
@@ -90,7 +91,7 @@ const Alerts = ({
                 {
                   senderId: userId,
                   favorId: message.favorId,
-                  trigger: triggers.abort
+                  trigger: triggers.abort,
                 },
                 types.message.smallNotification
               );
@@ -124,7 +125,7 @@ const Alerts = ({
                 {
                   senderId: userId,
                   favorId: message.favorId,
-                  trigger: triggers.decline
+                  trigger: triggers.decline,
                 },
                 types.message.smallNotification
               );
@@ -158,7 +159,7 @@ const Alerts = ({
                 {
                   senderId: userId,
                   favorId: message.favorId,
-                  trigger: triggers.accept
+                  trigger: triggers.accept,
                 },
                 types.message.smallNotification
               );
@@ -242,10 +243,7 @@ const ConversationPage = (props) => {
       )
       .orderBy("dateCreated", "asc")
       .onSnapshot((querySnapshot) => {
-        let array = [];
-        querySnapshot.forEach((doc) => {
-          array.push({ ...doc.data(), id: doc.id });
-        });
+        let array = arrayWithId(querySnapshot);
         setMessages(array);
         if (array.length === 0) {
           props.history.replace("/messages");

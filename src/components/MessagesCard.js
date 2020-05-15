@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-import { IonLabel, IonItem, IonAvatar } from "@ionic/react";
+import { IonLabel, IonItem, IonAvatar, IonImg } from "@ionic/react";
 
 import * as db from "../db";
+import useCache from "../hooks/useCache";
 
 const MessagesCard = ({ link, userId }) => {
-  let [user, setUser] = useState({});
-
-  useEffect(() => {
-    db.getUser(userId).then((user) => {
-      setUser(user);
-    });
-  }, []);
+  let user = useCache(() => db.getUser(userId), `/user/${userId}`);
 
   let { name, pictureLink } = user;
 
   return (
     <IonItem routerLink={link}>
       <IonAvatar slot="start">
-        <img src={pictureLink} alt="User" />
+        <IonImg src={pictureLink} />
       </IonAvatar>
       <IonLabel>
         <h2>{name}</h2>

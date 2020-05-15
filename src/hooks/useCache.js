@@ -11,15 +11,22 @@ const storage = {
 // the asset if needed.
 // If you pass onlyCache as True then it will load real data only once
 // and continue using cached data
-export default function useCache(asyncFn, path, onlyCache = false) {
+export default function useCache(asyncFn, key, onlyCache = false) {
   let [data, setData] = useState([]);
 
   useEffect(() => {
-    const cacheKey = path;
+    const cacheKey = key;
 
     const fetchData = () =>
-      asyncFn(path).then((newData) => {
-        const d = arrayWithId(newData);
+      asyncFn().then((newData) => {
+        let d = {};
+        if (newData.docs) {
+          d = arrayWithId(newData);
+        } else if (newData.data) {
+          d = newData.data();
+        } else {
+          d = newData;
+        }
         storage.setData(cacheKey, d);
         setData(d);
       });
