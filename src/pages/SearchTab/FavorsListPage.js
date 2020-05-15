@@ -18,6 +18,8 @@ import "./FavorListPage.css";
 
 import FavorCard from "../../components/FavorCard";
 
+import AdCard from "../../components/AdCard";
+
 import Loader from "../../components/Loader";
 
 import * as db from "../../db";
@@ -102,14 +104,18 @@ const FavorsListPage = (props) => {
       <>
         <span className="sectionHeading">Help someone!</span>
         <IonList>
-          {favorsFree.map((item) => (
-            <FavorCard
-              skillList={skillList}
-              item={item}
-              key={item.id}
-              link={`/favor/${item.id}`}
-            />
-          ))}
+          {favorsFree.map((item) =>
+            item.ownerId ? (
+              <FavorCard
+                skillList={skillList}
+                item={item}
+                key={item.id}
+                link={`/favor/${item.id}`}
+              />
+            ) : (
+              <AdCard item={item} key={item.id} />
+            )
+          )}
         </IonList>
       </>
     );
