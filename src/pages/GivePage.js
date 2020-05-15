@@ -48,6 +48,7 @@ const GivePage = (props) => {
     e.preventDefault();
     let userId = globalState.userId;
     let { location } = globalState.user;
+
     if (title && description && location && selectedSkills && dateTime) {
       db.createFavor({
         ownerId: userId,
@@ -132,7 +133,13 @@ const GivePage = (props) => {
                     "-" +
                     dateTime.getDate()
                   }
-                  onIonChange={(e) => setDateTime(new Date(e.target.value))}
+                  onIonChange={(e) =>
+                    setDateTime(
+                      new Date(
+                        e.target.value.replace(/-/g, "/").replace("T", " ")
+                      )
+                    )
+                  }
                 ></IonDatetime>
               </IonItem>
               <IonItem>
