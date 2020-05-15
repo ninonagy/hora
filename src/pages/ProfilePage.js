@@ -102,7 +102,6 @@ const ProfilePage = ({ history, match, isPublic }) => {
                   <IonImg src={pictureLink} alt="Avatar" />
                 </IonAvatar>
               </IonCol>
-              {/** I know this look terrible. I'm sorry. I'll update it asap. */}
               <IonCol size="2" offset="3">
                 <div class="profile-coins">{timeAvailable}</div> coins
               </IonCol>
@@ -114,7 +113,7 @@ const ProfilePage = ({ history, match, isPublic }) => {
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center">
-                <RatingIcons rating={rating} />
+                <RatingIcons timeEarned={timeEarned} timeSpent={timeSpent} />
               </IonCol>
             </IonRow>
             <IonRow>

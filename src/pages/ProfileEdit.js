@@ -191,7 +191,11 @@ const ProfileEdit = ({ history, location }) => {
                 onIonChange={(e) =>
                   setUser({
                     ...user,
-                    birthDate: new Date(e.target.value).toISOString(),
+                    birthDate: new Date(
+                      new Date(
+                        e.target.value.replace(/-/g, "/").replace("T", " ")
+                      )
+                    ).toISOString(),
                   })
                 }
               ></IonDatetime>

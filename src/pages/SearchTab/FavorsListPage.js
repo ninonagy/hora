@@ -18,6 +18,8 @@ import "./FavorListPage.css";
 
 import FavorCard from "../../components/FavorCard";
 
+import AdCard from "../../components/AdCard";
+
 import Loader from "../../components/Loader";
 
 import * as db from "../../db";
@@ -36,7 +38,7 @@ const FavorsListPage = (props) => {
   useEffect(() => {
     updateFavorList();
   }, []);
-  
+
   useEffect(() => {
     db.getSkillsList().then((skills) => {
       setSkillList(skills.all);
@@ -85,7 +87,12 @@ const FavorsListPage = (props) => {
           <span className="sectionHeading">Your active favors</span>
           <IonList>
             {userFavorsActive.map((item) => (
-              <FavorCard skillList={skillList} item={item} key={item.id} link={`/favor/${item.id}`} />
+              <FavorCard
+                skillList={skillList}
+                item={item}
+                key={item.id}
+                link={`/favor/${item.id}`}
+              />
             ))}
           </IonList>
         </>
@@ -97,9 +104,18 @@ const FavorsListPage = (props) => {
       <>
         <span className="sectionHeading">Help someone!</span>
         <IonList>
-          {favorsFree.map((item) => (
-            <FavorCard skillList={skillList} item={item} key={item.id} link={`/favor/${item.id}`} />
-          ))}
+          {favorsFree.map((item) =>
+            item.ownerId ? (
+              <FavorCard
+                skillList={skillList}
+                item={item}
+                key={item.id}
+                link={`/favor/${item.id}`}
+              />
+            ) : (
+              <AdCard item={item} key={item.id} />
+            )
+          )}
         </IonList>
       </>
     );
@@ -112,7 +128,8 @@ const FavorsListPage = (props) => {
           <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
             <IonRefresherContent
               pullingIcon={chevronDownCircleOutline}
-              pullingText="Pull to refresh"
+              pullingText="Osvježi"
+              refreshingText="Osvježavanje"
               refreshingSpinner="circular"
             />
           </IonRefresher>

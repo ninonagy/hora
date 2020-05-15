@@ -274,7 +274,10 @@ const FavorDetailPage = ({ history, match }) => {
               <IonCol>
                 {user.name}, {getAge(user.birthDate)}
                 <br />
-                <RatingIcons rating={user.rating} />
+                <RatingIcons
+                  timeEarned={user.timeEarned}
+                  timeSpent={user.timeSpent}
+                />
               </IonCol>
             </IonRow>
           </IonGrid>

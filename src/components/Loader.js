@@ -19,7 +19,7 @@ const Loader = (props) => {
   if (isEmptyOrNull(data)) {
     return (
       <div className="container">
-        <IonSpinner name="crescent" className="loader" />
+        <IonSpinner name="dots" className="loader" />
       </div>
     );
   } else {

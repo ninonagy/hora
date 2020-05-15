@@ -1,0 +1,12 @@
+.favorCard-avatar {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.ad-company {
+  margin-left: 5px;
+}
+
+.adCard {
+  border: 1px solid var(--ion-color-warning);
+}

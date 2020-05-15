@@ -19,6 +19,7 @@ import {
   IonCol,
   IonSelect,
   IonSelectOption,
+  IonAlert,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -36,7 +37,9 @@ const GivePage = (props) => {
   let [description, setDescription] = useState("");
   let [dateTime, setDateTime] = useState(new Date());
   let [timeEstimation, setTimeEstimation] = useState(30);
-  let [selectedSkills, setSelectedSkills] = useState([]);
+  let [selectedSkills, setSelectedSkills] = useState();
+
+  const [showAllFieldsRequired, setAllFieldsRequired] = useState(false);
 
   let user = globalState.user;
   let timeAvailable = user.timeEarned - user.timeSpent;
@@ -45,17 +48,20 @@ const GivePage = (props) => {
     e.preventDefault();
     let userId = globalState.userId;
     let { location } = globalState.user;
-    db.createFavor({
-      ownerId: userId,
-      title: title,
-      description: description,
-      location: location,
-      skills: selectedSkills,
-      dateDue: dateTime.toISOString(),
-    }).then((favorId) => {
-      // Forward user to the public favor page
-      props.history.push(`/favor/${favorId}`);
-    });
+
+    if (title && description && location && selectedSkills && dateTime) {
+      db.createFavor({
+        ownerId: userId,
+        title: title,
+        description: description,
+        location: location,
+        skills: selectedSkills,
+        dateDue: dateTime.toISOString(),
+      }).then((favorId) => {
+        // Forward user to the public favor page
+        props.history.push(`/favor/${favorId}`);
+      });
+    } else setAllFieldsRequired(true);
   }
 
   useEffect(() => {
@@ -74,14 +80,18 @@ const GivePage = (props) => {
         </IonHeader>
 
         <IonContent>
+          <IonAlert
+            isOpen={showAllFieldsRequired}
+            onDidDismiss={() => setAllFieldsRequired(false)}
+            header={"Greška!"}
+            message={"Sva polja su obavezna!"}
+            buttons={["U redu"]}
+          />
           <form onSubmit={handleSubmit}>
             <IonList className="ion-no-margin ion-no-padding">
               <IonItem>
                 <IonLabel position="floating">Naslov</IonLabel>
-                <IonInput
-                  onIonChange={(e) => setTitle(e.target.value)}
-                  required
-                />
+                <IonInput onIonChange={(e) => setTitle(e.target.value)} />
               </IonItem>
 
               <IonItem>
@@ -89,7 +99,6 @@ const GivePage = (props) => {
                 <IonTextarea
                   rows="5"
                   onIonChange={(e) => setDescription(e.target.value)}
-                  required
                 />
               </IonItem>
 
@@ -124,13 +133,18 @@ const GivePage = (props) => {
                     "-" +
                     dateTime.getDate()
                   }
-                  onIonChange={(e) => setDateTime(new Date(e.target.value))}
+                  onIonChange={(e) =>
+                    setDateTime(
+                      new Date(
+                        e.target.value.replace(/-/g, "/").replace("T", " ")
+                      )
+                    )
+                  }
                 ></IonDatetime>
               </IonItem>
               <IonItem>
                 <IonLabel>Potrebne vještine</IonLabel>
                 <IonSelect
-                  value={selectedSkills}
                   multiple={true}
                   cancelText="Odustani"
                   okText="Odaberi"

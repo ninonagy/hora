@@ -135,7 +135,9 @@ const RegisterPage = (props) => {
             className="login-input"
             placeholder="datum rođenja"
             onIonChange={(e) =>
-              setBirthDate(new Date(e.target.value).toISOString())
+              setBirthDate(
+                new Date(e.target.value.replace(/-/g, "/").replace("T", " "))
+              )
             }
           ></IonDatetime>
 
