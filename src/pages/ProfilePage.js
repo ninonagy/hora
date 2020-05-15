@@ -33,30 +33,21 @@ import Loader from "../components/Loader";
 
 import useGlobalState from "../state";
 import * as db from "../db";
+import useCache from "../hooks/useCache";
 
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
 const ProfilePage = ({ history, match, isPublic }) => {
-  const [globalState, globalActions] = useGlobalState();
-  let [user, setUser] = useState({});
-  let [skillList, setSkillList] = useState({});
+  const [globalState, {}] = useGlobalState();
+  // let [skillList, setSkillList] = useState({});
 
-  useEffect(() => {
-    if (isPublic) {
-      db.getUser(match.params.userId).then((user) => {
-        setUser(user);
-      });
-    } else {
-      setUser(globalState.user);
-    }
-  }, [globalState.user]);
+  let user = useCache(
+    () => db.getUser(isPublic ? match.params.userId : globalState.userId),
+    isPublic ? `/user/${match.params.userId}` : `user`
+  );
 
-  useEffect(() => {
-    db.getSkillsList().then((skills) => {
-      setSkillList(skills.all);
-    });
-  }, []);
+  const skillList = useCache(db.getSkillsList, `/skills`);
 
   let {
     name,
@@ -121,9 +112,9 @@ const ProfilePage = ({ history, match, isPublic }) => {
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center profile-bio">
-                {skills.map((skill) => (
+                {skillList.all && skills.map((skill) => (
                   <IonChip>
-                    <IonLabel>{skillList[skill]}</IonLabel>
+                    <IonLabel>{skillList.all[skill]}</IonLabel>
                   </IonChip>
                 ))}
               </IonCol>

@@ -17,29 +17,31 @@ import useGlobal from "../../state";
 
 import { fs } from "../../firebase";
 import { paths, buildPath } from "../../db";
-import { arrayWithId } from "../../utils";
+import useCache from "../../hooks/useCache";
 
-const MessagesPage = (props) => {
-  const [globalState, globalActions] = useGlobal();
-  let [conversations, setConversations] = useState([]);
-
-  useEffect(() => {
-    fs.collection(
+function getConversationsOrderByDate(userId) {
+  return fs
+    .collection(
       buildPath(paths.userConversation, {
-        userId: globalState.userId,
+        userId: userId,
         conversationId: "",
       })
     )
-      .orderBy("dateCreated", "desc")
-      .get()
-      .then((result) => {
-        setConversations(arrayWithId(result));
-      });
-  }, []);
+    .orderBy("dateCreated", "desc")
+    .get();
+}
+
+const MessagesPage = (props) => {
+  const [globalState, {}] = useGlobal();
+
+  let conversations = useCache(
+    () => getConversationsOrderByDate(globalState.userId),
+    `/messages`
+  );
 
   return (
     <IonPage>
-      <Loader data={conversations.length || true}>
+      <Loader data={conversations}>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Messages</IonTitle>

@@ -16,15 +16,12 @@ import "./FavorCard.css";
 import RatingIcons from "../components/RatingIcons";
 
 import * as db from "../db";
+import useCache from "../hooks/useCache";
 
 const FavorCard = ({ skillList, item, link }) => {
   let { ownerId, title, description, skills } = item;
-  let [user, setUser] = useState({});
-
-  useEffect(() => {
-    // get user name, profile picture, rating
-    db.getUser(ownerId).then((user) => setUser(user));
-  }, []);
+  // get user name, profile picture, rating
+  let user = useCache(() => db.getUser(ownerId), `/user/${ownerId}`);
 
   return (
     <IonCard routerLink={link}>
