@@ -9,13 +9,17 @@ import {
   IonRow,
   IonCol,
   IonButton,
+  IonIcon,
 } from "@ionic/react";
+
+import { withRouter } from "react-router";
 
 import Time from "./TimeCard";
 
 import * as db from "../db";
 
 const NotificationCard = ({
+  history,
   action,
   user,
   isThisUser,
@@ -50,7 +54,7 @@ const NotificationCard = ({
                 fill="outline"
                 onClick={onUserCancel}
               >
-                Cancel
+                Poništi
               </IonButton>
             </IonCol>
           </IonRow>
@@ -65,7 +69,7 @@ const NotificationCard = ({
                 fill="outline"
                 onClick={onUserDecline}
               >
-                Decline
+                Odbij
               </IonButton>
             </IonCol>
             <IonCol>
@@ -75,7 +79,7 @@ const NotificationCard = ({
                 fill="solid"
                 onClick={onUserAccept}
               >
-                Accept
+                Prihvati
               </IonButton>
             </IonCol>
           </IonRow>
@@ -86,11 +90,11 @@ const NotificationCard = ({
   return (
     <div>
       <Time showTime={showTime} time={time} />
-      <IonCard>
+      <IonCard onClick={(e) => history.push(`/favor/${favorId}`)}>
         <IonCardHeader>
           <IonCardSubtitle>
             {userName}
-            {isThisUser ? " has to accept your favor." : " can do you a favor!"}
+            {isThisUser ? " mora prihvatiti tvoju pomoć." : " ti može pomoći!"}
           </IonCardSubtitle>
           <IonCardTitle>{title}</IonCardTitle>
         </IonCardHeader>
@@ -102,4 +106,4 @@ const NotificationCard = ({
   );
 };
 
-export default NotificationCard;
+export default withRouter(NotificationCard);
