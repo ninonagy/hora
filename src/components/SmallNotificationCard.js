@@ -12,6 +12,7 @@ const SmallNotificationCard = ({
   favorId,
   showTime,
   time,
+  trigger,
 }) => {
   let [favor, setFavor] = useState({});
 
@@ -21,14 +22,20 @@ const SmallNotificationCard = ({
     });
   }, []);
 
-  function returnFavorStatus(favor) {
-    if (favor.state == "free") return " declined";
-    if (favor.state == "active") return " accepted";
-  }
-
-  function returnUserName(user, isThisUser) {
-    if (isThisUser) return "You";
-    else return user.name;
+  function returnNotificationtext(user, isThisUser, trigger) {
+    if (trigger == "accept") {
+      if (isThisUser) return "Prihvatio si pomoć";
+      else return user.name + " je prihvatio pomoć";
+    } else if (trigger == "decline") {
+      if (isThisUser) return "Odbio si pomoć";
+      else return user.name + " je odbio pomoć";
+    } else if (trigger == "done") {
+      if (isThisUser) return "Označio si da je usluga gotova";
+      else return user.name + " je označio da je usluga gotova";
+    } else if (trigger == "abort") {
+      if (isThisUser) return "Otkazao si uslugu.";
+      else return user.name + " je otkazao uslugu. Usluga je ponovno slobodna.";
+    }
   }
 
   let { title, state } = favor || {};
@@ -39,9 +46,7 @@ const SmallNotificationCard = ({
 
       <IonGrid>
         <IonRow className="ion-justify-content-center date">
-          {returnUserName(user, isThisUser)}
-          {returnFavorStatus(favor)}
-          {isThisUser ? " the help." : " your help!"}
+          {returnNotificationtext(user, isThisUser, trigger)}
         </IonRow>
         <IonRow className="ion-justify-content-center hour">{title}</IonRow>
       </IonGrid>
