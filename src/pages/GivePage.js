@@ -29,6 +29,7 @@ import "./GivePage.css";
 import * as db from "../db";
 import useGlobal from "../state";
 import { closeCircle } from "ionicons/icons";
+import useCache from "../hooks/useCache";
 
 const GivePage = (props) => {
   const [globalState, globalActions] = useGlobal();
@@ -36,12 +37,13 @@ const GivePage = (props) => {
   let [title, setTitle] = useState("");
   let [description, setDescription] = useState("");
   let [dateTime, setDateTime] = useState(new Date());
-  let [timeEstimation, setTimeEstimation] = useState(30);
+  // let [timeEstimation, setTimeEstimation] = useState(30);
   let [selectedSkills, setSelectedSkills] = useState();
 
   const [showAllFieldsRequired, setAllFieldsRequired] = useState(false);
 
-  let user = globalState.user;
+  let user = useCache(() => db.getUser(globalState.userId), `user`);
+
   let timeAvailable = user.timeEarned - user.timeSpent;
 
   function handleSubmit(e) {

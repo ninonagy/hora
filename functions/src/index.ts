@@ -114,14 +114,15 @@ export const onMessageCreate = functions.firestore
     if (!senderId) return "No senderId set!";
     const receiverId = getUserIdFromKey(conversationId, senderId);
     if (!receiverId) return "No receiverId set!";
-    const updatedAt = snapshot.createTime?.toMillis();
+    // const updatedAt = snapshot.createTime?.toMillis();
+    const updatedAt = Date.now();
     const updateUserConversation = fs
       .doc(`/users/${receiverId}/conversations/${conversationId}`)
       .update({
         seen: false,
         updatedAt,
       });
-    return Promise.all([updateUserConversation]);
+    return updateUserConversation;
   });
 
 // Handle favor state change

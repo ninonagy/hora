@@ -283,7 +283,6 @@ const ConversationPage = (props) => {
   async function markConversationAsSeen() {
     await fs.doc(`/users/${userId}/conversations/${conversationId}`).update({
       seen: true,
-      updatedAt: Date.now(),
     });
   }
 
@@ -307,7 +306,7 @@ const ConversationPage = (props) => {
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <BackButton onBack={markConversationAsSeen} />
+              <BackButton link={`/messages`} onBack={markConversationAsSeen} />
             </IonButtons>
             <IonTitle>{name}</IonTitle>
             <IonButtons slot="end">
