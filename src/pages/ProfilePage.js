@@ -50,14 +50,12 @@ const ProfilePage = ({ history, match, isPublic }) => {
   // );
 
   useEffect(() => {
-    if (isPublic) {
-      db.getUser(match.params.userId).then((user) => {
+    db.getUser(isPublic ? match.params.userId : globalState.userId).then(
+      (user) => {
         setUser(user);
-      });
-    } else {
-      setUser(globalState.user);
-    }
-  }, [globalState.user]);
+      }
+    );
+  }, []);
 
   let {
     name,

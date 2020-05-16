@@ -262,9 +262,6 @@ describe("Favor life cycle test", () => {
       .doc(`/users/${Loki}/conversations/${conversationId}`)
       .get();
 
-    const user = await admin.firestore().doc(`/users/${Loki}`).get();
-
     expect(update.data()?.seen).to.be.false;
-    expect(user.data()?.lastReceivedMsgId).to.be.equal(messageId);
   });
 });

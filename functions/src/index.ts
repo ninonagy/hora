@@ -121,10 +121,7 @@ export const onMessageCreate = functions.firestore
         seen: false,
         updatedAt,
       });
-    const updateUserField = fs.doc(`/users/${receiverId}`).update({
-      lastReceivedMsgId: messageId,
-    });
-    return Promise.all([updateUserConversation, updateUserField]);
+    return Promise.all([updateUserConversation]);
   });
 
 // Handle favor state change
