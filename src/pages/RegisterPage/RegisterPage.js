@@ -35,6 +35,7 @@ const RegisterPage = (props) => {
   let [userId, setUserId] = useState();
   let [isAuth, setIsAuth] = useState(false);
 
+  //alerts
   const [showInvalidEmailAddress, setInvalidEmailAddress] = useState(false);
   const [showPasswordsNotMatching, setPasswordsNotMatching] = useState(false);
   const [showAllFieldsAreRequired, setAllFieldsAreRequired] = useState(false);

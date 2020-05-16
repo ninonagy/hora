@@ -11,7 +11,9 @@ export const authService = {
 function login(email, password) {
   return getUserByAuth(email, password).then((user) => {
     // store user details in local storage to keep user logged in between page refreshes
-    localStorage.setItem("user", JSON.stringify(user));
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
 
     return user;
   });
