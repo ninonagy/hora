@@ -47,6 +47,7 @@ import * as db from "../../db";
 import useGlobal from "../../state";
 import { states, types, triggers } from "../../scheme";
 import { userToUserKey } from "../../utils";
+import useCache from "../../hooks/useCache";
 
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
@@ -62,23 +63,20 @@ const FavorDetailPage = ({ history, match }) => {
   let [showDoneAlert, setShowDoneAlert] = useState(false);
 
   const favorId = match.params.favorId;
+  let favor = useCache(() => db.getFavor(favorId), `/favor/${favorId}`);
 
-  let [favor, setFavor] = useState({});
   let [user, setUser] = useState({});
   const [showPopover, setShowPopover] = useState(false);
 
   useEffect(() => {
-    db.getFavor(favorId).then((favor) => {
+    if (favor) {
       db.getUser(favor.ownerId).then((user) => {
-        setFavor(favor);
         setUser(user);
-
         setIsAbleToHelp(globalState.userId !== favor.ownerId);
-
-        setIsActive(favor.state == "active");
+        setIsActive(favor.state === "active");
       });
-    });
-  }, []);
+    }
+  }, [favor]);
 
   useEffect(() => {
     db.getSkillsList().then((skills) => {
@@ -109,7 +107,7 @@ const FavorDetailPage = ({ history, match }) => {
       )
         .then(() => {
           // When conversation thread is created and message stored, forward user to chat
-          history.push(`/messages/conversation/${conversationId}`);
+          history.replace(`/messages/conversation/${conversationId}`);
         })
         .catch(() => {
           // TODO: Handle error
@@ -216,7 +214,7 @@ const FavorDetailPage = ({ history, match }) => {
 
   return (
     <IonPage>
-      <Loader data={favor}>
+      <Loader data={favor && user}>
         <IonPopover
           isOpen={showPopover.open}
           event={showPopover.event}
