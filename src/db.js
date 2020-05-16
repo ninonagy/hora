@@ -110,7 +110,7 @@ async function getUserByAuth(email, password) {
 // Start conversation thread
 async function storeConversation(senderId, receiverId) {
   let id = userToUserKey(senderId, receiverId);
-  let userFields = { active: true, seen: false };
+  let userFields = { active: true, seen: false, updatedAt: Date.now() };
   return setValue(paths.conversation, { conversationId: id }, {}).then(() =>
     setValue(
       paths.userConversation,

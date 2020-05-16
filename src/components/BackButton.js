@@ -3,10 +3,11 @@ import { IonButton, IonIcon } from "@ionic/react";
 import { chevronBackOutline } from "ionicons/icons";
 import { withRouter } from "react-router";
 
-const BackButton = ({ match, history, onBack }) => {
+const BackButton = ({ match, history, link, onBack }) => {
   const handleClick = () => {
     if (onBack) onBack();
-    history.goBack();
+    if (link) history.push(link);
+    else history.goBack();
   };
 
   // if (props.history.action === "PUSH") {

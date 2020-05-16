@@ -82,7 +82,7 @@ const FavorsListPage = (props) => {
     if (userFavorsActive.length)
       return (
         <>
-          <span className="sectionHeading">Your active favors</span>
+          <span className="sectionHeading">Tvoje usluge u tijeku</span>
           <IonList>
             {userFavorsActive.map((item) => (
               <FavorCard
@@ -100,7 +100,7 @@ const FavorsListPage = (props) => {
   function showFreeFavors() {
     return (
       <>
-        <span className="sectionHeading">Help someone!</span>
+        <span className="sectionHeading">Pomogni nekome</span>
         <IonList>
           {favorsFree.map((item) =>
             item.ownerId ? (
