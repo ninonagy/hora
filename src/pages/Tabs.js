@@ -37,6 +37,7 @@ const Tabs = (props) => {
   let [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
+    // Listen for new changes in user conversations
     const unsubscribe = fs
       .collection(`/users/${globalState.userId}/conversations`)
       .onSnapshot((querySnapshot) => {
