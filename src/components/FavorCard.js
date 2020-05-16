@@ -44,7 +44,7 @@ const FavorCard = ({ skillList, item, link }) => {
       <IonCardContent>
         {description}
         <br />
-        <div className="favor-skills">
+        <div className="favor-card-skills">
           {skills.map((skill) => (
             <IonChip outline="true">
               <IonLabel>{skillList[skill]}</IonLabel>
