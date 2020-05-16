@@ -10,3 +10,30 @@
   font-size: 15px;
   margin: 0 20px;
 }
+
+.image-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+}
+
+.image-container .btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  /* background-color: #888888; */
+  color: black;
+  font-size: 50px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}

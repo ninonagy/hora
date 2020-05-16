@@ -195,6 +195,13 @@ async function storeUserPicture(userId, data = Blob) {
     .then((snapshot) => snapshot.ref.getDownloadURL().then((url) => url));
 }
 
+async function storeFavorPicture(id, data, format) {
+  return storage
+    .ref(`/favorPictures/${id}.${format}`)
+    .putString(data, "data_url")
+    .then((snapshot) => snapshot.ref.getDownloadURL().then((url) => url));
+}
+
 async function setFavorState(favorId, state) {
   return updateValue(paths.favor, { favorId }, { state });
 }
@@ -223,4 +230,5 @@ export {
   getUserConversation,
   getUserConversationList,
   storeUserPicture,
+  storeFavorPicture,
 };
