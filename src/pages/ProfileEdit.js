@@ -198,9 +198,7 @@ const ProfileEdit = ({ history, location }) => {
                   setUser({
                     ...user,
                     birthDate: new Date(
-                      new Date(
-                        e.target.value.replace(/-/g, "/").replace("T", " ")
-                      )
+                      e.target.value.replace(/-/g, "/").replace("T", " ")
                     ).toISOString(),
                   })
                 }
