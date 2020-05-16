@@ -38,11 +38,11 @@ const FavorCard = ({ skillList, item, link }) => {
       </IonItem>
 
       <IonCardHeader>
-        <IonCardTitle>{title}</IonCardTitle>
+        <IonCardTitle className="favor-card-title">{title}</IonCardTitle>
       </IonCardHeader>
 
       <IonCardContent>
-        {description}
+        <span className="favor-card-description">{description}</span>
         <br />
         <div className="favor-card-skills">
           {skills.map((skill, id) => (
