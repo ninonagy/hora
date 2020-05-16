@@ -1,10 +1,11 @@
 .profile-margin {
-  margin-top: 50px;
+  margin-top: -15vw;
 }
 
 .profile-avatar {
   width: 30vw;
   height: 30vw;
+  border: 3px solid white;
 }
 
 .profile-name {
@@ -27,11 +28,21 @@
 }
 
 .profile-coins {
+  margin-top: -15px;
   background-color: var(--ion-color-warning-tint);
   border-radius: 100px;
-  height: 40px;
-  width: 40px;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 40px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  font-family: "Raleway", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.profile-cover {
+  height: 50vw;
+  width: 100%;
 }

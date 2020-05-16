@@ -104,6 +104,12 @@ const ProfileEdit = ({ history, location }) => {
             message={user.email + " nije ispravna email adresa!"}
             buttons={["OK"]}
           />
+          <div
+            className="profile-cover"
+            style={{
+              background: `linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url("https://picsum.photos/seed/${user.email}/500/300")`,
+            }}
+          ></div>
           <IonGrid class="profile-margin">
             <IonRow class="ion-align-items-center">
               <IonCol size="2" offset="4">
