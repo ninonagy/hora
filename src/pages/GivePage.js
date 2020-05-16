@@ -36,28 +36,44 @@ import useGlobal from "../state";
 import { closeCircle, camera, cameraOutline } from "ionicons/icons";
 import useCache from "../hooks/useCache";
 import takePicture from "../services/camera";
+import { fs } from "../firebase";
+
+const getFavorIdeas = () => {
+  return fs.doc("/lists/favorIdeas").get();
+};
 
 const GivePage = (props) => {
   const [globalState, globalActions] = useGlobal();
-  let [skillList, setSkillList] = useState({});
+  // let [skillList, setSkillList] = useState({});
   let [title, setTitle] = useState("");
   let [description, setDescription] = useState("");
   let [dateTime, setDateTime] = useState(new Date());
   // let [timeEstimation, setTimeEstimation] = useState(30);
   let [selectedSkills, setSelectedSkills] = useState();
   let [photo, setPhoto] = useState(null);
+  let [titleTemplate, setTitleTemplate] = useState("");
+  let [descriptionTemplate, setDescriptionTemplate] = useState("");
 
   const [showAllFieldsRequired, setAllFieldsRequired] = useState(false);
 
   let user = useCache(() => db.getUser(globalState.userId), `user`);
 
+  let skillList = useCache(db.getSkillsList, `/skills`, true);
+  let favorIdeas = useCache(getFavorIdeas, `/favorIdeas`, true);
+
   let timeAvailable = user.timeEarned - user.timeSpent;
 
   useEffect(() => {
-    db.getSkillsList().then((skills) => {
-      setSkillList(skills.all);
-    });
-  }, []);
+    // Get some input ideas
+    if (favorIdeas?.all) {
+      const rand = (max) => {
+        return Math.floor(Math.random() * max);
+      };
+      var index = rand(Object.keys(favorIdeas.all).length);
+      setTitleTemplate(favorIdeas.all[index][0]);
+      setDescriptionTemplate(favorIdeas.all[index][1]);
+    }
+  }, [favorIdeas]);
 
   async function handlePhoto() {
     let image = await takePicture();
@@ -129,7 +145,7 @@ const GivePage = (props) => {
             <IonItem>
               <IonInput
                 className="title-input"
-                placeholder="Naslov"
+                placeholder={titleTemplate}
                 style={{ lineHeight: 1.7 }}
                 onIonChange={(e) => setTitle(e.target.value)}
               />
@@ -137,7 +153,7 @@ const GivePage = (props) => {
             <IonItem>
               <IonTextarea
                 className="description-input"
-                placeholder="Opis"
+                placeholder={descriptionTemplate}
                 rows="5"
                 onIonChange={(e) => setDescription(e.target.value)}
                 style={{ lineHeight: 1.7 }}
@@ -177,7 +193,7 @@ const GivePage = (props) => {
                 onIonChange={(e) => setSelectedSkills(e.detail.value)}
                 style={{ lineHeight: 1.7 }}
               >
-                {Object.entries(skillList).map(([id, skill]) => (
+                {Object.entries(skillList.all).map(([id, skill]) => (
                   <IonSelectOption value={id}>{skill}</IonSelectOption>
                 ))}
               </IonSelect>
@@ -213,7 +229,7 @@ const GivePage = (props) => {
           {
             //using illustration from https://undraw.co/
           }
-          <img className="image" src="../assets/sad.svg" />
+          <IonImg className="image" src="../assets/sad.svg" />
           <IonRow>
             <IonCol className="ion-text-center profile-bio">
               Nažalost, nemaš dovoljno novčića kako bi zatražio nove usluge. :(
