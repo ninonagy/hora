@@ -28,31 +28,27 @@ import { fs } from "../../firebase";
 import { buildPath, paths, states } from "../../scheme";
 import { arrayWithId } from "../../utils";
 import useGlobal from "../../state";
+import useCache from "../../hooks/useCache";
 
 const FavorsListPage = (props) => {
+  const [globalState, {}] = useGlobal();
+  const skillList = useCache(db.getSkillsList, `/skills`);
   let [favorsFree, setFavorsFree] = useState([]);
   let [userFavorsActive, setUserFavorsActive] = useState([]);
-  let [skillList, setSkillList] = useState({});
-  const [globalState, {}] = useGlobal();
+  let [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     updateFavorList();
   }, []);
 
-  useEffect(() => {
-    db.getSkillsList().then((skills) => {
-      setSkillList(skills.all);
-    });
-  }, []);
-
   async function updateFavorList() {
-    // Get free favors
+    // Get free favors filtered by user skills
     setFavorsFree(
       arrayWithId(
         await fs
           .collection(buildPath(paths.favor, { favorId: "" }))
           .where("state", "==", states.favor.free)
-          .orderBy("dateCreated", "desc")
+          .where("skills", "array-contains-any", globalState.user.skills)
           .get()
       )
     );
@@ -73,6 +69,8 @@ const FavorsListPage = (props) => {
           .get()
       )
     );
+
+    setIsLoading(false);
   }
 
   async function handleRefresh(event) {
@@ -88,7 +86,7 @@ const FavorsListPage = (props) => {
           <IonList>
             {userFavorsActive.map((item) => (
               <FavorCard
-                skillList={skillList}
+                skillList={skillList.all}
                 item={item}
                 key={item.id}
                 link={`/favor/${item.id}`}
@@ -107,7 +105,7 @@ const FavorsListPage = (props) => {
           {favorsFree.map((item) =>
             item.ownerId ? (
               <FavorCard
-                skillList={skillList}
+                skillList={skillList.all}
                 item={item}
                 key={item.id}
                 link={`/favor/${item.id}`}
@@ -123,7 +121,7 @@ const FavorsListPage = (props) => {
 
   return (
     <IonPage>
-      <Loader data={favorsFree}>
+      <Loader data={!isLoading}>
         <IonContent fullscreen="true">
           <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
             <IonRefresherContent

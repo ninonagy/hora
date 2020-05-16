@@ -40,14 +40,24 @@ const getAge = (birthDate) =>
 
 const ProfilePage = ({ history, match, isPublic }) => {
   const [globalState, {}] = useGlobalState();
-  // let [skillList, setSkillList] = useState({});
-
-  let user = useCache(
-    () => db.getUser(isPublic ? match.params.userId : globalState.userId),
-    isPublic ? `/user/${match.params.userId}` : `user`
-  );
-
+  let [user, setUser] = useState({});
   const skillList = useCache(db.getSkillsList, `/skills`);
+
+  // let publicUser = useCache(
+  //   () => db.getUser(match.params.userId),
+  //   `/user/${match.params.userId}`,
+  //   true
+  // );
+
+  useEffect(() => {
+    if (isPublic) {
+      db.getUser(match.params.userId).then((user) => {
+        setUser(user);
+      });
+    } else {
+      setUser(globalState.user);
+    }
+  }, [globalState.user]);
 
   let {
     name,
@@ -112,11 +122,12 @@ const ProfilePage = ({ history, match, isPublic }) => {
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center profile-bio">
-                {skillList.all && skills.map((skill) => (
-                  <IonChip>
-                    <IonLabel>{skillList.all[skill]}</IonLabel>
-                  </IonChip>
-                ))}
+                {skillList.all &&
+                  skills.map((skill) => (
+                    <IonChip>
+                      <IonLabel>{skillList.all[skill]}</IonLabel>
+                    </IonChip>
+                  ))}
               </IonCol>
             </IonRow>
           </IonGrid>
