@@ -126,12 +126,13 @@ const ProfileEdit = ({ history, location }) => {
               </IonCol>
             </IonRow>
           </IonGrid>
-          <IonList className="ion-no-margin ion-no-padding">
+          <IonList className="ion-no-margin ion-no-padding" lines="full">
             <IonItem>
               <IonLabel position="stacked">Ime</IonLabel>
               <IonInput
                 value={user.name}
                 onIonChange={(e) => setUser({ ...user, name: e.target.value })}
+                style={{ lineHeight: 1.7 }}
               />
             </IonItem>
 
@@ -142,6 +143,7 @@ const ProfileEdit = ({ history, location }) => {
                 onIonChange={(e) =>
                   setUser({ ...user, surname: e.target.value })
                 }
+                style={{ lineHeight: 1.7 }}
               />
             </IonItem>
 
@@ -151,13 +153,14 @@ const ProfileEdit = ({ history, location }) => {
                 value={user.bio}
                 rows="3"
                 onIonChange={(e) => setUser({ ...user, bio: e.target.value })}
+                style={{ lineHeight: 1.7 }}
               />
             </IonItem>
 
             <IonRow className="editSkills">
               <IonCol className="ion-text-center">
                 {skills.map((skill) => (
-                  <IonChip>
+                  <IonChip outline="true">
                     <IonLabel>{skillList[skill]}</IonLabel>
                   </IonChip>
                 ))}
@@ -183,6 +186,7 @@ const ProfileEdit = ({ history, location }) => {
                 type="email"
                 value={user.email}
                 onIonChange={(e) => setUser({ ...user, email: e.target.value })}
+                style={{ lineHeight: 1.7 }}
               />
             </IonItem>
 
@@ -202,6 +206,7 @@ const ProfileEdit = ({ history, location }) => {
                     ).toISOString(),
                   })
                 }
+                style={{ lineHeight: 1.7 }}
               ></IonDatetime>
             </IonItem>
             <IonGrid>

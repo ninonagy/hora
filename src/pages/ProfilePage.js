@@ -123,7 +123,7 @@ const ProfilePage = ({ history, match, isPublic }) => {
               <IonCol className="ion-text-center profile-bio">
                 {skillList.all &&
                   skills.map((skill) => (
-                    <IonChip>
+                    <IonChip outline="true">
                       <IonLabel>{skillList.all[skill]}</IonLabel>
                     </IonChip>
                   ))}
