@@ -59,7 +59,7 @@ const GivePage = (props) => {
         dateDue: dateTime.toISOString(),
       }).then((favorId) => {
         // Forward user to the public favor page
-        props.history.push(`/favor/${favorId}`);
+        props.history.replace(`/favor/${favorId}`);
       });
     } else setAllFieldsRequired(true);
   }
