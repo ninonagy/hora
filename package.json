@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@capacitor/core": "1.5.2",
+    "@ionic/pwa-elements": "^1.5.2",
     "@ionic/react": "^5.0.0",
     "@ionic/react-router": "^5.0.0",
     "@ionic/storage": "^2.2.0",
