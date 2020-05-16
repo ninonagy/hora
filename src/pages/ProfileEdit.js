@@ -104,6 +104,12 @@ const ProfileEdit = ({ history, location }) => {
             message={user.email + " nije ispravna email adresa!"}
             buttons={["OK"]}
           />
+          <div
+            className="profile-cover"
+            style={{
+              background: `linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url("https://picsum.photos/seed/${user.email}/500/300")`,
+            }}
+          ></div>
           <IonGrid class="profile-margin">
             <IonRow class="ion-align-items-center">
               <IonCol size="2" offset="4">
@@ -120,12 +126,13 @@ const ProfileEdit = ({ history, location }) => {
               </IonCol>
             </IonRow>
           </IonGrid>
-          <IonList className="ion-no-margin ion-no-padding">
+          <IonList className="ion-no-margin ion-no-padding" lines="full">
             <IonItem>
               <IonLabel position="stacked">Ime</IonLabel>
               <IonInput
                 value={user.name}
                 onIonChange={(e) => setUser({ ...user, name: e.target.value })}
+                style={{ lineHeight: 1.7 }}
               />
             </IonItem>
 
@@ -136,6 +143,7 @@ const ProfileEdit = ({ history, location }) => {
                 onIonChange={(e) =>
                   setUser({ ...user, surname: e.target.value })
                 }
+                style={{ lineHeight: 1.7 }}
               />
             </IonItem>
 
@@ -145,13 +153,14 @@ const ProfileEdit = ({ history, location }) => {
                 value={user.bio}
                 rows="3"
                 onIonChange={(e) => setUser({ ...user, bio: e.target.value })}
+                style={{ lineHeight: 1.7 }}
               />
             </IonItem>
 
             <IonRow className="editSkills">
               <IonCol className="ion-text-center">
                 {skills.map((skill) => (
-                  <IonChip>
+                  <IonChip outline="true">
                     <IonLabel>{skillList[skill]}</IonLabel>
                   </IonChip>
                 ))}
@@ -177,6 +186,7 @@ const ProfileEdit = ({ history, location }) => {
                 type="email"
                 value={user.email}
                 onIonChange={(e) => setUser({ ...user, email: e.target.value })}
+                style={{ lineHeight: 1.7 }}
               />
             </IonItem>
 
@@ -192,12 +202,11 @@ const ProfileEdit = ({ history, location }) => {
                   setUser({
                     ...user,
                     birthDate: new Date(
-                      new Date(
-                        e.target.value.replace(/-/g, "/").replace("T", " ")
-                      )
+                      e.target.value.replace(/-/g, "/").replace("T", " ")
                     ).toISOString(),
                   })
                 }
+                style={{ lineHeight: 1.7 }}
               ></IonDatetime>
             </IonItem>
             <IonGrid>

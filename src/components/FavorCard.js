@@ -30,7 +30,11 @@ const FavorCard = ({ skillList, item, link }) => {
           <img src={user.pictureLink} alt="Profile" />
         </IonAvatar>
         <IonLabel>{user.name}</IonLabel>
-        <RatingIcons timeEarned={user.timeEarned} timeSpent={user.timeSpent} />
+        <RatingIcons
+          slot="end"
+          timeEarned={user.timeEarned}
+          timeSpent={user.timeSpent}
+        />
       </IonItem>
 
       <IonCardHeader>
@@ -40,12 +44,13 @@ const FavorCard = ({ skillList, item, link }) => {
       <IonCardContent>
         {description}
         <br />
-
-        {skills.map((skill, id) => (
-          <IonChip key={id}>
-            <IonLabel>{skillList[skill]}</IonLabel>
-          </IonChip>
-        ))}
+        <div className="favor-card-skills">
+          {skills.map((skill, id) => (
+            <IonChip key={id} outline="true">
+              <IonLabel>{skillList[skill]}</IonLabel>
+            </IonChip>
+          ))}
+        </div>
       </IonCardContent>
     </IonCard>
   );

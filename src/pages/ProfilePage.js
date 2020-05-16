@@ -18,6 +18,7 @@ import {
   IonIcon,
   IonImg,
   IonBackButton,
+  IonBadge,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -94,6 +95,12 @@ const ProfilePage = ({ history, match, isPublic }) => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
+          <div
+            className="profile-cover"
+            style={{
+              background: `linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url("https://picsum.photos/seed/${email}/500/300")`,
+            }}
+          ></div>
           <IonGrid class="profile-margin">
             <IonRow class="ion-align-items-center">
               <IonCol size="2" offset="4">
@@ -102,7 +109,9 @@ const ProfilePage = ({ history, match, isPublic }) => {
                 </IonAvatar>
               </IonCol>
               <IonCol size="2" offset="3">
-                <div class="profile-coins">{timeAvailable}</div> coins
+                <div class="profile-coins">
+                  <p>{timeAvailable}</p>
+                </div>
               </IonCol>
             </IonRow>
             <IonRow>
@@ -121,8 +130,8 @@ const ProfilePage = ({ history, match, isPublic }) => {
             <IonRow>
               <IonCol className="ion-text-center profile-bio">
                 {skillList.all &&
-                  skills.map((skill) => (
-                    <IonChip>
+                  skills.map((skill, id) => (
+                    <IonChip key={id} outline="true">
                       <IonLabel>{skillList.all[skill]}</IonLabel>
                     </IonChip>
                   ))}
