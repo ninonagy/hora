@@ -56,7 +56,7 @@ const ProfilePage = ({ history, match, isPublic }) => {
         setUser(user);
       }
     );
-  }, []);
+  }, [globalState.user]);
 
   let {
     name,
