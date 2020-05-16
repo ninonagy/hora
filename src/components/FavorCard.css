@@ -1,5 +1,5 @@
 .favorCard-avatar {
-  margin-top: 10px;
+  margin-top: 12px;
   margin-bottom: 10px;
 }
 
@@ -9,4 +9,9 @@
 
 .adCard {
   border: 1px solid var(--ion-color-warning);
+}
+
+.favor-card-skills {
+  margin-top: 15px;
+  margin-left: -5px;
 }

@@ -17,6 +17,10 @@ import {
   IonRow,
   IonCol,
   IonAlert,
+  IonCard,
+  IonCardContent,
+  IonChip,
+  IonLabel,
 } from "@ionic/react";
 
 import "./FavorDetailPage.css";
@@ -32,6 +36,8 @@ import {
   checkmarkCircleOutline,
   closeCircleOutline,
   chatbubbleEllipsesOutline,
+  calendarOutline,
+  locationOutline,
 } from "ionicons/icons";
 
 import BackButton from "../../components/BackButton";
@@ -49,6 +55,7 @@ const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
   let [isAbleToHelp, setIsAbleToHelp] = useState();
   let [isActive, setIsActive] = useState();
+  let [skillList, setSkillList] = useState({});
 
   // alerts
   let [showAbortAlert, setShowAbortAlert] = useState(false);
@@ -73,7 +80,13 @@ const FavorDetailPage = ({ history, match }) => {
     });
   }, []);
 
-  let { title, description, location, dateCreated, state } = favor;
+  useEffect(() => {
+    db.getSkillsList().then((skills) => {
+      setSkillList(skills.all);
+    });
+  }, []);
+
+  let { title, description, location, dateCreated, state, skills } = favor;
 
   const handleHelp = async () => {
     let sender = globalState.userId;
@@ -110,12 +123,12 @@ const FavorDetailPage = ({ history, match }) => {
         <IonButton
           disabled={isAbleToHelp === false}
           className="bigButton"
-          size="large"
           color="dark"
           expand="block"
+          fill="outline"
           onClick={handleHelp}
         >
-          Help {user.name}
+          Učini uslugu
         </IonButton>
       );
     }
@@ -163,6 +176,42 @@ const FavorDetailPage = ({ history, match }) => {
           </IonCol>
         </IonRow>
       );
+  }
+
+  var months = {
+    1: "siječnja",
+    2: "veljače",
+    3: "ožujka",
+    4: "travnja",
+    5: "svibnja",
+    6: "lipnja",
+    7: "srpnja",
+    8: "kolovoza",
+    9: "rujna",
+    10: "listopada",
+    11: "studenog",
+    12: "prosinca",
+  };
+
+  function returnDate(dateCreated) {
+    if (dateCreated) {
+      const date = new Date(dateCreated);
+      const today = new Date();
+      if (
+        today.getDate() == date.getDate() &&
+        today.getMonth() == date.getMonth()
+      )
+        return `Danas, ${date.getHours()}:${date.getMinutes()}`;
+      else if (
+        today.getDate() - 1 == date.getDate() &&
+        today.getMonth() == date.getMonth()
+      )
+        return `Jučer, ${date.getHours()}:${date.getMinutes()}`;
+      else
+        return `${date.getDate()}. ${
+          months[date.getMonth() + 1]
+        }, ${date.getHours()}:${date.getMinutes()}`;
+    }
   }
 
   return (
@@ -264,49 +313,65 @@ const FavorDetailPage = ({ history, match }) => {
               },
             ]}
           />
-          <IonGrid>
-            <IonRow onClick={() => history.push(`/user/${favor.ownerId}`)}>
-              <IonCol offset="1" size="3">
-                <IonAvatar className="favor-avatar">
-                  <IonImg src={user.pictureLink} />
-                </IonAvatar>
-              </IonCol>
-              <IonCol>
-                {user.name}, {getAge(user.birthDate)}
-                <br />
-                <RatingIcons
-                  timeEarned={user.timeEarned}
-                  timeSpent={user.timeSpent}
-                />
-              </IonCol>
-            </IonRow>
-          </IonGrid>
+
+          <IonCard
+            className="favor-user"
+            style={{
+              background: `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("https://picsum.photos/seed/${user.email}/500/300?blur=10")`,
+            }}
+          >
+            <IonCardContent
+              onClick={() => history.push(`/user/${favor.ownerId}`)}
+            >
+              <IonGrid>
+                <IonRow class="ion-align-items-center">
+                  <IonCol size="4">
+                    <IonAvatar className="favor-avatar">
+                      <IonImg src={user.pictureLink} />
+                    </IonAvatar>
+                  </IonCol>
+                  <IonCol>
+                    <IonText className="FavorUserName">
+                      {user.name}, {getAge(user.birthDate)}
+                    </IonText>
+                    <br />
+                    <RatingIcons
+                      timeEarned={user.timeEarned}
+                      timeSpent={user.timeSpent}
+                    />
+                  </IonCol>
+                </IonRow>
+                <IonRow>
+                  <IonCol></IonCol>
+                </IonRow>
+              </IonGrid>
+            </IonCardContent>
+          </IonCard>
+
           <div className="favor-text">
             <h1>{title}</h1>
+
+            <IonIcon className="favor-detail-icon" icon={locationOutline} />
+            <span className="favor-detail-text">Zagreb</span>
+            <IonIcon
+              className="favor-detail-icon"
+              icon={calendarOutline}
+              style={{ marginLeft: "30px" }}
+            />
+            <span className="favor-detail-text">{returnDate(dateCreated)}</span>
+
             <p>{description}</p>
+            <div className="favor-skills">
+              {skills
+                ? skills.map((skill) => (
+                    <IonChip outline="true">
+                      <IonLabel>{skillList[skill]}</IonLabel>
+                    </IonChip>
+                  ))
+                : ""}
+            </div>
           </div>
-          <div className="image-card-wrapper">
-            <ImageCard
-              url="http://placekitten.com/230/520"
-              caption="This is Minnie"
-              orientation="portrait"
-            />
-            <ImageCard
-              url="http://placekitten.com/421/230"
-              caption="Haha! Cute Maxie!"
-              orientation="landscape"
-            />
-            <ImageCard
-              url="http://placekitten.com/250/500"
-              caption="(:"
-              orientation="portrait"
-            />
-            <ImageCard
-              url="http://placekitten.com/230/230"
-              caption="Ohhh look at Foxie!"
-              orientation="landscape"
-            />
-          </div>
+
           <IonGrid>
             {returnHelpButton()}
             {returnActiveFavorButtons()}

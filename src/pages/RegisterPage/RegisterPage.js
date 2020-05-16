@@ -136,7 +136,9 @@ const RegisterPage = (props) => {
             placeholder="datum rođenja"
             onIonChange={(e) =>
               setBirthDate(
-                new Date(e.target.value.replace(/-/g, "/").replace("T", " "))
+                new Date(
+                  e.target.value.replace(/-/g, "/").replace("T", " ")
+                ).toISOString()
               )
             }
           ></IonDatetime>

@@ -90,8 +90,8 @@ const NotificationCard = ({
   return (
     <div>
       <Time showTime={showTime} time={time} />
-      <IonCard onClick={(e) => history.push(`/favor/${favorId}`)}>
-        <IonCardHeader>
+      <IonCard>
+        <IonCardHeader onClick={(e) => history.push(`/favor/${favorId}`)}>
           <IonCardSubtitle>
             {userName}
             {isThisUser ? " mora prihvatiti tvoju pomoć." : " ti može pomoći!"}
