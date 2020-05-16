@@ -18,8 +18,9 @@ import useGlobal from "../../state";
 import { fs } from "../../firebase";
 import { paths, buildPath } from "../../db";
 import useCache from "../../hooks/useCache";
+import { arrayWithId } from "../../utils";
 
-function getConversationsOrderByDate(userId) {
+function getConversationsOrderByUpdatedAt(userId) {
   return fs
     .collection(
       buildPath(paths.userConversation, {
@@ -27,17 +28,19 @@ function getConversationsOrderByDate(userId) {
         conversationId: "",
       })
     )
-    .orderBy("dateCreated", "desc")
+    .orderBy("updatedAt", "desc")
     .get();
 }
 
-const MessagesPage = (props) => {
+const MessagesPage = ({ match, reload }) => {
   const [globalState, {}] = useGlobal();
+  const [conversations, setConversations] = useState([]);
 
-  let conversations = useCache(
-    () => getConversationsOrderByDate(globalState.userId),
-    `/messages`
-  );
+  useEffect(() => {
+    getConversationsOrderByUpdatedAt(globalState.userId).then((result) => {
+      setConversations(arrayWithId(result));
+    });
+  }, [reload]);
 
   return (
     <IonPage>
@@ -54,8 +57,8 @@ const MessagesPage = (props) => {
                 conversation.active && (
                   <MessagesCard
                     key={conversation.id}
-                    userId={conversation.receiverId}
-                    link={`${props.match.url}/conversation/${conversation.id}`}
+                    item={conversation}
+                    link={`${match.url}/conversation/${conversation.id}`}
                   />
                 )
             )}

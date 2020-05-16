@@ -4,10 +4,14 @@ import { IonLabel, IonItem, IonAvatar, IonImg } from "@ionic/react";
 
 import * as db from "../db";
 import useCache from "../hooks/useCache";
+import { showDate } from "../utils";
 
-const MessagesCard = ({ link, userId }) => {
-  let user = useCache(() => db.getUser(userId), `/user/${userId}`);
+const MessagesCard = ({ link, item }) => {
+  let { receiverId, seen, updatedAt } = item;
 
+  let time = showDate(new Date(updatedAt));
+
+  let user = useCache(() => db.getUser(receiverId), `/user/${receiverId}`);
   let { name, pictureLink } = user;
 
   return (
@@ -16,10 +20,10 @@ const MessagesCard = ({ link, userId }) => {
         <IonImg src={pictureLink} />
       </IonAvatar>
       <IonLabel>
-        <h2>{name}</h2>
+        <h2>{seen ? name : <strong>{name}</strong>} </h2>
         {/* <p>Lorem ipsum...</p> */}
       </IonLabel>
-      {/* 9:41 */}
+      {time}
     </IonItem>
   );
 };

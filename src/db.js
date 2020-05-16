@@ -1,4 +1,4 @@
-import { fs, storage } from "./firebase";
+import { fs, storage, timestamp } from "./firebase";
 
 import { paths, buildPath, states } from "./scheme";
 import { userToUserKey } from "./utils";
@@ -110,17 +110,17 @@ async function getUserByAuth(email, password) {
 // Start conversation thread
 async function storeConversation(senderId, receiverId) {
   let id = userToUserKey(senderId, receiverId);
-  let fields = { active: true };
+  let userFields = { active: true, seen: false };
   return setValue(paths.conversation, { conversationId: id }, {}).then(() =>
     setValue(
       paths.userConversation,
       { userId: senderId, conversationId: id },
-      { receiverId: receiverId, ...fields }
+      { receiverId: receiverId, ...userFields }
     ).then(() => {
       return setValue(
         paths.userConversation,
         { userId: receiverId, conversationId: id },
-        { receiverId: senderId, ...fields }
+        { receiverId: senderId, ...userFields }
       ).then(() => id);
     })
   );

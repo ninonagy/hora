@@ -38,7 +38,7 @@ import BackButton from "../../components/BackButton";
 import Loader from "../../components/Loader";
 
 import * as db from "../../db";
-import { fs } from "../../firebase";
+import { fs, firebase } from "../../firebase";
 
 import { buildPath, states, triggers, types } from "../../scheme";
 import { arrayWithId } from "../../utils";
@@ -280,6 +280,13 @@ const ConversationPage = (props) => {
     }
   }
 
+  async function markConversationAsSeen() {
+    await fs.doc(`/users/${userId}/conversations/${conversationId}`).update({
+      seen: true,
+      updatedAt: Date.now(),
+    });
+  }
+
   const scrollToBottom = () => {
     setTimeout(() => {
       messageListRef.current && messageListRef.current.scrollToBottom(500);
@@ -300,7 +307,7 @@ const ConversationPage = (props) => {
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <BackButton />
+              <BackButton onBack={markConversationAsSeen} />
             </IonButtons>
             <IonTitle>{name}</IonTitle>
             <IonButtons slot="end">

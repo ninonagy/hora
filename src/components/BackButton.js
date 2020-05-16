@@ -3,13 +3,14 @@ import { IonButton, IonIcon } from "@ionic/react";
 import { chevronBackOutline } from "ionicons/icons";
 import { withRouter } from "react-router";
 
-const BackButton = (props) => {
+const BackButton = ({ match, history, onBack }) => {
   const handleClick = () => {
-    props.history.goBack();
+    if (onBack) onBack();
+    history.goBack();
   };
 
   // if (props.history.action === "PUSH") {
-  if (!props.match.params.tab) {
+  if (!match.params.tab) {
     return (
       <IonButton onClick={handleClick}>
         <IonIcon slot="icon-only" icon={chevronBackOutline} />

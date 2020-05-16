@@ -55,9 +55,15 @@ function userToUserKey(userIdOne: string, userIdTwo: string) {
   return userIdOne < userIdTwo ? userIdOne + userIdTwo : userIdTwo + userIdOne;
 }
 
+function getUserIdFromKey(key: string, otherUserId: string) {
+  return key.split(otherUserId).filter((value) => value)[0];
+}
+
 const incrementValue = admin.firestore.FieldValue.increment(1.0);
 const decrementValue = admin.firestore.FieldValue.increment(-1.0);
 
+// Handle user creation
+// Give user initial coins and start conversation thread with Horacije bot
 export const onUserCreate = functions.firestore
   .document("/users/{userId}")
   .onCreate((snapshot) => {
@@ -78,6 +84,7 @@ export const onUserCreate = functions.firestore
   });
 
 // Handle new favor
+// Take one coin from user when new favor is created
 export const onFavorCreate = functions.firestore
   .document("/favors/{favorId}")
   .onCreate((snapshot) => {
@@ -90,6 +97,31 @@ export const onFavorCreate = functions.firestore
     }
 
     return "No ownerId set!";
+  });
+
+// Handle new messages
+// Update user conversation with time when last message is recorded and
+// mark conversation thread as unseen
+export const onMessageCreate = functions.firestore
+  .document("/conversations/{conversationId}/messages/{messageId}")
+  .onCreate((snapshot, context) => {
+    let { conversationId, messageId } = context.params;
+    if (conversationId === undefined && messageId === undefined) {
+      messageId = snapshot.ref.id;
+      conversationId = snapshot.ref.parent.parent?.id;
+    }
+    const senderId = snapshot.data()?.senderId;
+    if (!senderId) return "No senderId set!";
+    const receiverId = getUserIdFromKey(conversationId, senderId);
+    if (!receiverId) return "No receiverId set!";
+    const updatedAt = snapshot.createTime?.toMillis();
+    const updateUserConversation = fs
+      .doc(`/users/${receiverId}/conversations/${conversationId}`)
+      .update({
+        seen: false,
+        updatedAt,
+      });
+    return Promise.all([updateUserConversation]);
   });
 
 // Handle favor state change

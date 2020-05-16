@@ -35,7 +35,7 @@ const ProfileEditSkills = ({ history }) => {
 
   useEffect(() => {
     setSkills(user.skills);
-  });
+  }, []);
 
   useEffect(() => {
     db.getSkillsList().then((skills) => {

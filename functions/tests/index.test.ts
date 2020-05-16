@@ -9,7 +9,12 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions-test";
 
 // Cloud functions
-import { onFavorStateChange, onFavorCreate, onUserCreate } from "../src/index";
+import {
+  onFavorStateChange,
+  onFavorCreate,
+  onUserCreate,
+  onMessageCreate,
+} from "../src/index";
 
 // Connect to local firestore emulator
 // Start emulator -> firebase emulators:start --only firestore
@@ -34,17 +39,25 @@ describe("Favor life cycle test", () => {
   const wrapped = testEnv.wrap(onFavorStateChange);
   const wrappedOnFavorCreate = testEnv.wrap(onFavorCreate);
   const wrappedOnUserCreate = testEnv.wrap(onUserCreate);
+  const wrappedOnMessageCreate = testEnv.wrap(onMessageCreate);
+
   const Jojo = "u1"; // owner
   const Loki = "u2"; // user
   const favorId = "test_favor";
+  const conversationId = `${Jojo}${Loki}`;
+  const messageId = `new_message`;
 
   before(async () => {
     await admin.firestore().doc(`/users/${Jojo}`).delete();
     await admin.firestore().doc(`/users/${Loki}`).delete();
     await admin.firestore().doc(`/users/horacije`).delete();
     await admin.firestore().doc(`/favors/${favorId}`).delete();
-    await admin.firestore().doc(`/conversations/horacijeu1`).delete();
-    await admin.firestore().doc(`/conversations/horacijeu2`).delete();
+    await admin.firestore().doc(`/conversations/horacije${Jojo}/messages/welcome`).delete();
+    await admin.firestore().doc(`/conversations/horacije${Loki}/messages/welcome`).delete();
+    await admin
+      .firestore()
+      .doc(`/users/${Loki}/conversations/${conversationId}`)
+      .delete();
   });
 
   it("should create user Jojo", async () => {
@@ -66,6 +79,7 @@ describe("Favor life cycle test", () => {
         name: "Loki",
       })
       .then(() => Loki);
+
     expect(id).to.be.equal(Loki);
   });
 
@@ -221,5 +235,33 @@ describe("Favor life cycle test", () => {
     expect(timeEarned).to.be.equal(4);
     expect(timeSpent).to.be.equal(0);
     expect(timeEarned - timeSpent).to.be.equal(4);
+  });
+
+  it("Jojo should send a message to Loki", async () => {
+    const snapMsg = testEnv.firestore.makeDocumentSnapshot(
+      {
+        senderId: Jojo,
+        receiverId: Loki,
+        content: "Thank you!",
+      },
+      `/conversations/${conversationId}/messages/${messageId}`
+    );
+
+    // Create user conversation thread
+    await admin
+      .firestore()
+      .doc(`/users/${Loki}/conversations/${conversationId}`)
+      .create({
+        dateCreated: new Date().toISOString(),
+      });
+
+    await wrappedOnMessageCreate(snapMsg);
+
+    const update = await admin
+      .firestore()
+      .doc(`/users/${Loki}/conversations/${conversationId}`)
+      .get();
+
+    expect(update.data()?.seen).to.be.false;
   });
 });
