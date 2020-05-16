@@ -20,6 +20,9 @@ import {
   IonSelect,
   IonSelectOption,
   IonAlert,
+  IonImg,
+  IonIcon,
+  IonButtons,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -28,7 +31,9 @@ import "./GivePage.css";
 
 import * as db from "../db";
 import useGlobal from "../state";
-import { closeCircle } from "ionicons/icons";
+import { closeCircle, cameraOutline } from "ionicons/icons";
+
+import useCache from "../hooks/useCache";
 
 const GivePage = (props) => {
   const [globalState, globalActions] = useGlobal();
@@ -75,7 +80,7 @@ const GivePage = (props) => {
       <IonPage>
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Objavi uslugu</IonTitle>
+            <IonTitle>Zatraži uslugu</IonTitle>
           </IonToolbar>
         </IonHeader>
 
@@ -88,20 +93,36 @@ const GivePage = (props) => {
             buttons={["U redu"]}
           />
           <form onSubmit={handleSubmit}>
-            <IonList className="ion-no-margin ion-no-padding">
-              <IonItem>
-                <IonLabel position="floating">Naslov</IonLabel>
-                <IonInput onIonChange={(e) => setTitle(e.target.value)} />
-              </IonItem>
+            <IonList className="ion-no-margin ion-no-padding" lines="none">
+              <div
+                className="view-image"
+                style={{
+                  background: `url("https://picsum.photos/375/200?blur=10")`,
+                }}
+              >
+                <IonButton color="dark">
+                  <IonIcon icon={cameraOutline} />
+                  <span className="add-photo">Dodaj fotografiju</span>
+                </IonButton>
+              </div>
 
               <IonItem>
-                <IonLabel position="floating">Opis</IonLabel>
-                <IonTextarea
-                  rows="5"
-                  onIonChange={(e) => setDescription(e.target.value)}
+                <IonInput
+                  className="title-input"
+                  placeholder="Naslov"
+                  style={{ lineHeight: 1.7 }}
+                  onIonChange={(e) => setTitle(e.target.value)}
                 />
               </IonItem>
-
+              <IonItem>
+                <IonTextarea
+                  className="description-input"
+                  placeholder="Opis"
+                  rows="5"
+                  onIonChange={(e) => setDescription(e.target.value)}
+                  style={{ lineHeight: 1.7 }}
+                />
+              </IonItem>
               {/* <IonItem>
               <IonLabel>Oznake</IonLabel>
               <IonInput>
@@ -116,8 +137,6 @@ const GivePage = (props) => {
                 </IonChip>
               </IonInput>
             </IonItem> */}
-
-              <IonItemDivider />
 
               <IonItem>
                 <IonLabel>Krajnji rok</IonLabel>
@@ -140,6 +159,7 @@ const GivePage = (props) => {
                       )
                     )
                   }
+                  style={{ lineHeight: 1.7 }}
                 ></IonDatetime>
               </IonItem>
               <IonItem>
@@ -149,13 +169,13 @@ const GivePage = (props) => {
                   cancelText="Odustani"
                   okText="Odaberi"
                   onIonChange={(e) => setSelectedSkills(e.detail.value)}
+                  style={{ lineHeight: 1.7 }}
                 >
                   {Object.entries(skillList).map(([id, skill]) => (
                     <IonSelectOption value={id}>{skill}</IonSelectOption>
                   ))}
                 </IonSelect>
               </IonItem>
-
               {/* <IonItem>
               <IonLabel>Vrijeme</IonLabel>
               <IonDatetime
@@ -182,10 +202,15 @@ const GivePage = (props) => {
               />
             </IonItem>
 */}
-              <IonItemDivider />
 
-              <IonButton type="submit" expand="block" fill="outline">
-                Objavi
+              <IonButton
+                type="submit"
+                className="bigButton"
+                color="dark"
+                expand="block"
+                fill="outline"
+              >
+                Zatraži
               </IonButton>
             </IonList>
           </form>
@@ -197,7 +222,7 @@ const GivePage = (props) => {
       <IonPage>
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Objavi uslugu</IonTitle>
+            <IonTitle>Zatraži uslugu</IonTitle>
           </IonToolbar>
         </IonHeader>
 

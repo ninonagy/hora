@@ -10,3 +10,31 @@
   font-size: 15px;
   margin: 0 20px;
 }
+
+.view-image {
+  height: 20vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-photo {
+  margin-left: 5px;
+}
+
+.title-input {
+  margin-top: 25px;
+  font-size: 25px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--ion-color-dark);
+  height: auto;
+}
+
+.description-input {
+  font-family: "Open Sans", sans-serif;
+  color: var(--ion-color-dark-tint);
+  line-height: 1.7;
+}
