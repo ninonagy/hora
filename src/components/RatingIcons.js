@@ -11,8 +11,8 @@ const RatingIcons = ({ timeEarned, timeSpent }) => {
   function returnRating(timeEarned, timeSpent) {
     if (timeEarned != null && timeSpent != null) {
       let rating = timeEarned + timeSpent;
-      if (rating > 10) return "MVP";
-      else if (rating > 5) return "Napredni";
+      if (rating > 12) return "MVP";
+      else if (rating > 7) return "Napredni";
       else return "Početnik";
     }
   }
@@ -20,8 +20,8 @@ const RatingIcons = ({ timeEarned, timeSpent }) => {
   function returnColor(timeEarned, timeSpent) {
     if (timeEarned != null && timeSpent != null) {
       let rating = timeEarned + timeSpent;
-      if (rating > 10) return "success";
-      else if (rating > 5) return "secondary";
+      if (rating > 12) return "success";
+      else if (rating > 7) return "secondary";
       else return "medium";
     }
   }

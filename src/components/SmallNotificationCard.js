@@ -34,7 +34,7 @@ const SmallNotificationCard = ({
       else return user.name + " je označio da je usluga gotova";
     } else if (trigger == "abort") {
       if (isThisUser) return "Otkazao si uslugu.";
-      else return user.name + " je otkazao uslugu. Usluga je ponovno slobodna.";
+      else return user.name + " je otkazao uslugu.";
     }
   }
 

@@ -55,7 +55,7 @@ const getAge = (birthDate) =>
 const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
   let [isAbleToHelp, setIsAbleToHelp] = useState();
-  let [isActive, setIsActive] = useState();
+  let [favorState, setFavorState] = useState();
   let [skillList, setSkillList] = useState({});
 
   // alerts
@@ -73,7 +73,7 @@ const FavorDetailPage = ({ history, match }) => {
       db.getUser(favor.ownerId).then((user) => {
         setUser(user);
         setIsAbleToHelp(globalState.userId !== favor.ownerId);
-        setIsActive(favor.state === "active");
+        setFavorState(favor.state);
       });
     }
   }, [favor]);
@@ -116,7 +116,7 @@ const FavorDetailPage = ({ history, match }) => {
   };
 
   function returnHelpButton() {
-    if (isAbleToHelp === true && isActive === false) {
+    if (isAbleToHelp === true && favorState == "free") {
       return (
         <IonButton
           disabled={isAbleToHelp === false}
@@ -133,7 +133,7 @@ const FavorDetailPage = ({ history, match }) => {
   }
 
   function returnActiveFavorButtons() {
-    if (isActive)
+    if (isAbleToHelp === true && favorState == "active")
       return (
         <IonRow>
           <IonCol>
@@ -272,7 +272,7 @@ const FavorDetailPage = ({ history, match }) => {
                   );
                   // Hide buttons
                   setIsAbleToHelp(false);
-                  setIsActive(false);
+                  setFavorState("free");
                 },
               },
             ]}
@@ -306,7 +306,7 @@ const FavorDetailPage = ({ history, match }) => {
                   );
                   // Hide buttons
                   setIsAbleToHelp(false);
-                  setIsActive(false);
+                  setFavorState("done");
                 },
               },
             ]}

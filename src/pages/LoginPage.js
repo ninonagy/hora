@@ -8,6 +8,7 @@ import {
   IonInput,
   IonRow,
   IonCol,
+  IonAlert,
 } from "@ionic/react";
 import { withRouter, Redirect } from "react-router";
 
@@ -24,6 +25,9 @@ const LoginPage = (props) => {
   const [password, setPassword] = useState("");
   let [isAuth, setIsAuth] = useState(false);
 
+  //alerts
+  const [showUserDoesNotExist, setUserDoesNotExist] = useState(false);
+
   useEffect(() => {
     // Try to get user from local storage
     let user = authService.getUserValue();
@@ -37,8 +41,10 @@ const LoginPage = (props) => {
     authService
       .login(email, password)
       .then((user) => {
-        globalActions.setAuthUser(user);
-        setIsAuth(true);
+        if (user) {
+          globalActions.setAuthUser(user);
+          setIsAuth(true);
+        } else setUserDoesNotExist(true);
       })
       .catch(() => {
         // TODO: Handle error
@@ -62,6 +68,13 @@ const LoginPage = (props) => {
             <IonCol className="col4"></IonCol>
           </IonRow>
         </IonHeader>
+        <IonAlert
+          isOpen={showUserDoesNotExist}
+          onDidDismiss={() => setUserDoesNotExist(false)}
+          header={"Greška!"}
+          message={"E-mail ili password su pogrešni!"}
+          buttons={["OK"]}
+        />
         <IonContent>
           <h2 className="heading2">Bok, ovo je</h2>
           <h1 className="heading">HORA</h1>

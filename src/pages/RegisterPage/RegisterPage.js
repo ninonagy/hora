@@ -35,6 +35,7 @@ const RegisterPage = (props) => {
   let [userId, setUserId] = useState();
   let [isAuth, setIsAuth] = useState(false);
 
+  //alerts
   const [showInvalidEmailAddress, setInvalidEmailAddress] = useState(false);
   const [showPasswordsNotMatching, setPasswordsNotMatching] = useState(false);
   const [showAllFieldsAreRequired, setAllFieldsAreRequired] = useState(false);
@@ -51,7 +52,7 @@ const RegisterPage = (props) => {
         surname: surname,
         email: email,
         password: password,
-        birthDate: birthDate,
+        birthDate: birthDate.toISOString(),
         location: "Zagreb",
         bio: "Hello! 👋",
         pictureLink: "https://api.adorable.io/avatars/110/" + email + ".png",
@@ -136,9 +137,7 @@ const RegisterPage = (props) => {
             placeholder="datum rođenja"
             onIonChange={(e) =>
               setBirthDate(
-                new Date(
-                  e.target.value.replace(/-/g, "/").replace("T", " ")
-                ).toISOString()
+                new Date(e.target.value.replace(/-/g, "/").replace("T", " "))
               )
             }
           ></IonDatetime>

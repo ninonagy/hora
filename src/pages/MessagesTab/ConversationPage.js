@@ -289,7 +289,7 @@ const ConversationPage = (props) => {
   const scrollToBottom = () => {
     setTimeout(() => {
       messageListRef.current && messageListRef.current.scrollToBottom(500);
-    }, 250);
+    }, 400);
   };
 
   const handleAlertDismiss = () => {
