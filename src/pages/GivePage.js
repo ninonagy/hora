@@ -24,6 +24,7 @@ import {
   IonImg,
   IonGrid,
   IonIcon,
+  IonButtons,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -32,7 +33,7 @@ import "./GivePage.css";
 
 import * as db from "../db";
 import useGlobal from "../state";
-import { closeCircle, camera } from "ionicons/icons";
+import { closeCircle, camera, cameraOutline } from "ionicons/icons";
 import useCache from "../hooks/useCache";
 import takePicture from "../services/camera";
 
@@ -100,7 +101,7 @@ const GivePage = (props) => {
       <IonPage>
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Objavi uslugu</IonTitle>
+            <IonTitle>Zatraži uslugu</IonTitle>
           </IonToolbar>
         </IonHeader>
 
@@ -112,36 +113,36 @@ const GivePage = (props) => {
             message={"Sva polja su obavezna!"}
             buttons={["U redu"]}
           />
-          <IonList className="ion-no-margin ion-no-padding">
-            <IonItem>
-              <IonLabel position="floating">Naslov</IonLabel>
-              <IonInput onIonChange={(e) => setTitle(e.target.value)} />
-            </IonItem>
+          <IonList className="ion-no-margin ion-no-padding" lines="none">
+            {/* Upload photo */}
+            <div className="image-container">
+              <IonImg
+                style={{ width: "100%" }}
+                src={photo?.data || `https://picsum.photos/500/250?blur=10`}
+              />
+              <IonButton className="button" color="dark" onClick={handlePhoto}>
+                <IonIcon icon={cameraOutline} />
+                <span className="add-photo">Dodaj fotografiju</span>
+              </IonButton>
+            </div>
 
             <IonItem>
-              <IonLabel position="floating">Opis</IonLabel>
-              <IonTextarea
-                rows="5"
-                onIonChange={(e) => setDescription(e.target.value)}
+              <IonInput
+                className="title-input"
+                placeholder="Naslov"
+                style={{ lineHeight: 1.7 }}
+                onIonChange={(e) => setTitle(e.target.value)}
               />
             </IonItem>
-
-            {/* <IonItem>
-              <IonLabel>Oznake</IonLabel>
-              <IonInput>
-                <IonChip>
-                  <IonIcon icon={closeCircle} />
-                  <IonLabel>primjer 1</IonLabel>
-                </IonChip>
-
-                <IonChip>
-                  <IonIcon icon={closeCircle} />
-                  <IonLabel>primjer 2</IonLabel>
-                </IonChip>
-              </IonInput>
-            </IonItem> */}
-
-            <IonItemDivider />
+            <IonItem>
+              <IonTextarea
+                className="description-input"
+                placeholder="Opis"
+                rows="5"
+                onIonChange={(e) => setDescription(e.target.value)}
+                style={{ lineHeight: 1.7 }}
+              />
+            </IonItem>
 
             <IonItem>
               <IonLabel>Krajnji rok</IonLabel>
@@ -164,6 +165,7 @@ const GivePage = (props) => {
                     )
                   )
                 }
+                style={{ lineHeight: 1.7 }}
               ></IonDatetime>
             </IonItem>
             <IonItem>
@@ -173,60 +175,26 @@ const GivePage = (props) => {
                 cancelText="Odustani"
                 okText="Odaberi"
                 onIonChange={(e) => setSelectedSkills(e.detail.value)}
+                style={{ lineHeight: 1.7 }}
               >
                 {Object.entries(skillList).map(([id, skill]) => (
                   <IonSelectOption value={id}>{skill}</IonSelectOption>
                 ))}
               </IonSelect>
             </IonItem>
-
-            {/* <IonItem>
-              <IonLabel>Vrijeme</IonLabel>
-              <IonDatetime
-                required
-                display-format="HH:mm"
-                picker-format="HH:mm"
-                value={dateTime.getHours() + ":" + dateTime.getMinutes()}
-                // onIonChange={e => setTime(e.target.value)}
-              />
-            </IonItem> 
-
-            <IonItem>
-              <IonLabel>Procijenjeno vrijeme</IonLabel>
-              <IonRange
-                value={timeEstimation}
-                onIonChange={(e) => setTimeEstimation(e.target.value)}
-                min={15}
-                max={60}
-                step={5}
-                snaps={true}
-                ticks={false}
-                pin={true}
-                color="secondary"
-              />
-            </IonItem>
-*/}
-            <IonItemDivider />
-
-            {/* Upload photo */}
-            <IonGrid className="image-container" onClick={handlePhoto}>
-              <IonImg
-                style={{ opacity: 0.2, width: "100%" }}
-                src={
-                  photo?.data ||
-                  `https://picsum.photos/id/${timeAvailable}/500/300`
-                }
-              />
-              <IonIcon className="btn" size="50" icon={camera}>
-                Učitaj fotografiju
-              </IonIcon>
-            </IonGrid>
           </IonList>
         </IonContent>
         <IonFooter className="ion-no-border">
           <IonToolbar>
-            <IonButton expand="block" fill="outline" onClick={handleSubmit}>
-              Objavi
+            <IonButton
+              type="submit"
+              className="bigButton"
+              color="dark"
+              expand="block"
+              fill="outline"
+              onClick={handleSubmit}
+            >
+              Zatraži
             </IonButton>
           </IonToolbar>
         </IonFooter>
@@ -237,7 +205,7 @@ const GivePage = (props) => {
       <IonPage>
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Objavi uslugu</IonTitle>
+            <IonTitle>Zatraži uslugu</IonTitle>
           </IonToolbar>
         </IonHeader>
 
