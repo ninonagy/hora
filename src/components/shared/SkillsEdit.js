@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import {
-  IonPage,
-  IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonCheckbox,
-} from "@ionic/react";
+import { IonList, IonItem, IonLabel, IonCheckbox } from "@ionic/react";
 
 const SkillsEdit = ({ onChange, skills, skillList }) => {
   function changeArray(skill) {

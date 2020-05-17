@@ -9,12 +9,6 @@ import { IonReactRouter } from "@ionic/react-router";
 
 import { IonApp, IonPage } from "@ionic/react";
 
-import useGlobalState from "./state";
-
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage/RegisterPage";
-import RegisterPage2 from "./pages/RegisterPage/Register2";
-
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -35,12 +29,16 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 
 /* Global css */
-import "./pages/hora.css";
+import "./pages/global.css";
+
+import LoginPage from "./pages/Login/LoginPage";
+import RegisterPage from "./pages/Login/RegisterPage";
+import RegisterPage2 from "./pages/Login/Register2";
 
 import ConversationPage from "./pages/MessagesTab/ConversationPage";
 import FavorDetail from "./pages/SearchTab/FavorDetailPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import PublicProfilePage from "./pages/PublicProfilePage";
+import PublicProfilePage from "./pages/ProfileTab/PublicProfilePage";
 
 import Tabs from "./pages/Tabs";
 

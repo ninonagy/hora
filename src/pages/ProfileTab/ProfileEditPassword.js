@@ -21,13 +21,13 @@ import { checkmarkOutline } from "ionicons/icons";
 
 import "./ProfilePage.css";
 
-import { getPassHash } from "../utils";
+import { getPassHash } from "../../utils";
 
-import BackButton from "../components/BackButton";
-import Loader from "../components/Loader";
+import BackButton from "../../components/Buttons/Back";
+import Loader from "../../components/shared/Loader";
 
-import useGlobalState from "../state";
-import * as db from "../db";
+import useGlobalState from "../../state";
+import * as db from "../../db";
 
 const ProfileEditPassword = ({ history }) => {
   const [globalState, globalActions] = useGlobalState();

@@ -7,10 +7,10 @@ import {
   IonRow,
   IonCol,
 } from "@ionic/react";
-import { withRouter, Redirect } from "react-router";
+import { withRouter } from "react-router";
 
-import "../LoginPage.css";
-import SkillsEdit from "../../components/SkillsEditComponent";
+import "./LoginPage.css";
+import SkillsEdit from "../../components/shared/SkillsEdit";
 
 import useGlobal from "../../state";
 import * as db from "../../db";
@@ -24,7 +24,7 @@ const Register2 = (props) => {
 
   useEffect(() => {
     if (user.skills != null) setSkills(user.skills);
-  });
+  }, []);
 
   useEffect(() => {
     db.getSkillsList().then((skills) => {

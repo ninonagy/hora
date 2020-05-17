@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import {
   IonCardHeader,
@@ -13,10 +13,10 @@ import {
 
 import "./FavorCard.css";
 
-import RatingIcons from "../components/RatingIcons";
+import RatingIcons from "../shared/RatingIcons";
 
-import * as db from "../db";
-import useCache from "../hooks/useCache";
+import * as db from "../../db";
+import useCache from "../../hooks/useCache";
 
 const FavorCard = ({ skillList, item, link }) => {
   let { ownerId, title, description, skills } = item;

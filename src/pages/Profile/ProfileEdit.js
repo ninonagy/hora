@@ -30,12 +30,12 @@ import { checkmarkOutline } from "ionicons/icons";
 
 import "./ProfilePage.css";
 
-import BackButton from "../components/BackButton";
-import Loader from "../components/Loader";
+import BackButton from "../../components/Buttons/Back";
+import Loader from "../../components/shared/Loader";
 
-import useGlobalState from "../state";
-import * as db from "../db";
-import { authService } from "../services";
+import useGlobalState from "../../state";
+import * as db from "../../db";
+import { authService } from "../../services";
 
 const ProfileEdit = ({ history, location }) => {
   const [globalState, globalActions] = useGlobalState();

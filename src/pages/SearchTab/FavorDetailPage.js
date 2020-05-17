@@ -7,7 +7,6 @@ import {
   IonTitle,
   IonPage,
   IonButtons,
-  IonBackButton,
   IonAvatar,
   IonIcon,
   IonImg,
@@ -31,9 +30,7 @@ import "./FavorDetailPage.css";
 
 import { withRouter } from "react-router";
 
-import RatingIcons from "../../components/RatingIcons";
-
-import ImageCard from "../../components/ImageCard";
+import RatingIcons from "../../components/shared/RatingIcons";
 
 import {
   ellipsisHorizontal,
@@ -44,8 +41,8 @@ import {
   locationOutline,
 } from "ionicons/icons";
 
-import BackButton from "../../components/BackButton";
-import Loader from "../../components/Loader";
+import BackButton from "../../components/Buttons/Back";
+import Loader from "../../components/shared/Loader";
 
 import * as db from "../../db";
 import useGlobal from "../../state";

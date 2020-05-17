@@ -9,15 +9,14 @@ import {
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
-import MessagesCard from "../../components/MessagesCard";
+import ConversationCard from "../../components/Cards/ConversationCard";
 
-import Loader from "../../components/Loader";
+import Loader from "../../components/shared/Loader";
 
 import useGlobal from "../../state";
 
 import { fs } from "../../firebase";
 import { paths, buildPath } from "../../db";
-import useCache from "../../hooks/useCache";
 import { arrayWithId } from "../../utils";
 
 function getConversationsOrderByUpdatedAt(userId) {
@@ -55,7 +54,7 @@ const MessagesPage = ({ match, reload }) => {
             {conversations.map(
               (conversation) =>
                 conversation.active && (
-                  <MessagesCard
+                  <ConversationCard
                     key={conversation.id}
                     item={conversation}
                     link={`${match.url}/conversation/${conversation.id}`}

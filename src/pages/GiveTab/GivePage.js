@@ -31,12 +31,12 @@ import { withRouter } from "react-router";
 
 import "./GivePage.css";
 
-import * as db from "../db";
-import useGlobal from "../state";
+import * as db from "../../db";
+import useGlobal from "../../state";
 import { closeCircle, camera, cameraOutline } from "ionicons/icons";
-import useCache from "../hooks/useCache";
-import takePicture from "../services/camera";
-import { fs } from "../firebase";
+import useCache from "../../hooks/useCache";
+import takePicture from "../../services/camera";
+import { fs } from "../../firebase";
 
 const getFavorIdeas = () => {
   return fs.doc("/lists/favorIdeas").get();

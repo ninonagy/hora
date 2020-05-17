@@ -9,14 +9,13 @@ import {
   IonRow,
   IonCol,
   IonButton,
-  IonIcon,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
 
 import Time from "./TimeCard";
 
-import * as db from "../db";
+import * as db from "../../db";
 
 const NotificationCard = ({
   history,

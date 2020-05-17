@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  IonItem,
-  IonLabel,
   IonContent,
   IonHeader,
   IonToolbar,
@@ -10,9 +8,6 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  IonList,
-  IonInput,
-  IonAlert,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -21,21 +16,17 @@ import { checkmarkOutline } from "ionicons/icons";
 
 import "./ProfilePage.css";
 
-import BackButton from "../components/BackButton";
-import SkillsEdit from "../components/SkillsEditComponent";
-import useGlobal from "../state";
-import * as db from "../db";
+import BackButton from "../../components/Buttons/Back";
+import SkillsEdit from "../../components/shared/SkillsEdit";
+import useGlobal from "../../state";
+import * as db from "../../db";
 
 const ProfileEditSkills = ({ history }) => {
   const [globalState, globalActions] = useGlobal();
-  let [skills, setSkills] = useState([]);
   let [skillList, setSkillList] = useState({});
+  let [skills, setSkills] = useState([]);
 
   let user = globalState.user;
-
-  useEffect(() => {
-    setSkills(user.skills);
-  }, []);
 
   useEffect(() => {
     db.getSkillsList().then((skills) => {
@@ -43,9 +34,9 @@ const ProfileEditSkills = ({ history }) => {
     });
   }, []);
 
-  function updateUser() {
+  async function updateUser() {
     user.skills = skills;
-    db.updateUser(user.id, {
+    await db.updateUser(user.id, {
       skills: user.skills,
     });
     globalActions.setUser(user);
@@ -61,7 +52,7 @@ const ProfileEditSkills = ({ history }) => {
           </IonButtons>
           <IonTitle>Edit skills</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={() => updateUser()}>
+            <IonButton onClick={updateUser}>
               <IonIcon icon={checkmarkOutline} />
             </IonButton>
           </IonButtons>
@@ -70,7 +61,7 @@ const ProfileEditSkills = ({ history }) => {
       <IonContent>
         <SkillsEdit
           skillList={skillList}
-          skills={skills}
+          skills={user.skills}
           onChange={(skills) => setSkills(skills)}
         />
       </IonContent>
