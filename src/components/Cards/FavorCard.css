@@ -1,0 +1,31 @@
+.favorCard-avatar {
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+.ad-company {
+  margin-left: 5px;
+}
+
+.adCard {
+  border: 1px solid var(--ion-color-warning);
+}
+
+.favor-card-skills {
+  margin-top: 15px;
+  margin-left: -5px;
+}
+
+.favor-card-title {
+  font-size: 27px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--ion-color-dark);
+}
+
+.favor-card-description {
+  font-family: "Open Sans", sans-serif;
+  color: var(--ion-color-dark-tint);
+  line-height: 1.7;
+}

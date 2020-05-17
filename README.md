@@ -1,12 +1,11 @@
-# TVZ Mc2 app 
+# Hora
 
 ## How to run
 
 Requirements:
 - Install [npm](https://nodejs.org/)
-- Thats it :D
-
-Open project folder and run `npm install`. Next, to run app in your default browser type `npm start`. 
+- Open project folder and run `npm install`
+- type `npm start`, aplication will start on port 3000 and open in your default browser
 
 ## Cloud Functions
 

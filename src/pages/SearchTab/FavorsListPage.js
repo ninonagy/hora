@@ -6,62 +6,134 @@ import {
   IonToolbar,
   IonTitle,
   IonList,
-  IonIcon,
-  IonBadge,
+  IonRefresher,
+  IonRefresherContent,
 } from "@ionic/react";
 
-import { heart } from "ionicons/icons";
+import { chevronDownCircleOutline } from "ionicons/icons";
 
 import "./FavorListPage.css";
 
-import FavorCard from "../../components/FavorCard";
+import FavorCard from "../../components/Cards/FavorCard";
 
-import Loader from "../../components/Loader";
+import AdCard from "../../components/Cards/AdCard";
 
-import * as db from "../../db.js";
+import Loader from "../../components/shared/Loader";
+
+import * as db from "../../db";
+
 import { fs } from "../../firebase";
-import { buildPath, paths } from "../../scheme";
+import { buildPath, paths, states } from "../../scheme";
 import { arrayWithId } from "../../utils";
+import useGlobal from "../../state";
+import useCache from "../../hooks/useCache";
 
-const FavorsListPage = ({ match }) => {
-  let [favors, setFavors] = useState([]);
+const FavorsListPage = (props) => {
+  const [globalState, {}] = useGlobal();
+  const skillList = useCache(db.getSkillsList, `/skills`);
+  let [favorsFree, setFavorsFree] = useState([]);
+  let [userFavorsActive, setUserFavorsActive] = useState([]);
+  let [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fs.collection(buildPath(paths.favor, { favorId: "" }))
-      .where("state", "==", "free")
-      .orderBy("dateCreated", "desc")
-      .get()
-      .then((result) => {
-        setFavors(arrayWithId(result));
-      });
-    // db.getFavorsList().then((favors) => {
-    //   let list = favors.sort((item1, item2) => {
-    //     let diff = new Date(item1.dateCreated) - new Date(item2.dateCreated);
-    //     return -diff;
-    //   });
-    //   setFavors(list);
-    // });
+    updateFavorList();
   }, []);
+
+  async function updateFavorList() {
+    // Get free favors filtered by user skills
+    setFavorsFree(
+      arrayWithId(
+        await fs
+          .collection(buildPath(paths.favor, { favorId: "" }))
+          .where("state", "==", states.favor.free)
+          .where("skills", "array-contains-any", globalState.user.skills)
+          .get()
+      )
+    );
+
+    // Get user's active favors
+    setUserFavorsActive(
+      arrayWithId(
+        await fs
+          .collection(
+            buildPath(paths.favor, {
+              userId: globalState.userId,
+              favorId: "",
+            })
+          )
+          .where("userId", "==", globalState.userId)
+          .where("state", "==", states.favor.active)
+          .orderBy("dateCreated", "desc")
+          .get()
+      )
+    );
+
+    setIsLoading(false);
+  }
+
+  async function handleRefresh(event) {
+    await updateFavorList();
+    event.target.complete();
+  }
+
+  function showUserActiveFavors() {
+    if (userFavorsActive.length)
+      return (
+        <>
+          <span className="sectionHeading">Tvoje usluge u tijeku</span>
+          <IonList>
+            {userFavorsActive.map((item) => (
+              <FavorCard
+                skillList={skillList.all}
+                item={item}
+                key={item.id}
+                link={`/favor/${item.id}`}
+              />
+            ))}
+          </IonList>
+        </>
+      );
+  }
+
+  function showFreeFavors() {
+    return (
+      <>
+        <span className="sectionHeading">Pomogni nekome</span>
+        <IonList>
+          {favorsFree.map((item) =>
+            item.ownerId ? (
+              <FavorCard
+                skillList={skillList.all}
+                item={item}
+                key={item.id}
+                link={`/favor/${item.id}`}
+              />
+            ) : (
+              <AdCard item={item} key={item.id} />
+            )
+          )}
+        </IonList>
+      </>
+    );
+  }
 
   return (
     <IonPage>
-      <Loader data={favors}>
+      <Loader data={!isLoading}>
         <IonContent fullscreen="true">
+          <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+            <IonRefresherContent
+              pullingIcon={chevronDownCircleOutline}
+              pullingText="Osvježi"
+              refreshingText="Osvježavanje"
+              refreshingSpinner="circular"
+            />
+          </IonRefresher>
           <IonToolbar>
             <IonTitle slot="start">HORA</IonTitle>
           </IonToolbar>
-          <span className="sectionHeading">Your active favors</span>
-          <IonList>
-            {favors.slice(0, 2).map((item) => (
-              <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />
-            ))}
-          </IonList>
-          <span className="sectionHeading">Help someone!</span>
-          <IonList>
-            {favors.map((item) => (
-              <FavorCard item={item} key={item.id} link={`/favor/${item.id}`} />
-            ))}
-          </IonList>
+          {showUserActiveFavors()}
+          {showFreeFavors()}
         </IonContent>
       </Loader>
     </IonPage>

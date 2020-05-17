@@ -1,30 +1,60 @@
-.favor-title {
-  font-family: "Raleway", sans-serif;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-}
-
 .favor-avatar {
   width: 75px;
   height: 75px;
+  border: 2px solid white;
+}
+
+.FavorUserName {
+  color: whitesmoke;
+  font-family: "Raleway", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-size: 25px;
+  line-height: 1.7;
 }
 
 .favor-text {
-  padding-left: 20px;
-  padding-right: 40px;
+  margin: 50px 40px 0px 30px;
 }
 
 .favor-text h1 {
   font-size: 35px;
   font-family: "Raleway", sans-serif;
-  font-weight: 500;
+  font-weight: 700;
+  letter-spacing: 0.03em;
   color: var(--ion-color-dark);
 }
 
 .favor-text p {
   font-family: "Open Sans", sans-serif;
   color: var(--ion-color-dark-tint);
-  line-height: 1.5;
+  line-height: 1.7;
+}
+
+.favor-image-wrapper {
+  margin: 25px 25px;
+}
+
+.favor-image {
+  border-radius: 10px;
+}
+
+.favor-detail-icon {
+  display: inline-block;
+  vertical-align: middle;
+  color: var(--ion-color-medium-shade);
+}
+
+.favor-detail-text {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 5px;
+  color: var(--ion-color-medium-shade);
+}
+
+.favor-skills {
+  margin-top: 15px;
+  margin-left: -5px;
 }
 
 .image-card-wrapper {
@@ -36,8 +66,11 @@
   margin-left: 20px;
 }
 
-.button-do-it {
+.bigButton {
   margin-top: 20px;
   margin-left: 20px;
   margin-right: 20px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.1em;
 }

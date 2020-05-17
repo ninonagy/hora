@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { expect } from "chai";
@@ -8,7 +9,12 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions-test";
 
 // Cloud functions
-import { onFavorStateChange } from "../src/index";
+import {
+  onFavorStateChange,
+  onFavorCreate,
+  onUserCreate,
+  onMessageCreate,
+} from "../src/index";
 
 // Connect to local firestore emulator
 // Start emulator -> firebase emulators:start --only firestore
@@ -29,17 +35,36 @@ const testEnv = functions(
 // https://firebase.google.com/docs/reference/functions/test
 
 // Tests
-describe("onFavorStateChange", () => {
+describe("Favor life cycle test", () => {
   const wrapped = testEnv.wrap(onFavorStateChange);
+  const wrappedOnFavorCreate = testEnv.wrap(onFavorCreate);
+  const wrappedOnUserCreate = testEnv.wrap(onUserCreate);
+  const wrappedOnMessageCreate = testEnv.wrap(onMessageCreate);
+
   const Jojo = "u1"; // owner
   const Loki = "u2"; // user
   const favorId = "test_favor";
+  const conversationId = `${Jojo}${Loki}`;
+  const messageId = `new_message`;
+
+  before(async () => {
+    await admin.firestore().doc(`/users/${Jojo}`).delete();
+    await admin.firestore().doc(`/users/${Loki}`).delete();
+    await admin.firestore().doc(`/users/horacije`).delete();
+    await admin.firestore().doc(`/favors/${favorId}`).delete();
+    await admin.firestore().doc(`/conversations/horacije${Jojo}/messages/welcome`).delete();
+    await admin.firestore().doc(`/conversations/horacije${Loki}/messages/welcome`).delete();
+    await admin
+      .firestore()
+      .doc(`/users/${Loki}/conversations/${conversationId}`)
+      .delete();
+  });
 
   it("should create user Jojo", async () => {
     const id = await admin
       .firestore()
       .doc(`/users/${Jojo}`)
-      .set({
+      .create({
         name: "Jojo",
       })
       .then(() => Jojo);
@@ -50,26 +75,64 @@ describe("onFavorStateChange", () => {
     const id = await admin
       .firestore()
       .doc(`/users/${Loki}`)
-      .set({
+      .create({
         name: "Loki",
       })
       .then(() => Loki);
+
     expect(id).to.be.equal(Loki);
   });
 
-  it("should create favor", async () => {
-    const id = await admin
-      .firestore()
-      .doc(`/favors/${favorId}`)
-      .set({
-        ownerId: "u1",
-        state: "free",
-      })
-      .then(() => favorId);
-    expect(id).to.be.equal(favorId);
+  it("should set initial coins", async () => {
+    const snapJojo = testEnv.firestore.makeDocumentSnapshot(
+      {
+        name: Jojo,
+        timeEarned: 0,
+        timeSpent: 0,
+      },
+      `/users/${Jojo}`
+    );
+    const snapLoki = testEnv.firestore.makeDocumentSnapshot(
+      {
+        name: Loki,
+        timeEarned: 0,
+        timeSpent: 0,
+      },
+      `/users/${Loki}`
+    );
+
+    await wrappedOnUserCreate(snapJojo);
+    await wrappedOnUserCreate(snapLoki);
+
+    const userJojo = await admin.firestore().doc(`/users/${Jojo}`).get();
+    const userLoki = await admin.firestore().doc(`/users/${Loki}`).get();
+
+    expect(userJojo.data()?.timeEarned).to.be.equal(3);
+    expect(userLoki.data()?.timeEarned).to.be.equal(3);
   });
 
-  it("should notify owner that he needs to accept favor request", async () => {
+  it("Jojo should create new favor", async () => {
+    const snap = testEnv.firestore.makeDocumentSnapshot(
+      {
+        ownerId: Jojo,
+        state: "free",
+        userId: null,
+      },
+      `/favors/${favorId}`
+    );
+    await wrappedOnFavorCreate(snap);
+  });
+
+  it("should take one coin from Jojo", async () => {
+    const user = await admin.firestore().doc(`/users/${Jojo}`).get();
+    const timeEarned = user.data()?.timeEarned;
+    const timeSpent = user.data()?.timeSpent;
+    expect(timeEarned).to.be.equal(3);
+    expect(timeSpent).to.be.equal(1);
+    expect(timeEarned - timeSpent).to.be.equal(2);
+  });
+
+  it("should notify Jojo that he needs to accept favor request", async () => {
     const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
       {
         ownerId: Jojo,
@@ -101,7 +164,7 @@ describe("onFavorStateChange", () => {
     expect(notification.status).to.be.equal("pending");
   });
 
-  it("should notify user that owner accepted his favor request", async () => {
+  it("should notify Loki that Jojo accepted his favor request", async () => {
     const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
       {
         ownerId: Jojo,
@@ -133,11 +196,11 @@ describe("onFavorStateChange", () => {
     expect(notification.status).to.be.equal("accepted");
   });
 
-  it("should notify owner that user completed favor", async () => {
+  it("should notify Jojo that Loki completed favor", async () => {
     const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
       {
         ownerId: Jojo,
-        state: "active",
+        state: "review",
         userId: Loki,
       },
       `/favors/${favorId}`
@@ -157,11 +220,48 @@ describe("onFavorStateChange", () => {
 
     const result = await admin
       .firestore()
-      .collection(`/users/${Jojo}/notifications`)
+      .collection(`/users/${Loki}/notifications`)
       .orderBy("dateCreated", "desc")
       .get();
 
     const notification = result.docs[0].data();
     expect(notification.status).to.be.equal("completed");
+  });
+
+  it("should give one coin to Loki", async () => {
+    const user = await admin.firestore().doc(`/users/${Loki}`).get();
+    const timeEarned = user.data()?.timeEarned;
+    const timeSpent = user.data()?.timeSpent;
+    expect(timeEarned).to.be.equal(4);
+    expect(timeSpent).to.be.equal(0);
+    expect(timeEarned - timeSpent).to.be.equal(4);
+  });
+
+  it("Jojo should send a message to Loki", async () => {
+    const snapMsg = testEnv.firestore.makeDocumentSnapshot(
+      {
+        senderId: Jojo,
+        receiverId: Loki,
+        content: "Thank you!",
+      },
+      `/conversations/${conversationId}/messages/${messageId}`
+    );
+
+    // Create user conversation thread
+    await admin
+      .firestore()
+      .doc(`/users/${Loki}/conversations/${conversationId}`)
+      .create({
+        dateCreated: new Date().toISOString(),
+      });
+
+    await wrappedOnMessageCreate(snapMsg);
+
+    const update = await admin
+      .firestore()
+      .doc(`/users/${Loki}/conversations/${conversationId}`)
+      .get();
+
+    expect(update.data()?.seen).to.be.false;
   });
 });

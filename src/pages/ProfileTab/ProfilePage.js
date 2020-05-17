@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  IonText,
-  IonItem,
   IonChip,
   IonLabel,
   IonContent,
@@ -17,41 +15,50 @@ import {
   IonButton,
   IonIcon,
   IonImg,
-  IonBackButton,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
 
 import { settingsOutline } from "ionicons/icons";
 
-import RatingIcons from "../components/RatingIcons";
+import RatingIcons from "../../components/shared/RatingIcons";
 
 import "./ProfilePage.css";
 
-import BackButton from "../components/BackButton";
-import Loader from "../components/Loader";
+import BackButton from "../../components/Buttons/Back";
+import Loader from "../../components/shared/Loader";
 
-import useGlobalState from "../state";
-import * as db from "../db";
+import useGlobalState from "../../state";
+import * as db from "../../db";
+import useCache from "../../hooks/useCache";
 
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
-const ProfilePage = ({ match, isPublic }) => {
-  const [globalState, globalActions] = useGlobalState();
+const ProfilePage = ({ history, match, isPublic }) => {
+  const [globalState, {}] = useGlobalState();
   let [user, setUser] = useState({});
+  const skillList = useCache(db.getSkillsList, `/skills`);
 
-  let userId = isPublic ? match.params.userId : globalState.userId;
+  // let publicUser = useCache(
+  //   () => db.getUser(match.params.userId),
+  //   `/user/${match.params.userId}`,
+  //   true
+  // );
 
   useEffect(() => {
-    db.getUser(userId).then((user) => {
-      setUser(user);
-    });
-  }, []);
+    if (isPublic) {
+      db.getUser(match.params.userId).then((user) => {
+        setUser(user);
+      });
+    } else setUser(globalState.user);
+  }, [globalState.user]);
 
   let {
     name,
+    surname,
     email,
+    bio,
     birthDate,
     location,
     rating,
@@ -73,12 +80,10 @@ const ProfilePage = ({ match, isPublic }) => {
             <IonButtons slot="start">
               <BackButton />
             </IonButtons>
-            <IonTitle>
-              {name}, {getAge(birthDate)}
-            </IonTitle>
+            <IonTitle>Profile</IonTitle>
             {!isPublic && (
               <IonButtons slot="end">
-                <IonButton>
+                <IonButton onClick={() => history.push("profile/edit")}>
                   <IonIcon icon={settingsOutline} />
                 </IonButton>
               </IonButtons>
@@ -86,6 +91,12 @@ const ProfilePage = ({ match, isPublic }) => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
+          <div
+            className="profile-cover"
+            style={{
+              background: `linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url("https://picsum.photos/seed/${email}/500/300")`,
+            }}
+          ></div>
           <IonGrid class="profile-margin">
             <IonRow class="ion-align-items-center">
               <IonCol size="2" offset="4">
@@ -93,33 +104,33 @@ const ProfilePage = ({ match, isPublic }) => {
                   <IonImg src={pictureLink} alt="Avatar" />
                 </IonAvatar>
               </IonCol>
-              {/** I know this look terrible. I'm sorry. I'll update it asap. */}
               <IonCol size="2" offset="3">
-                <div class="profile-coins">{timeAvailable}</div> coins
+                <div class="profile-coins">
+                  <p>{timeAvailable}</p>
+                </div>
               </IonCol>
             </IonRow>
             <IonRow>
-              <IonCol className="ion-text-center profile-name">{name}</IonCol>
+              <IonCol className="ion-text-center profile-name">
+                {name}, {getAge(birthDate)}
+              </IonCol>
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center">
-                <RatingIcons rating={rating} />
+                <RatingIcons timeEarned={timeEarned} timeSpent={timeSpent} />
               </IonCol>
             </IonRow>
             <IonRow>
-              <IonCol className="ion-text-center profile-bio">
-                Stu(die)ing @ the uni. Doing crazy things. I have a dog! I love
-                helping everybody in need! Cooking is my passion! Oh and I love
-                walking my dogs: Kate and Jack.
-              </IonCol>
+              <IonCol className="ion-text-center profile-bio">{bio}</IonCol>
             </IonRow>
             <IonRow>
               <IonCol className="ion-text-center profile-bio">
-                {skills.map((item) => (
-                  <IonChip>
-                    <IonLabel>{item}</IonLabel>
-                  </IonChip>
-                ))}
+                {skillList.all &&
+                  skills.map((skill, id) => (
+                    <IonChip key={id} outline="true">
+                      <IonLabel>{skillList.all[skill]}</IonLabel>
+                    </IonChip>
+                  ))}
               </IonCol>
             </IonRow>
           </IonGrid>

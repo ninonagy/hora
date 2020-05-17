@@ -1,25 +1,24 @@
-import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Redirect } from "react-router-dom";
 import {
-  IonPage,
   IonTabs,
   IonTabBar,
   IonTabButton,
   IonIcon,
   IonRouterOutlet,
+  IonBadge,
 } from "@ionic/react";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 
-import ConversationPage from "./MessagesTab/ConversationPage";
-import PublicProfilePage from "./PublicProfilePage";
-
-import GivePage from "./GivePage";
+import GivePage from "./GiveTab/GivePage";
 import MessagesPage from "./MessagesTab/MessagesPage";
-import ProfilePage from "./ProfilePage";
+import ProfilePage from "./ProfileTab/ProfilePage";
 
 import FavorsList from "./SearchTab/FavorsListPage";
-import FavorDetail from "./SearchTab/FavorDetailPage";
+import ProfileEdit from "./ProfileTab/ProfileEdit";
+import ProfileEditPassword from "./ProfileTab/ProfileEditPassword";
+import ProfileEditSkills from "./ProfileTab/ProfileEditSkills";
 
 import {
   homeOutline,
@@ -28,15 +27,54 @@ import {
   personOutline,
 } from "ionicons/icons";
 
+import { fs } from "../firebase";
+import useGlobal from "../state";
+
 const Tabs = (props) => {
+  const [globalState, globalActions] = useGlobal();
+  let [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    // Listen for new changes in user conversations
+    const unsubscribe = fs
+      .collection(`/users/${globalState.userId}/conversations`)
+      .onSnapshot((querySnapshot) => {
+        let unseens = querySnapshot.docs.filter(
+          (doc) => doc.data().seen === false
+        );
+        setNotificationCount(unseens.length);
+      });
+
+    // Remove listener when page is not active anymore
+    return () => unsubscribe();
+  }, []);
+
   return (
     <IonTabs>
       <IonRouterOutlet>
         {/* Tabs (same as pages except they are navigated as tabs) */}
         <ProtectedRoute exact path="/:tab(search)" component={FavorsList} />
         <ProtectedRoute exact path="/:tab(give)" component={GivePage} />
-        <ProtectedRoute exact path="/:tab(messages)" component={MessagesPage} />
+        <ProtectedRoute
+          exact
+          path="/:tab(messages)"
+          component={MessagesPage}
+          reload={notificationCount}
+        />
         <ProtectedRoute exact path="/:tab(profile)" component={ProfilePage} />
+
+        <ProtectedRoute exact path="/profile/edit" component={ProfileEdit} />
+        <ProtectedRoute
+          exact
+          path="/profile/edit/password"
+          component={ProfileEditPassword}
+        />
+        <ProtectedRoute
+          exact
+          path="/profile/edit/skills"
+          component={ProfileEditSkills}
+        />
+
         <Redirect exact from="/home" to="/search" />
       </IonRouterOutlet>
 
@@ -51,6 +89,7 @@ const Tabs = (props) => {
 
         <IonTabButton tab="messages" href="/messages">
           <IonIcon icon={chatbubblesOutline} />
+          {notificationCount > 0 && <IonBadge>{notificationCount}</IonBadge>}
         </IonTabButton>
 
         <IonTabButton tab="profile" href="/profile">

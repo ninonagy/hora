@@ -1,4 +1,4 @@
-import { fs, storage } from "./firebase";
+import { fs, storage, timestamp } from "./firebase";
 
 import { paths, buildPath, states } from "./scheme";
 import { userToUserKey } from "./utils";
@@ -49,6 +49,10 @@ function updateValue(path = "", ids = {}, value = {}) {
 function deleteDoc(path = "", ids = {}) {
   path = buildPath(path, ids);
   return fs.doc(path).delete();
+}
+
+async function getSkillsList() {
+  return getValue(paths.skills);
 }
 
 // https://stackoverflow.com/questions/6248666/how-to-generate-short-uid-like-ax4j9z-in-js
@@ -106,17 +110,17 @@ async function getUserByAuth(email, password) {
 // Start conversation thread
 async function storeConversation(senderId, receiverId) {
   let id = userToUserKey(senderId, receiverId);
-  let fields = { active: true };
+  let userFields = { active: true, seen: false, updatedAt: Date.now() };
   return setValue(paths.conversation, { conversationId: id }, {}).then(() =>
     setValue(
       paths.userConversation,
       { userId: senderId, conversationId: id },
-      { receiverId: receiverId, ...fields }
+      { receiverId: receiverId, ...userFields }
     ).then(() => {
       return setValue(
         paths.userConversation,
         { userId: receiverId, conversationId: id },
-        { receiverId: senderId, ...fields }
+        { receiverId: senderId, ...userFields }
       ).then(() => id);
     })
   );
@@ -159,6 +163,17 @@ async function storeMessage(conversationId, data = {}, type = "msg") {
   ).then(() => messageId);
 }
 
+async function updateMessage(conversationId, messageId, data = {}) {
+  return updateValue(
+    paths.message,
+    {
+      conversationId,
+      messageId,
+    },
+    data
+  );
+}
+
 async function deleteMessage(conversationId, messageId) {
   return deleteDoc(paths.message, {
     conversationId,
@@ -180,12 +195,15 @@ async function storeUserPicture(userId, data = Blob) {
     .then((snapshot) => snapshot.ref.getDownloadURL().then((url) => url));
 }
 
-async function setFavorState(favorId, state) {
-  return updateValue(paths.favor, { favorId }, { state });
+async function storeFavorPicture(id, data, format) {
+  return storage
+    .ref(`/favorPictures/${id}.${format}`)
+    .putString(data, "data_url")
+    .then((snapshot) => snapshot.ref.getDownloadURL().then((url) => url));
 }
 
-async function storeUserActiveFavor(userId, favorId) {
-  return setValue(paths.userFavorsActive, { userId, favorId }, {});
+async function setFavorState(favorId, state) {
+  return updateValue(paths.favor, { favorId }, { state });
 }
 
 // ...
@@ -198,17 +216,19 @@ export {
   storeUser,
   updateUser,
   getFavor,
+  getSkillsList,
   updateFavor,
   setFavorState,
   createFavor,
-  storeUserActiveFavor,
   getFavorsList,
   getUserByAuth,
   getMessages,
+  updateMessage,
   deleteMessage,
   storeConversation,
   storeMessage,
   getUserConversation,
   getUserConversationList,
   storeUserPicture,
+  storeFavorPicture,
 };

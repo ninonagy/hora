@@ -1,0 +1,50 @@
+.profile-margin {
+  margin-top: -15vw;
+}
+
+.profile-avatar {
+  width: 30vw;
+  height: 30vw;
+  border: 3px solid white;
+}
+
+.profile-name {
+  font-family: "Raleway", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-size: 25px;
+  margin-top: 15px;
+}
+
+.profile-bio {
+  font-family: "Open Sans", sans-serif;
+  color: var(--ion-color-medium-shade);
+  font-size: 15px;
+  margin: 5px 20px;
+  line-height: 1.7;
+}
+
+.editSkills {
+  padding: 0;
+  margin: 20px 0 -10px;
+}
+
+.profile-coins {
+  margin-top: -15px;
+  background-color: var(--ion-color-warning-tint);
+  border-radius: 100px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  font-family: "Raleway", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.profile-cover {
+  height: 20vh;
+  width: 100%;
+}

@@ -9,9 +9,9 @@ import {
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
-import MessagesCard from "../../components/MessagesCard";
+import ConversationCard from "../../components/Cards/ConversationCard";
 
-import Loader from "../../components/Loader";
+import Loader from "../../components/shared/Loader";
 
 import useGlobal from "../../state";
 
@@ -19,27 +19,31 @@ import { fs } from "../../firebase";
 import { paths, buildPath } from "../../db";
 import { arrayWithId } from "../../utils";
 
-const MessagesPage = (props) => {
-  const [globalState, globalActions] = useGlobal();
-  let [conversations, setConversations] = useState([]);
-
-  useEffect(() => {
-    fs.collection(
+function getConversationsOrderByUpdatedAt(userId) {
+  return fs
+    .collection(
       buildPath(paths.userConversation, {
-        userId: globalState.userId,
+        userId: userId,
         conversationId: "",
       })
     )
-      .orderBy("dateCreated", "desc")
-      .get()
-      .then((result) => {
-        setConversations(arrayWithId(result));
-      });
-  }, []);
+    .orderBy("updatedAt", "desc")
+    .get();
+}
+
+const MessagesPage = ({ match, reload }) => {
+  const [globalState, {}] = useGlobal();
+  const [conversations, setConversations] = useState([]);
+
+  useEffect(() => {
+    getConversationsOrderByUpdatedAt(globalState.userId).then((result) => {
+      setConversations(arrayWithId(result));
+    });
+  }, [reload]);
 
   return (
     <IonPage>
-      <Loader data={conversations.length || true}>
+      <Loader data={conversations}>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Messages</IonTitle>
@@ -50,10 +54,10 @@ const MessagesPage = (props) => {
             {conversations.map(
               (conversation) =>
                 conversation.active && (
-                  <MessagesCard
+                  <ConversationCard
                     key={conversation.id}
-                    userId={conversation.receiverId}
-                    link={`${props.match.url}/conversation/${conversation.id}`}
+                    item={conversation}
+                    link={`${match.url}/conversation/${conversation.id}`}
                   />
                 )
             )}

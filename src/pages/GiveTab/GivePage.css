@@ -1,0 +1,51 @@
+.image {
+  margin-top: 40%;
+  margin-left: 10%;
+  width: 80%;
+}
+
+.give-text {
+  font-family: "Open Sans", sans-serif;
+  color: var(--ion-color-medium-shade);
+  font-size: 15px;
+  margin: 0 20px;
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+}
+
+.image-container img {
+  height: auto;
+  width: 100%;
+  height: auto;
+}
+
+.image-container .button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.add-photo {
+  margin-left: 5px;
+}
+
+.title-input {
+  margin-top: 25px;
+  font-size: 25px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--ion-color-dark);
+  height: auto;
+}
+
+.description-input {
+  font-family: "Open Sans", sans-serif;
+  color: var(--ion-color-dark-tint);
+  line-height: 1.7;
+}

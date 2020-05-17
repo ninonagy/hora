@@ -8,53 +8,43 @@ import {
   IonInput,
   IonRow,
   IonCol,
+  IonAlert,
 } from "@ionic/react";
 import { withRouter, Redirect } from "react-router";
 
 import "./LoginPage.css";
 
-import * as db from "../db";
+import { getPassHash } from "../../utils";
 
-import useGlobal from "../state";
+import useGlobal from "../../state";
+import { authService } from "../../services";
 
 const LoginPage = (props) => {
   const [globalState, globalActions] = useGlobal();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  let [userId, setUserId] = useState();
   let [isAuth, setIsAuth] = useState(false);
 
-  // demo
-  useEffect(() => {
-    setUserId("u1");
-  }, []);
-  handleLogin();
+  //alerts
+  const [showUserDoesNotExist, setUserDoesNotExist] = useState(false);
 
-  function handleLogin() {
-    if (userId && !globalState.isAuthenticated) {
-      db.getUser(userId)
-        .then((user) => {
-          // TODO: Password verification
-          // Set user session
-          globalActions.setAuthUser(userId);
-          // Set user data in global store
-          globalActions.setUser(user);
-          setIsAuth(true);
-        })
-        .catch((error) => {});
+  useEffect(() => {
+    // Try to get user from local storage
+    let user = authService.getUserValue();
+    if (user && !isAuth) {
+      globalActions.setAuthUser(user);
+      setIsAuth(true);
     }
-  }
+  }, []);
 
   function logInUser() {
-    db.getUserByAuth(email, password)
+    authService
+      .login(email, password)
       .then((user) => {
-        // Set user session
-        globalActions.setAuthUser(user.id);
-        // Set user data in global store
-        globalActions.setUser(user);
-        setIsAuth(true);
+        if (user) {
+          globalActions.setAuthUser(user);
+          setIsAuth(true);
+        } else setUserDoesNotExist(true);
       })
       .catch(() => {
         // TODO: Handle error
@@ -64,7 +54,8 @@ const LoginPage = (props) => {
   if (isAuth) {
     let { state } = props.location;
     let path = "/home";
-    if (state) path = state.from.pathname;
+    if (state?.from) path = state.from.pathname;
+    // Forward user to previous page or to default page
     return <Redirect to={path} />;
   } else {
     return (
@@ -77,6 +68,13 @@ const LoginPage = (props) => {
             <IonCol className="col4"></IonCol>
           </IonRow>
         </IonHeader>
+        <IonAlert
+          isOpen={showUserDoesNotExist}
+          onDidDismiss={() => setUserDoesNotExist(false)}
+          header={"Greška!"}
+          message={"E-mail ili password su pogrešni!"}
+          buttons={["OK"]}
+        />
         <IonContent>
           <h2 className="heading2">Bok, ovo je</h2>
           <h1 className="heading">HORA</h1>
@@ -92,7 +90,7 @@ const LoginPage = (props) => {
               className="login-input"
               placeholder="password"
               type="password"
-              onIonChange={(e) => setPassword(e.target.value)}
+              onIonChange={(e) => setPassword(getPassHash(e.target.value))}
             ></IonInput>
 
             <IonButton

@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Redirect } from "react-router";
 import useGlobal from "../state";
 
-const ProtectedRoute = ({ component: Component, path, ...other }) => {
+const ProtectedRoute = ({ component: Component, path, reload, ...other }) => {
   const [globalState, {}] = useGlobal();
 
   return (
@@ -11,7 +11,7 @@ const ProtectedRoute = ({ component: Component, path, ...other }) => {
       path={path}
       render={(props) =>
         globalState.isAuthenticated ? (
-          <Component {...props} />
+          <Component {...props} reload={reload} />
         ) : (
           <Redirect
             to={{ pathname: "/login", state: { from: props.location } }}
