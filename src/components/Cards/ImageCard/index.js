@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import "./ImageCard.css";
+import "./style.css";
 
 const ImageCard = ({ url, caption, orientation }) => {
   return (

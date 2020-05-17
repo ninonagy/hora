@@ -6,8 +6,6 @@ import {
   IonToolbar,
   IonTitle,
   IonList,
-  IonIcon,
-  IonBadge,
   IonRefresher,
   IonRefresherContent,
 } from "@ionic/react";
@@ -16,11 +14,11 @@ import { chevronDownCircleOutline } from "ionicons/icons";
 
 import "./FavorListPage.css";
 
-import FavorCard from "../../components/FavorCard";
+import FavorCard from "../../components/Cards/FavorCard";
 
-import AdCard from "../../components/AdCard";
+import AdCard from "../../components/Cards/AdCard";
 
-import Loader from "../../components/Loader";
+import Loader from "../../components/shared/Loader";
 
 import * as db from "../../db";
 

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { IonLabel, IonItem, IonAvatar, IonImg } from "@ionic/react";
 
-import * as db from "../db";
-import useCache from "../hooks/useCache";
-import { showDate } from "../utils";
+import * as db from "../../db";
+import useCache from "../../hooks/useCache";
+import { showDate } from "../../utils";
 
 const MessagesCard = ({ link, item }) => {
   let { receiverId, seen, updatedAt } = item;

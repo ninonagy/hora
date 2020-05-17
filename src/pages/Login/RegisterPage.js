@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   IonContent,
   IonHeader,
@@ -10,13 +10,12 @@ import {
   IonCol,
   IonAlert,
   IonDatetime,
-  IonLabel,
 } from "@ionic/react";
-import { withRouter, Redirect } from "react-router";
+import { withRouter } from "react-router";
 
 import { getPassHash } from "../../utils";
 
-import "../LoginPage.css";
+import "./LoginPage.css";
 
 import * as db from "../../db";
 
@@ -31,9 +30,6 @@ const RegisterPage = (props) => {
   const [birthDate, setBirthDate] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-
-  let [userId, setUserId] = useState();
-  let [isAuth, setIsAuth] = useState(false);
 
   //alerts
   const [showInvalidEmailAddress, setInvalidEmailAddress] = useState(false);
@@ -66,7 +62,6 @@ const RegisterPage = (props) => {
     authService
       .login(email, password)
       .then((user) => {
-        setIsAuth(true);
         globalActions.setAuthUser(user);
         props.history.push(`/register/2/`);
       })

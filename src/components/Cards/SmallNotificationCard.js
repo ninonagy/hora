@@ -4,7 +4,7 @@ import { IonRow, IonGrid } from "@ionic/react";
 
 import Time from "./TimeCard";
 
-import * as db from "../db";
+import * as db from "../../db";
 
 const SmallNotificationCard = ({
   user,

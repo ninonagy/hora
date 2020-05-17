@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
   IonCard,
-  IonAvatar,
   IonItem,
   IonLabel,
-  IonChip,
   IonBadge,
 } from "@ionic/react";
 
 import "./FavorCard.css";
-
-import RatingIcons from "../components/RatingIcons";
 
 const FavorCard = ({ item }) => {
   let { title, description, url, company } = item;

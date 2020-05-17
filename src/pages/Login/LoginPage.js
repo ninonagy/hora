@@ -14,10 +14,10 @@ import { withRouter, Redirect } from "react-router";
 
 import "./LoginPage.css";
 
-import { getPassHash } from "../utils";
+import { getPassHash } from "../../utils";
 
-import useGlobal from "../state";
-import { authService } from "../services";
+import useGlobal from "../../state";
+import { authService } from "../../services";
 
 const LoginPage = (props) => {
   const [globalState, globalActions] = useGlobal();

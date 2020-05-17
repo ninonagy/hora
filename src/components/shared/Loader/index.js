@@ -1,7 +1,7 @@
 import React from "react";
 import { IonSpinner } from "@ionic/react";
 
-import "./Loader.css";
+import "./style.css";
 
 const isEmptyOrNull = (obj) => {
   if (obj) {

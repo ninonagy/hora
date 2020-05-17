@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  IonText,
-  IonItem,
   IonChip,
   IonLabel,
   IonContent,
@@ -17,24 +15,22 @@ import {
   IonButton,
   IonIcon,
   IonImg,
-  IonBackButton,
-  IonBadge,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
 
 import { settingsOutline } from "ionicons/icons";
 
-import RatingIcons from "../components/RatingIcons";
+import RatingIcons from "../../components/shared/RatingIcons";
 
 import "./ProfilePage.css";
 
-import BackButton from "../components/BackButton";
-import Loader from "../components/Loader";
+import BackButton from "../../components/Buttons/Back";
+import Loader from "../../components/shared/Loader";
 
-import useGlobalState from "../state";
-import * as db from "../db";
-import useCache from "../hooks/useCache";
+import useGlobalState from "../../state";
+import * as db from "../../db";
+import useCache from "../../hooks/useCache";
 
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
@@ -51,11 +47,11 @@ const ProfilePage = ({ history, match, isPublic }) => {
   // );
 
   useEffect(() => {
-    db.getUser(isPublic ? match.params.userId : globalState.userId).then(
-      (user) => {
+    if (isPublic) {
+      db.getUser(match.params.userId).then((user) => {
         setUser(user);
-      }
-    );
+      });
+    } else setUser(globalState.user);
   }, [globalState.user]);
 
   let {

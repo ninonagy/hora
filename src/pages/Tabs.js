@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import {
   IonTabs,
   IonTabBar,
@@ -11,25 +11,23 @@ import {
 
 import ProtectedRoute from "../components/ProtectedRoute";
 
-import GivePage from "./GivePage";
+import GivePage from "./GiveTab/GivePage";
 import MessagesPage from "./MessagesTab/MessagesPage";
-import ProfilePage from "./ProfilePage";
+import ProfilePage from "./ProfileTab/ProfilePage";
 
 import FavorsList from "./SearchTab/FavorsListPage";
-import ProfileEdit from "./ProfileEdit";
-import ProfileEditPassword from "./ProfileEditPassword";
-import ProfileEditSkills from "./ProfileEditSkills";
+import ProfileEdit from "./ProfileTab/ProfileEdit";
+import ProfileEditPassword from "./ProfileTab/ProfileEditPassword";
+import ProfileEditSkills from "./ProfileTab/ProfileEditSkills";
 
 import {
   homeOutline,
   addCircleOutline,
   chatbubblesOutline,
   personOutline,
-  filter,
 } from "ionicons/icons";
 
 import { fs } from "../firebase";
-import { buildPath, paths } from "../scheme";
 import useGlobal from "../state";
 
 const Tabs = (props) => {

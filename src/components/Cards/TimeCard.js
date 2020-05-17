@@ -1,8 +1,7 @@
 import React from "react";
 
 import { IonRow, IonGrid } from "@ionic/react";
-import { earthOutline } from "ionicons/icons";
-import { showDate } from "../utils";
+import { showDate } from "../../utils";
 
 const TimeCard = ({ showTime, time }) => {
   if (showTime == 2) {

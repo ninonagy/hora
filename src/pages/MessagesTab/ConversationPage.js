@@ -30,12 +30,12 @@ import {
 
 import useGlobal from "../../state";
 
-import Message from "../../components/MessageCard";
-import NotificationCard from "../../components/NotificationCard";
-import SmallNotification from "../../components/SmallNotificationCard";
+import Message from "../../components/Cards/MessageCard";
+import NotificationCard from "../../components/Cards/NotificationCard";
+import SmallNotification from "../../components/Cards/SmallNotificationCard";
 
-import BackButton from "../../components/BackButton";
-import Loader from "../../components/Loader";
+import BackButton from "../../components/Buttons/Back";
+import Loader from "../../components/shared/Loader";
 
 import * as db from "../../db";
 import { fs, firebase } from "../../firebase";
