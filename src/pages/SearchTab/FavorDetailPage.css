@@ -31,6 +31,14 @@
   line-height: 1.7;
 }
 
+.favor-image-wrapper {
+  margin: 25px 25px;
+}
+
+.favor-image {
+  border-radius: 10px;
+}
+
 .favor-detail-icon {
   display: inline-block;
   vertical-align: middle;

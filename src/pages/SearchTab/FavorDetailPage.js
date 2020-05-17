@@ -21,7 +21,11 @@ import {
   IonCardContent,
   IonChip,
   IonLabel,
+  IonFooter,
 } from "@ionic/react";
+
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 import "./FavorDetailPage.css";
 
@@ -84,7 +88,24 @@ const FavorDetailPage = ({ history, match }) => {
     });
   }, []);
 
-  let { title, description, location, dateCreated, state, skills } = favor;
+  function returnImage(picUrl) {
+    if (picUrl)
+      return (
+        <Zoom>
+          <img className="favor-image" src={picUrl} />
+        </Zoom>
+      );
+  }
+
+  let {
+    title,
+    description,
+    location,
+    dateCreated,
+    state,
+    skills,
+    picUrl,
+  } = favor;
 
   const handleHelp = async () => {
     let sender = globalState.userId;
@@ -311,7 +332,6 @@ const FavorDetailPage = ({ history, match }) => {
               },
             ]}
           />
-
           <IonCard
             className="favor-user"
             style={{
@@ -338,9 +358,6 @@ const FavorDetailPage = ({ history, match }) => {
                       timeSpent={user.timeSpent}
                     />
                   </IonCol>
-                </IonRow>
-                <IonRow>
-                  <IonCol></IonCol>
                 </IonRow>
               </IonGrid>
             </IonCardContent>
@@ -370,11 +387,14 @@ const FavorDetailPage = ({ history, match }) => {
             </div>
           </div>
 
+          <div className="favor-image-wrapper">{returnImage(picUrl)}</div>
+        </IonContent>
+        <IonFooter className="ion-no-border">
           <IonGrid>
             {returnHelpButton()}
             {returnActiveFavorButtons()}
           </IonGrid>
-        </IonContent>
+        </IonFooter>
       </Loader>
     </IonPage>
   );
