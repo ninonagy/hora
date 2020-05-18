@@ -33,7 +33,7 @@ import "./GivePage.css";
 
 import * as db from "../../db";
 import useGlobal from "../../state";
-import { closeCircle, camera, cameraOutline } from "ionicons/icons";
+import { cameraOutline, phonePortrait } from "ionicons/icons";
 import useCache from "../../hooks/useCache";
 import takePicture from "../../services/camera";
 import { fs } from "../../firebase";
@@ -50,11 +50,12 @@ const GivePage = (props) => {
   let [dateTime, setDateTime] = useState(new Date());
   // let [timeEstimation, setTimeEstimation] = useState(30);
   let [selectedSkills, setSelectedSkills] = useState();
-  let [photo, setPhoto] = useState(null);
+  let [photo, setPhoto] = useState(undefined);
   let [titleTemplate, setTitleTemplate] = useState("");
   let [descriptionTemplate, setDescriptionTemplate] = useState("");
 
-  const [showAllFieldsRequired, setAllFieldsRequired] = useState(false);
+  let [showAllFieldsRequired, setShowAllFieldsRequired] = useState(false);
+  let [showOptionalImageAlert, setShowOptionalImageAlert] = useState(false);
 
   let user = useCache(() => db.getUser(globalState.userId), `user`);
 
@@ -80,22 +81,32 @@ const GivePage = (props) => {
     setPhoto(image);
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  function checkInputs() {
+    if (title && description && selectedSkills && dateTime) {
+      // Show photo alert
+      if (photo === undefined) {
+        setShowOptionalImageAlert(true);
+      } else {
+        publishFavor();
+      }
+    } else setShowAllFieldsRequired(true);
+  }
+
+  async function publishFavor() {
     let userId = globalState.userId;
     let { location } = globalState.user;
 
-    if (title && description && location && selectedSkills && dateTime) {
-      let favorId = await db.createFavor({
-        ownerId: userId,
-        title: title,
-        description: description,
-        location: location,
-        skills: selectedSkills,
-        dateDue: dateTime.toISOString(),
-      });
+    let favorId = await db.createFavor({
+      ownerId: userId,
+      title: title,
+      description: description,
+      location: location,
+      skills: selectedSkills,
+      dateDue: dateTime.toISOString(),
+    });
 
-      // Store photo
+    // Store photo
+    if (photo) {
       let picUrl = await db.storeFavorPicture(
         favorId,
         photo.data,
@@ -106,10 +117,10 @@ const GivePage = (props) => {
       db.updateFavor(favorId, {
         picUrl,
       });
+    }
 
-      // Forward user to the public favor page
-      props.history.replace(`/favor/${favorId}`);
-    } else setAllFieldsRequired(true);
+    // Forward user to the public favor page
+    props.history.replace(`/favor/${favorId}`);
   }
 
   if (timeAvailable > 0)
@@ -124,10 +135,32 @@ const GivePage = (props) => {
         <IonContent>
           <IonAlert
             isOpen={showAllFieldsRequired}
-            onDidDismiss={() => setAllFieldsRequired(false)}
+            onDidDismiss={() => setShowAllFieldsRequired(false)}
             header={"Greška!"}
             message={"Sva polja su obavezna!"}
             buttons={["U redu"]}
+          />
+          <IonAlert
+            isOpen={showOptionalImageAlert}
+            onDidDismiss={() => setShowOptionalImageAlert(false)}
+            header={"Fotografija"}
+            message={"Sigurno ne želiš dodati fotografiju?"}
+            buttons={[
+              {
+                text: "Dodaj fotografiju",
+                cssClass: "secondary",
+                handler: () => {
+                  handlePhoto();
+                },
+              },
+              {
+                text: "Objavi bez slike",
+                cssClass: "secondary",
+                handler: () => {
+                  publishFavor();
+                },
+              },
+            ]}
           />
           <IonList className="ion-no-margin ion-no-padding" lines="none">
             {/* Upload photo */}
@@ -203,12 +236,11 @@ const GivePage = (props) => {
         <IonFooter className="ion-no-border">
           <IonToolbar>
             <IonButton
-              type="submit"
               className="bigButton"
               color="dark"
               expand="block"
               fill="outline"
-              onClick={handleSubmit}
+              onClick={checkInputs}
             >
               Zatraži
             </IonButton>
