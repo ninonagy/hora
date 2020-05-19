@@ -52,8 +52,14 @@ describe("Favor life cycle test", () => {
     await admin.firestore().doc(`/users/${Loki}`).delete();
     await admin.firestore().doc(`/users/horacije`).delete();
     await admin.firestore().doc(`/favors/${favorId}`).delete();
-    await admin.firestore().doc(`/conversations/horacije${Jojo}/messages/welcome`).delete();
-    await admin.firestore().doc(`/conversations/horacije${Loki}/messages/welcome`).delete();
+    await admin
+      .firestore()
+      .doc(`/conversations/horacije${Jojo}/messages/welcome`)
+      .delete();
+    await admin
+      .firestore()
+      .doc(`/conversations/horacije${Loki}/messages/welcome`)
+      .delete();
     await admin
       .firestore()
       .doc(`/users/${Loki}/conversations/${conversationId}`)
@@ -200,7 +206,7 @@ describe("Favor life cycle test", () => {
     const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
       {
         ownerId: Jojo,
-        state: "review",
+        state: "active",
         userId: Loki,
       },
       `/favors/${favorId}`
@@ -225,7 +231,7 @@ describe("Favor life cycle test", () => {
       .get();
 
     const notification = result.docs[0].data();
-    expect(notification.status).to.be.equal("completed");
+    expect(notification.status).to.be.equal("done");
   });
 
   it("should give one coin to Loki", async () => {

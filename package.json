@@ -1,6 +1,6 @@
 {
-  "name": "app",
-  "version": "0.0.1",
+  "name": "Hora",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -9,6 +9,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@capacitor/android": "^2.1.0",
     "@capacitor/core": "1.5.2",
     "@ionic/pwa-elements": "^1.5.2",
     "@ionic/react": "^5.0.0",
@@ -51,7 +52,7 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "1.5.2"
+    "@capacitor/cli": "^2.1.0"
   },
   "description": "An Ionic project"
 }
