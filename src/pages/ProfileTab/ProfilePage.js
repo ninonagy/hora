@@ -51,8 +51,15 @@ const ProfilePage = ({ history, match, isPublic }) => {
       db.getUser(match.params.userId).then((user) => {
         setUser(user);
       });
-    } else setUser(globalState.user);
-  }, [globalState.user]);
+    } else {
+      db.getUser(globalState.userId).then((user) => {
+        let { timeEarned, timeSpent } = user;
+        globalState.user.timeEarned = timeEarned;
+        globalState.user.timeSpent = timeSpent;
+        setUser(globalState.user);
+      });
+    }
+  }, []);
 
   let {
     name,
