@@ -185,9 +185,10 @@ const messageOrder = (messages, id, idprev) => {
 1 - displays time
 2 - displays date and time
 
-(it is not handling years (yet^^))
+(it is not handling years)
 
  */
+
 const showTime = (messages, id) => {
   var idPrev = id - 1;
   if (messages[idPrev] != null) {
@@ -341,8 +342,8 @@ const ConversationPage = (props) => {
                   isThisUser={message.senderId === userId ? true : false}
                   favorId={message.favorId}
                   action={message.action}
-                  showTime={showTime(messages, id)}
-                  time={new Date(messages[id].dateCreated)}
+                  showTimeCard={showTime(messages, id)}
+                  time={messages[id].dateCreated}
                   onUserCancel={() =>
                     setCancelAlert({
                       show: true,
@@ -373,16 +374,16 @@ const ConversationPage = (props) => {
                   favorId={message.favorId}
                   action={message.action}
                   trigger={message.trigger}
-                  showTime={showTime(messages, id)}
-                  time={new Date(messages[id].dateCreated)}
+                  showTimeCard={showTime(messages, id)}
+                  time={messages[id].dateCreated}
                 />
               ) : (
                 <Message
                   key={id}
                   user={message.senderId === userId ? "right" : "left"}
                   order={messageOrder(messages, id, id - 1)}
-                  showTime={showTime(messages, id)}
-                  time={new Date(messages[id].dateCreated)}
+                  showTimeCard={showTime(messages, id)}
+                  time={messages[id].dateCreated}
                   content={message.content}
                 />
               )

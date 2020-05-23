@@ -26,7 +26,7 @@ const NotificationCard = ({
   onUserCancel,
   onUserDecline,
   onUserAccept,
-  showTime,
+  showTimeCard,
   time,
 }) => {
   let [favor, setFavor] = useState({});
@@ -88,7 +88,7 @@ const NotificationCard = ({
 
   return (
     <div>
-      <Time showTime={showTime} time={time} />
+      <Time show={showTimeCard} time={time} />
       <IonCard>
         <IonCardHeader onClick={(e) => history.push(`/favor/${favorId}`)}>
           <IonCardSubtitle>

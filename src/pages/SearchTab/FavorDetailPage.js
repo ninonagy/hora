@@ -46,6 +46,8 @@ import Loader from "../../components/shared/Loader";
 
 import * as db from "../../db";
 import useGlobal from "../../state";
+import { showDate, showTime } from "../../utils";
+
 import { states, types, triggers } from "../../scheme";
 import { userToUserKey } from "../../utils";
 import useCache from "../../hooks/useCache";
@@ -194,42 +196,6 @@ const FavorDetailPage = ({ history, match }) => {
       );
   }
 
-  var months = {
-    1: "siječnja",
-    2: "veljače",
-    3: "ožujka",
-    4: "travnja",
-    5: "svibnja",
-    6: "lipnja",
-    7: "srpnja",
-    8: "kolovoza",
-    9: "rujna",
-    10: "listopada",
-    11: "studenog",
-    12: "prosinca",
-  };
-
-  function returnDate(dateCreated) {
-    if (dateCreated) {
-      const date = new Date(dateCreated);
-      const today = new Date();
-      if (
-        today.getDate() == date.getDate() &&
-        today.getMonth() == date.getMonth()
-      )
-        return `Danas, ${date.getHours()}:${date.getMinutes()}`;
-      else if (
-        today.getDate() - 1 == date.getDate() &&
-        today.getMonth() == date.getMonth()
-      )
-        return `Jučer, ${date.getHours()}:${date.getMinutes()}`;
-      else
-        return `${date.getDate()}. ${
-          months[date.getMonth() + 1]
-        }, ${date.getHours()}:${date.getMinutes()}`;
-    }
-  }
-
   return (
     <IonPage>
       <Loader data={favor && user}>
@@ -370,7 +336,9 @@ const FavorDetailPage = ({ history, match }) => {
               icon={calendarOutline}
               style={{ marginLeft: "30px" }}
             />
-            <span className="favor-detail-text">{returnDate(dateCreated)}</span>
+            <span className="favor-detail-text">
+              {`${showDate(dateCreated)}, ${showTime(dateCreated)}`}
+            </span>
 
             <p>{description}</p>
             <div className="favor-skills">

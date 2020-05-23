@@ -10,7 +10,7 @@ const SmallNotificationCard = ({
   user,
   isThisUser,
   favorId,
-  showTime,
+  showTimeCard,
   time,
   trigger,
 }) => {
@@ -42,7 +42,7 @@ const SmallNotificationCard = ({
 
   return (
     <div>
-      <Time showTime={showTime} time={time} />
+      <Time show={showTimeCard} time={time} />
 
       <IonGrid>
         <IonRow className="ion-justify-content-center date">
