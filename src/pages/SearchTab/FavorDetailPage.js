@@ -30,7 +30,7 @@ import "./FavorDetailPage.css";
 
 import { withRouter } from "react-router";
 
-import RatingIcons from "../../components/shared/RatingIcons";
+import ProfileCard from "../../components/Cards/ProfileCard";
 
 import {
   ellipsisHorizontal,
@@ -51,9 +51,6 @@ import { showDate, showTime } from "../../utils";
 import { states, types, triggers } from "../../scheme";
 import { userToUserKey } from "../../utils";
 import useCache from "../../hooks/useCache";
-
-const getAge = (birthDate) =>
-  new Date().getFullYear() - new Date(birthDate).getFullYear();
 
 const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
@@ -295,36 +292,8 @@ const FavorDetailPage = ({ history, match }) => {
               },
             ]}
           />
-          <IonCard
-            className="favor-user"
-            style={{
-              background: `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("https://picsum.photos/seed/${user.email}/500/300?blur=10")`,
-            }}
-          >
-            <IonCardContent
-              onClick={() => history.push(`/user/${favor.ownerId}`)}
-            >
-              <IonGrid>
-                <IonRow class="ion-align-items-center">
-                  <IonCol size="4">
-                    <IonAvatar className="favor-avatar">
-                      <IonImg src={user.pictureLink} />
-                    </IonAvatar>
-                  </IonCol>
-                  <IonCol>
-                    <IonText className="FavorUserName">
-                      {user.name}, {getAge(user.birthDate)}
-                    </IonText>
-                    <br />
-                    <RatingIcons
-                      timeEarned={user.timeEarned}
-                      timeSpent={user.timeSpent}
-                    />
-                  </IonCol>
-                </IonRow>
-              </IonGrid>
-            </IonCardContent>
-          </IonCard>
+
+          <ProfileCard user={user} userId={favor.ownerId} />
 
           <div className="favor-text">
             <h1>{title}</h1>
