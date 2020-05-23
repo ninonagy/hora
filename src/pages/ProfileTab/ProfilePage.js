@@ -87,7 +87,7 @@ const ProfilePage = ({ history, match, isPublic }) => {
             <IonButtons slot="start">
               <BackButton />
             </IonButtons>
-            <IonTitle>Profile</IonTitle>
+            <IonTitle>Profil</IonTitle>
             {!isPublic && (
               <IonButtons slot="end">
                 <IonButton onClick={() => history.push("profile/edit")}>

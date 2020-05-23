@@ -67,7 +67,7 @@ const ProfileEditPassword = ({ history }) => {
             <IonButtons slot="start">
               <BackButton />
             </IonButtons>
-            <IonTitle>Change Password</IonTitle>
+            <IonTitle>Promijeni password</IonTitle>
             <IonButtons slot="end">
               <IonButton onClick={() => handlePasswordEdit()}>
                 <IonIcon icon={checkmarkOutline} />
@@ -92,7 +92,7 @@ const ProfileEditPassword = ({ history }) => {
           />
           <IonList className="ion-no-margin ion-no-padding">
             <IonItem>
-              <IonLabel position="stacked">Trenuti password</IonLabel>
+              <IonLabel position="stacked">Trenutni password</IonLabel>
               <IonInput
                 type="password"
                 pattern="password"
