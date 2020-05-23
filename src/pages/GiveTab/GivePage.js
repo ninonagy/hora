@@ -241,6 +241,7 @@ const GivePage = (props) => {
               expand="block"
               fill="outline"
               onClick={checkInputs}
+              shape="round"
             >
               Zatraži
             </IonButton>

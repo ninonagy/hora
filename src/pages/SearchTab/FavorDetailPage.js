@@ -1,23 +1,18 @@
 import React, { useState, useEffect } from "react";
 import {
-  IonText,
   IonContent,
   IonHeader,
   IonToolbar,
   IonTitle,
   IonPage,
   IonButtons,
-  IonAvatar,
   IonIcon,
-  IonImg,
   IonButton,
   IonPopover,
   IonGrid,
   IonRow,
   IonCol,
   IonAlert,
-  IonCard,
-  IonCardContent,
   IonChip,
   IonLabel,
   IonFooter,
@@ -141,6 +136,7 @@ const FavorDetailPage = ({ history, match }) => {
           color="dark"
           expand="block"
           fill="outline"
+          shape="round"
           onClick={handleHelp}
         >
           Učini uslugu
@@ -220,7 +216,7 @@ const FavorDetailPage = ({ history, match }) => {
                 <IonIcon icon={ellipsisHorizontal} />
               </IonButton>
             </IonButtons>
-            <IonTitle>Favor</IonTitle>
+            <IonTitle>Usluga</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>
