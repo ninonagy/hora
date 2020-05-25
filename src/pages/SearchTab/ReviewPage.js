@@ -36,25 +36,11 @@ import useGlobal from "../../state";
 
 import useCache from "../../hooks/useCache";
 
-const ReviewPage = ({ history, match }) => {
-  const [globalState, globalActions] = useGlobal();
-
-  const favorId = match.params.favorId;
-  let favor = useCache(() => db.getFavor(favorId), `/favor/${favorId}`);
-
-  let [user, setUser] = useState({});
-
+const ReviewPage = ({ userMe, userToReview, favor, setShowReviewModal }) => {
   let [rating, setRating] = useState(0);
+  let [comment, setComment] = useState("");
 
-  useEffect(() => {
-    if (favor) {
-      db.getUser(favor.ownerId).then((user) => {
-        setUser(user);
-      });
-    }
-  }, [favor]);
-
-  let { title, description } = favor;
+  const [showRatingRequiredAlert, setRatingRequiredAlert] = useState(false);
 
   function showStars(rating) {
     return [...Array(5)].map((e, i) =>
@@ -91,56 +77,77 @@ const ReviewPage = ({ history, match }) => {
     return description;
   }
 
+  function handleReview() {
+    if (rating != 0) {
+      db.setReview(
+        userToReview.id,
+        userMe.id,
+        userMe.name,
+        userMe.pictureLink,
+        "li03jo",
+        rating,
+        comment
+      );
+      setShowReviewModal(false);
+    } else {
+      setRatingRequiredAlert(true);
+    }
+  }
+
   return (
-    <IonPage>
-      <Loader data={favor && user}>
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <BackButton />
-            </IonButtons>
-            <IonButtons slot="end"></IonButtons>
-            <IonTitle>Ocjena</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+    <>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Ocjena</IonTitle>
+        </IonToolbar>
+      </IonHeader>
 
-        <IonContent>
-          <ProfileCard user={user} userId={favor.ownerId} />
+      <IonContent>
+        <IonAlert
+          isOpen={showRatingRequiredAlert}
+          onDidDismiss={() => setRatingRequiredAlert(false)}
+          header={"Greška!"}
+          message={"Ocjena je obavezna!"}
+          buttons={["U redu"]}
+        />
 
-          <IonGrid>
-            <IonRow class="ion-justify-content-center">
-              {showStars(rating)}
-            </IonRow>
-            <IonRow class="ion-justify-content-center">
-              <span className="stars-description">
-                {showStarsDescription(rating)}
-              </span>
-            </IonRow>
-            <IonRow>
-              <IonTextarea
-                className="rating-comment"
-                placeholder="Dodaj komentar..."
-                autoGrow="true"
-                style={{ lineHeight: 1.7 }}
-              />
-            </IonRow>
-          </IonGrid>
-        </IonContent>
-        <IonFooter className="ion-no-border">
-          <IonToolbar>
-            <IonButton
-              className="bigButton"
-              color="dark"
-              expand="block"
-              fill="outline"
-              shape="round"
-            >
-              Ocjeni
-            </IonButton>
-          </IonToolbar>
-        </IonFooter>
-      </Loader>
-    </IonPage>
+        <ProfileCard user={userToReview} userId={favor.ownerId} />
+
+        <IonGrid>
+          <IonRow class="ion-justify-content-center">
+            {showStars(rating)}
+          </IonRow>
+          <IonRow class="ion-justify-content-center">
+            <span className="stars-description">
+              {showStarsDescription(rating)}
+            </span>
+          </IonRow>
+          <IonRow>
+            <IonTextarea
+              className="rating-comment"
+              placeholder="Dodaj komentar..."
+              autoGrow="true"
+              style={{ lineHeight: 1.7 }}
+              onIonChange={(e) => setComment(e.target.value)}
+            />
+          </IonRow>
+        </IonGrid>
+      </IonContent>
+      <IonFooter className="ion-no-border">
+        <IonToolbar>
+          <IonButton
+            className="bigButton"
+            color="dark"
+            expand="block"
+            fill="outline"
+            shape="round"
+            onClick={() => handleReview()}
+          >
+            Ocjeni
+          </IonButton>
+        </IonToolbar>
+      </IonFooter>
+    </>
   );
 };
 

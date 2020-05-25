@@ -78,9 +78,15 @@
 .date {
   color: var(--ion-color-medium-tint);
   font-weight: 600;
+  text-align: center;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .hour {
   color: var(--ion-color-medium-tint);
   font-weight: 400;
+  text-align: center;
+  margin-left: 20px;
+  margin-right: 20px;
 }

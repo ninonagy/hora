@@ -182,8 +182,8 @@ async function deleteMessage(conversationId, messageId) {
 }
 
 async function storeUser(data = {}) {
-  data = { ...data };
   let userId = uid();
+  data = { ...data, id: userId };
   return setValue(paths.user, { userId: userId }, data).then(() => userId);
 }
 

@@ -109,7 +109,7 @@ const ProfilePage = ({ history, match, isPublic }) => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          {/* Review modal */}
+          {/* Review list modal */}
           <IonModal isOpen={showReviewModal} onWillPresent={loadReviews}>
             <IonHeader>
               <IonToolbar>

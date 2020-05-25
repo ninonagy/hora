@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 
 import { IonRow, IonGrid } from "@ionic/react";
 
+import { withRouter } from "react-router";
+
 import Time from "./TimeCard";
 
 import * as db from "../../db";
 import { triggers } from "../../scheme";
 
 const SmallNotificationCard = ({
+  history,
   user,
   isThisUser,
   favorId,
@@ -31,7 +34,13 @@ const SmallNotificationCard = ({
       if (isThisUser) return "Odbio si pomoć";
       else return user.name + " je odbio pomoć";
     } else if (trigger == triggers.review) {
-      // TODO: Add notification text
+      if (!isThisUser)
+        return (
+          user.name +
+          " je označio da je usluga zavšena. Sada možeš ocjeniti " +
+          user.name +
+          "."
+        );
     } else if (trigger == triggers.done) {
       if (isThisUser) return "Označio si da je usluga gotova";
       else return user.name + " je označio da je usluga gotova";
@@ -41,20 +50,28 @@ const SmallNotificationCard = ({
     }
   }
 
+  function returnTitle(isThisUser, trigger, title) {
+    if (trigger != triggers.review) {
+      return title;
+    } else if (!isThisUser) return title;
+  }
+
   let { title, state } = favor || {};
 
   return (
     <div>
       <Time show={showTimeCard} time={time} />
 
-      <IonGrid>
+      <IonGrid onClick={(e) => history.push(`/favor/${favorId}`)}>
         <IonRow className="ion-justify-content-center date">
           {returnNotificationtext(user, isThisUser, trigger)}
         </IonRow>
-        <IonRow className="ion-justify-content-center hour">{title}</IonRow>
+        <IonRow className="ion-justify-content-center hour">
+          {returnTitle(isThisUser, trigger, title)}
+        </IonRow>
       </IonGrid>
     </div>
   );
 };
 
-export default SmallNotificationCard;
+export default withRouter(SmallNotificationCard);
