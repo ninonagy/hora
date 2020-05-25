@@ -4,20 +4,13 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonPage,
-  IonButtons,
   IonIcon,
   IonButton,
-  IonPopover,
   IonGrid,
   IonRow,
-  IonCol,
   IonAlert,
-  IonChip,
-  IonLabel,
   IonFooter,
   IonTextarea,
-  IonItem,
 } from "@ionic/react";
 
 import { star, starOutline } from "ionicons/icons";
@@ -28,15 +21,15 @@ import { withRouter } from "react-router";
 
 import ProfileCard from "../../components/Cards/ProfileCard";
 
-import BackButton from "../../components/Buttons/Back";
-import Loader from "../../components/shared/Loader";
-
 import * as db from "../../db";
-import useGlobal from "../../state";
 
-import useCache from "../../hooks/useCache";
-
-const ReviewPage = ({ userMe, userToReview, favor, setShowReviewModal }) => {
+const ReviewPage = ({
+  userReviewing,
+  userToReview,
+  favor,
+  favorId,
+  setShowReviewModal,
+}) => {
   let [rating, setRating] = useState(0);
   let [comment, setComment] = useState("");
 
@@ -81,10 +74,10 @@ const ReviewPage = ({ userMe, userToReview, favor, setShowReviewModal }) => {
     if (rating != 0) {
       db.setReview(
         userToReview.id,
-        userMe.id,
-        userMe.name,
-        userMe.pictureLink,
-        "li03jo",
+        userReviewing.id,
+        userReviewing.name,
+        userReviewing.pictureLink,
+        favorId,
         rating,
         comment
       );

@@ -49,6 +49,7 @@ import { showDate, showTime } from "../../utils";
 import { states, types, triggers } from "../../scheme";
 import { userToUserKey } from "../../utils";
 import useCache from "../../hooks/useCache";
+import { isAbsolute } from "path";
 
 const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
@@ -303,9 +304,10 @@ const FavorDetailPage = ({ history, match }) => {
           {/* Review modal */}
           <IonModal isOpen={showReviewModal}>
             <ReviewPage
-              userMe={globalState.user}
+              userReviewing={globalState.user}
               userToReview={user}
               favor={favor}
+              favorId={favorId}
               setShowReviewModal={setShowReviewModal}
             />
           </IonModal>
