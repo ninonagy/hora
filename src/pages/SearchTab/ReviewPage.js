@@ -104,7 +104,7 @@ const ReviewPage = ({
           buttons={["U redu"]}
         />
 
-        <ProfileCard user={userToReview} userId={favor.ownerId} />
+        <ProfileCard user={userToReview} />
 
         <IonGrid>
           <IonRow class="ion-justify-content-center">

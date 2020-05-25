@@ -312,7 +312,7 @@ const FavorDetailPage = ({ history, match }) => {
             />
           </IonModal>
 
-          <ProfileCard user={user} userId={favor.ownerId} />
+          <ProfileCard user={user} />
 
           <div className="favor-text">
             <h1>{title}</h1>
