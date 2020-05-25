@@ -36,7 +36,7 @@ const testEnv = functions(
 
 // Tests
 describe("Favor life cycle test", () => {
-  const wrapped = testEnv.wrap(onFavorStateChange);
+  const wrappedOnFavorStateChange = testEnv.wrap(onFavorStateChange);
   const wrappedOnFavorCreate = testEnv.wrap(onFavorCreate);
   const wrappedOnUserCreate = testEnv.wrap(onUserCreate);
   const wrappedOnMessageCreate = testEnv.wrap(onMessageCreate);
@@ -158,7 +158,7 @@ describe("Favor life cycle test", () => {
     const change = testEnv.makeChange(beforeSnap, afterSnap);
 
     // Run cloud function
-    await wrapped(change, { params: { favorId } });
+    await wrappedOnFavorStateChange(change, { params: { favorId } });
 
     const result = await admin
       .firestore()
@@ -190,7 +190,7 @@ describe("Favor life cycle test", () => {
     const change = testEnv.makeChange(beforeSnap, afterSnap);
 
     // Run cloud function
-    await wrapped(change, { params: { favorId } });
+    await wrappedOnFavorStateChange(change, { params: { favorId } });
 
     const result = await admin
       .firestore()
@@ -214,6 +214,38 @@ describe("Favor life cycle test", () => {
     const afterSnap = testEnv.firestore.makeDocumentSnapshot(
       {
         ownerId: Jojo,
+        state: "review",
+        userId: Loki,
+      },
+      `/favors/${favorId}`
+    );
+    const change = testEnv.makeChange(beforeSnap, afterSnap);
+
+    // Run cloud function
+    await wrappedOnFavorStateChange(change, { params: { favorId } });
+
+    const result = await admin
+      .firestore()
+      .collection(`/users/${Jojo}/notifications`)
+      .orderBy("dateCreated", "desc")
+      .get();
+
+    const notification = result.docs[0].data();
+    expect(notification.status).to.be.equal("review");
+  });
+
+  it("should notify Loki that Jojo gave him a review", async () => {
+    const beforeSnap = testEnv.firestore.makeDocumentSnapshot(
+      {
+        ownerId: Jojo,
+        state: "review",
+        userId: Loki,
+      },
+      `/favors/${favorId}`
+    );
+    const afterSnap = testEnv.firestore.makeDocumentSnapshot(
+      {
+        ownerId: Jojo,
         state: "done",
         userId: Loki,
       },
@@ -222,7 +254,7 @@ describe("Favor life cycle test", () => {
     const change = testEnv.makeChange(beforeSnap, afterSnap);
 
     // Run cloud function
-    await wrapped(change, { params: { favorId } });
+    await wrappedOnFavorStateChange(change, { params: { favorId } });
 
     const result = await admin
       .firestore()

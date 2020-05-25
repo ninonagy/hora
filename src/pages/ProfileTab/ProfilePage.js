@@ -15,6 +15,10 @@ import {
   IonButton,
   IonIcon,
   IonImg,
+  IonModal,
+  IonText,
+  IonList,
+  IonItem,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -38,6 +42,8 @@ const getAge = (birthDate) =>
 const ProfilePage = ({ history, match, isPublic }) => {
   const [globalState, {}] = useGlobalState();
   let [user, setUser] = useState({});
+  let [showReviewModal, setShowReviewModal] = useState(false);
+  let [reviews, setReviews] = useState([]);
   const skillList = useCache(db.getSkillsList, `/skills`);
 
   // let publicUser = useCache(
@@ -60,6 +66,11 @@ const ProfilePage = ({ history, match, isPublic }) => {
       });
     }
   }, [globalState.user]);
+
+  async function loadReviews() {
+    let reviews = await db.getReviews(globalState.userId);
+    setReviews(reviews);
+  }
 
   let {
     name,
@@ -98,6 +109,35 @@ const ProfilePage = ({ history, match, isPublic }) => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
+          {/* Review modal */}
+          <IonModal isOpen={showReviewModal} onWillPresent={loadReviews}>
+            <IonHeader>
+              <IonToolbar>
+                <IonTitle>Ocjene</IonTitle>
+                <IonButtons slot="end">
+                  <IonButton onClick={() => setShowReviewModal(false)}>
+                    Zatvori
+                  </IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent>
+              <IonList>
+                {/*
+                  TODO: Style review card with fields: username, userImage, rating, comment
+                */}
+                {reviews.map((review) => (
+                  <IonItem key={review.id}>
+                    <IonImg src={review.userImage}></IonImg>
+                    {review.rating}
+                    {review.comment}
+                  </IonItem>
+                ))}
+              </IonList>
+            </IonContent>
+          </IonModal>
+
+          {/* Content */}
           <div
             className="profile-cover"
             style={{
@@ -138,6 +178,16 @@ const ProfilePage = ({ history, match, isPublic }) => {
                       <IonLabel>{skillList.all[skill]}</IonLabel>
                     </IonChip>
                   ))}
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol className="ion-text-center">
+                <IonText
+                  color="primary"
+                  onClick={() => setShowReviewModal(true)}
+                >
+                  Pogledaj ocjene
+                </IonText>
               </IonCol>
             </IonRow>
           </IonGrid>

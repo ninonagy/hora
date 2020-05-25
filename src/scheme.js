@@ -9,6 +9,7 @@ const paths = {
   userFavorsCreated: "/users/{userId}/favorsCreated/{favorId}",
   userFavorsActive: "/users/{userId}/favorsActive/{favorId}",
   skills: "/lists/skills",
+  review: "/user/{userId}/reviews/{reviewId}",
   // ...
 };
 
@@ -26,7 +27,7 @@ const states = {
     free: "free",
     pending: "pending",
     active: "active",
-    // review: "review",
+    review: "review",
     done: "done",
   },
 };
@@ -44,6 +45,7 @@ const types = {
 const triggers = {
   accept: "accept",
   decline: "decline",
+  review: "review",
   abort: "abort",
   done: "done",
 };

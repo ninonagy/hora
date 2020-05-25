@@ -182,7 +182,14 @@ export const onFavorStateChange = functions.firestore
             status: "accepted",
           });
           return Promise.all([notification]);
-        } else if (from("active").to("done")) {
+        } else if (from("active").to("review")) {
+          // Notify owner that he needs to review favor
+          const notification = setUserNotification(ownerId, {
+            favorId: favorId,
+            status: "review",
+          });
+          return Promise.all([notification]);
+        } else if (from("review").to("done")) {
           // Notify user that owner gave him one coin
           const notification = setUserNotification(userId, {
             favorId: favorId,

@@ -1,4 +1,4 @@
-import { fs, storage, timestamp } from "./firebase";
+import { fs, storage, FieldValue } from "./firebase";
 
 import { paths, buildPath, states } from "./scheme";
 import { userToUserKey } from "./utils";
@@ -206,6 +206,50 @@ async function setFavorState(favorId, state) {
   return updateValue(paths.favor, { favorId }, { state });
 }
 
+async function setReview(
+  userId,
+  senderId,
+  username,
+  userImage,
+  favorId,
+  rating,
+  comment
+) {
+  let data = {
+    senderId,
+    username,
+    userImage,
+    favorId,
+    rating,
+    comment,
+  };
+  let reviewId = `${senderId}_${favorId}`;
+  return setValue(paths.review, { userId, reviewId }, data).then(() => {
+    return updateUserRating(userId, rating);
+  });
+}
+
+async function getReviews(userId) {
+  return fs
+    .collection(buildPath(paths.review, { userId, reviewId: "" }))
+    .orderBy("dateCreated", "desc")
+    .get()
+    .then((snap) => {
+      return snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    });
+}
+
+async function updateUserRating(userId, ratingValue) {
+  return updateValue(
+    paths.user,
+    { userId },
+    {
+      ratingSum: FieldValue.increment(ratingValue),
+      ratingCount: FieldValue.increment(1),
+    }
+  );
+}
+
 // ...
 
 // export db functions
@@ -231,4 +275,6 @@ export {
   getUserConversationList,
   storeUserPicture,
   storeFavorPicture,
+  setReview,
+  getReviews,
 };
