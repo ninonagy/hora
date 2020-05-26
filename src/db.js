@@ -224,7 +224,7 @@ async function setReview(
     comment,
   };
   let reviewId = `${senderId}_${favorId}`;
-  return setValue(paths.review, { userId, reviewId }, data).then(() => {
+  return setValue(paths.tempReview, { userId, reviewId }, data).then(() => {
     return updateUserRating(userId, rating);
   });
 }

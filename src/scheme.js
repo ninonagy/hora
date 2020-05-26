@@ -9,6 +9,7 @@ const paths = {
   userFavorsCreated: "/users/{userId}/favorsCreated/{favorId}",
   userFavorsActive: "/users/{userId}/favorsActive/{favorId}",
   skills: "/lists/skills",
+  tempReview: "/users/{userId}/tempReviews/{reviewId}",
   review: "/users/{userId}/reviews/{reviewId}",
   // ...
 };
