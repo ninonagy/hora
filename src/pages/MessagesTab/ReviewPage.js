@@ -20,6 +20,8 @@ import "./ReviewPage.css";
 
 import { states, types, triggers } from "../../scheme";
 
+import { showStarsDescription } from "../../utils";
+
 import { withRouter } from "react-router";
 
 import ProfileCard from "../../components/Cards/ProfileCard";
@@ -50,27 +52,6 @@ const ReviewPage = ({
         </IonButton>
       )
     );
-  }
-
-  function showStarsDescription(rating) {
-    var description;
-    switch (rating) {
-      case 1:
-        description = "Užasno";
-        break;
-      case 2:
-        description = "Loše";
-        break;
-      case 3:
-        description = "Ispod očekivanja";
-        break;
-      case 4:
-        description = "Očekivano";
-        break;
-      case 5:
-        description = "Iznad očekivanja";
-    }
-    return description;
   }
 
   async function handleDone() {

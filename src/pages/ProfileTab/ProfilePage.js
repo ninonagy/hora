@@ -19,11 +19,15 @@ import {
   IonText,
   IonList,
   IonItem,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
 
-import { settingsOutline } from "ionicons/icons";
+import { settingsOutline, closeOutline } from "ionicons/icons";
 
 import RatingIcons from "../../components/shared/RatingIcons";
 
@@ -31,6 +35,8 @@ import "./ProfilePage.css";
 
 import BackButton from "../../components/Buttons/Back";
 import Loader from "../../components/shared/Loader";
+
+import { showStarsDescription, showDate } from "../../utils";
 
 import useGlobalState from "../../state";
 import * as db from "../../db";
@@ -68,8 +74,13 @@ const ProfilePage = ({ history, match, isPublic }) => {
   }, [globalState.user]);
 
   async function loadReviews() {
-    let reviews = await db.getReviews(globalState.userId);
-    setReviews(reviews);
+    if (isPublic) {
+      let reviews = await db.getReviews(match.params.userId);
+      setReviews(reviews);
+    } else {
+      let reviews = await db.getReviews(globalState.userId);
+      setReviews(reviews);
+    }
   }
 
   let {
@@ -113,27 +124,40 @@ const ProfilePage = ({ history, match, isPublic }) => {
           <IonModal isOpen={showReviewModal} onWillPresent={loadReviews}>
             <IonHeader>
               <IonToolbar>
-                <IonTitle>Ocjene</IonTitle>
                 <IonButtons slot="end">
                   <IonButton onClick={() => setShowReviewModal(false)}>
-                    Zatvori
+                    <IonIcon icon={closeOutline} />
                   </IonButton>
                 </IonButtons>
+                <IonTitle>Ocjene</IonTitle>
               </IonToolbar>
             </IonHeader>
             <IonContent>
-              <IonList>
-                {/*
-                  TODO: Style review card with fields: username, userImage, rating, comment
-                */}
-                {reviews.map((review) => (
-                  <IonItem key={review.id}>
-                    <IonImg src={review.userImage}></IonImg>
-                    {review.rating}
-                    {review.comment}
+              {reviews.map((review) => (
+                <IonCard
+                  key={review.id}
+                  //onClick={() => history.push(`/user/${review.senderId}`)}
+                >
+                  <IonItem lines="full">
+                    <IonAvatar slot="start" className="favorCard-avatar">
+                      <img src={review.userImage} alt="Profile" />
+                    </IonAvatar>
+                    <IonLabel>{review.username}</IonLabel>
                   </IonItem>
-                ))}
-              </IonList>
+
+                  <IonCardContent>
+                    <div className="review-card-title">
+                      {showStarsDescription(review.rating)}
+                    </div>
+
+                    <div className="review-card-comment">{review.comment}</div>
+
+                    <div className="review-card-date">
+                      {showDate(review.dateCreated)}
+                    </div>
+                  </IonCardContent>
+                </IonCard>
+              ))}
             </IonContent>
           </IonModal>
 
