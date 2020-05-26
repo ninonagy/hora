@@ -10,6 +10,7 @@ import ReviewPage from "../../pages/MessagesTab/ReviewPage";
 
 import * as db from "../../db";
 import { triggers } from "../../scheme";
+import { userToUserKey } from "../../utils";
 
 const SmallNotificationCard = ({
   history,
@@ -20,6 +21,9 @@ const SmallNotificationCard = ({
   time,
   trigger,
   currentUser,
+  ownerReviewed,
+  helperReviewed,
+  onUserReview,
 }) => {
   let [favor, setFavor] = useState({});
 
@@ -62,7 +66,10 @@ const SmallNotificationCard = ({
   }
 
   function returnReviewButton(trigger) {
-    if (trigger === triggers.review)
+    var showButton = true;
+    if (isThisUser && helperReviewed) showButton = false;
+    else if (!isThisUser && ownerReviewed) showButton = false;
+    if (trigger === triggers.review && showButton)
       return (
         <IonRow className="ion-justify-content-center">
           <IonButton
@@ -79,6 +86,10 @@ const SmallNotificationCard = ({
       );
   }
 
+  function sendReview() {
+    onUserReview(isThisUser ? "helper" : "owner");
+  }
+
   let { title, state } = favor || {};
 
   return (
@@ -91,6 +102,7 @@ const SmallNotificationCard = ({
           favor={favor}
           favorId={favorId}
           setShowReviewModal={setShowReviewModal}
+          onUserReview={sendReview}
         />
       </IonModal>
 

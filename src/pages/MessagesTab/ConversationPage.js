@@ -301,6 +301,16 @@ const ConversationPage = (props) => {
 
   let { id, name, pictureLink } = receiverUser;
 
+  async function handleReview(message, userRole) {
+    userRole == "owner"
+      ? await db.updateMessage(conversationId, message.id, {
+          ownerReviewed: true,
+        })
+      : await db.updateMessage(conversationId, message.id, {
+          helperReviewed: true,
+        });
+  }
+
   return (
     <IonPage>
       <Loader data={messages}>
@@ -372,7 +382,9 @@ const ConversationPage = (props) => {
                   user={receiverUser}
                   isThisUser={message.senderId === userId ? true : false}
                   favorId={message.favorId}
-                  action={message.action}
+                  ownerReviewed={message.ownerReviewed}
+                  helperReviewed={message.helperReviewed}
+                  onUserReview={(userRole) => handleReview(message, userRole)}
                   trigger={message.trigger}
                   currentUser={globalState.user}
                   showTimeCard={showTime(messages, id)}

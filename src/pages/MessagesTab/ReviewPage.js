@@ -34,6 +34,7 @@ const ReviewPage = ({
   favor,
   favorId,
   setShowReviewModal,
+  onUserReview,
 }) => {
   let [rating, setRating] = useState(0);
   let [comment, setComment] = useState("");
@@ -54,10 +55,6 @@ const ReviewPage = ({
     );
   }
 
-  async function handleDone() {
-    await db.setFavorState(favorId, states.favor.done);
-  }
-
   function handleReview() {
     if (rating != 0) {
       db.setReview(
@@ -69,7 +66,7 @@ const ReviewPage = ({
         rating,
         comment
       );
-      //handleDone();
+      onUserReview();
       setShowReviewModal(false);
     } else {
       setRatingRequiredAlert(true);
