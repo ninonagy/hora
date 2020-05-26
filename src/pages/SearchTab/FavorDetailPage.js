@@ -28,8 +28,6 @@ import { withRouter } from "react-router";
 
 import ProfileCard from "../../components/Cards/ProfileCard";
 
-import ReviewPage from "./ReviewPage";
-
 import {
   ellipsisHorizontal,
   checkmarkCircleOutline,
@@ -60,8 +58,6 @@ const FavorDetailPage = ({ history, match }) => {
   // alerts
   let [showAbortAlert, setShowAbortAlert] = useState(false);
   let [showReviewAlert, setShowReviewAlert] = useState(false);
-
-  let [showReviewModal, setShowReviewModal] = useState(false);
 
   const favorId = match.params.favorId;
   let favor = useCache(() => db.getFavor(favorId), `/favor/${favorId}`);
@@ -293,24 +289,10 @@ const FavorDetailPage = ({ history, match }) => {
                   // Hide buttons
                   setIsAbleToHelp(false);
                   setFavorState("review");
-
-                  // Display review modal
-                  setShowReviewModal(true);
                 },
               },
             ]}
           />
-
-          {/* Review modal */}
-          <IonModal isOpen={showReviewModal}>
-            <ReviewPage
-              userReviewing={globalState.user}
-              userToReview={user}
-              favor={favor}
-              favorId={favorId}
-              setShowReviewModal={setShowReviewModal}
-            />
-          </IonModal>
 
           <ProfileCard user={user} />
 

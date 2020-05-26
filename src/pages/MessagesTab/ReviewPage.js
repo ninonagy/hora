@@ -11,11 +11,14 @@ import {
   IonAlert,
   IonFooter,
   IonTextarea,
+  IonButtons,
 } from "@ionic/react";
 
 import { star, starOutline } from "ionicons/icons";
 
 import "./ReviewPage.css";
+
+import { states, types, triggers } from "../../scheme";
 
 import { withRouter } from "react-router";
 
@@ -70,6 +73,10 @@ const ReviewPage = ({
     return description;
   }
 
+  async function handleDone() {
+    await db.setFavorState(favorId, states.favor.done);
+  }
+
   function handleReview() {
     if (rating != 0) {
       db.setReview(
@@ -81,6 +88,7 @@ const ReviewPage = ({
         rating,
         comment
       );
+      //handleDone();
       setShowReviewModal(false);
     } else {
       setRatingRequiredAlert(true);
@@ -91,7 +99,12 @@ const ReviewPage = ({
     <>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Ocjena</IonTitle>
+          <IonTitle>Ocjeni</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={() => setShowReviewModal(false)}>
+              Odustani
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 

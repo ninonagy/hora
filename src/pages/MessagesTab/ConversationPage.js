@@ -374,6 +374,7 @@ const ConversationPage = (props) => {
                   favorId={message.favorId}
                   action={message.action}
                   trigger={message.trigger}
+                  currentUser={globalState.user}
                   showTimeCard={showTime(messages, id)}
                   time={messages[id].dateCreated}
                 />

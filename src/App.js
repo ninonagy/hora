@@ -37,7 +37,6 @@ import RegisterPage2 from "./pages/Login/Register2";
 
 import ConversationPage from "./pages/MessagesTab/ConversationPage";
 import FavorDetail from "./pages/SearchTab/FavorDetailPage";
-import Review from "./pages/SearchTab/ReviewPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicProfilePage from "./pages/ProfileTab/PublicProfilePage";
 
@@ -60,8 +59,6 @@ const App = () => {
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/register/2" component={RegisterPage2} />
-
-          <Route exact path="/review" component={Review} />
 
           {/* Other routes */}
           {/* Favor detail */}
