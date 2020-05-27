@@ -16,6 +16,7 @@ import {
   IonChip,
   IonLabel,
   IonFooter,
+  IonModal,
 } from "@ionic/react";
 
 import Zoom from "react-medium-image-zoom";
@@ -46,6 +47,7 @@ import { showDate, showTime } from "../../utils";
 import { states, types, triggers } from "../../scheme";
 import { userToUserKey } from "../../utils";
 import useCache from "../../hooks/useCache";
+import { isAbsolute } from "path";
 
 const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
@@ -55,7 +57,7 @@ const FavorDetailPage = ({ history, match }) => {
 
   // alerts
   let [showAbortAlert, setShowAbortAlert] = useState(false);
-  let [showDoneAlert, setShowDoneAlert] = useState(false);
+  let [showReviewAlert, setShowReviewAlert] = useState(false);
 
   const favorId = match.params.favorId;
   let favor = useCache(() => db.getFavor(favorId), `/favor/${favorId}`);
@@ -154,6 +156,7 @@ const FavorDetailPage = ({ history, match }) => {
               expand="block"
               color="danger"
               fill="outline"
+              shape="round"
               onClick={() => setShowAbortAlert(true)}
             >
               <IonIcon icon={closeCircleOutline} />
@@ -164,7 +167,8 @@ const FavorDetailPage = ({ history, match }) => {
               expand="block"
               color="success"
               fill="outline"
-              onClick={() => setShowDoneAlert(true)}
+              shape="round"
+              onClick={() => setShowReviewAlert(true)}
             >
               <IonIcon icon={checkmarkCircleOutline} />
             </IonButton>
@@ -173,6 +177,7 @@ const FavorDetailPage = ({ history, match }) => {
             <IonButton
               expand="block"
               fill="outline"
+              shape="round"
               onClick={() => {
                 // Forward to conversation page
                 const conversationId = userToUserKey(
@@ -255,9 +260,9 @@ const FavorDetailPage = ({ history, match }) => {
             ]}
           />
           <IonAlert
-            isOpen={showDoneAlert}
-            onDidDismiss={() => setShowDoneAlert(false)}
-            header={"Želiš li obavijestiti vlasnika da si gotov s uslugom?"}
+            isOpen={showReviewAlert}
+            onDidDismiss={() => setShowReviewAlert(false)}
+            header={"Želiš li označiti uslugu obavljenom?"}
             buttons={[
               {
                 text: "Ne",
@@ -270,26 +275,26 @@ const FavorDetailPage = ({ history, match }) => {
                 handler: async () => {
                   const { ownerId, userId } = favor;
                   const conversationId = userToUserKey(ownerId, userId);
-                  // Set favor state from active to done
-                  await db.setFavorState(favorId, states.favor.done);
+                  // Set favor state from active to review
+                  await db.setFavorState(favorId, states.favor.review);
                   await db.storeMessage(
                     conversationId,
                     {
                       senderId: userId,
                       favorId: favorId,
-                      trigger: triggers.done,
+                      trigger: triggers.review,
                     },
                     types.message.smallNotification
                   );
                   // Hide buttons
                   setIsAbleToHelp(false);
-                  setFavorState("done");
+                  setFavorState("review");
                 },
               },
             ]}
           />
 
-          <ProfileCard user={user} userId={favor.ownerId} />
+          <ProfileCard user={user} />
 
           <div className="favor-text">
             <h1>{title}</h1>

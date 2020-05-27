@@ -45,7 +45,7 @@ function userToUserKey(userIdOne, userIdTwo) {
   return userIdOne < userIdTwo ? userIdOne + userIdTwo : userIdTwo + userIdOne;
 }
 
-// Firestore helper functions
+// Firestore helper function
 
 function arrayWithId(querySnapshot) {
   let array = [];
@@ -54,6 +54,27 @@ function arrayWithId(querySnapshot) {
     array.push({ ...doc.data(), id: doc.id });
   });
   return array;
+}
+
+function showStarsDescription(rating) {
+  var description;
+  switch (rating) {
+    case 1:
+      description = "Užasno";
+      break;
+    case 2:
+      description = "Loše";
+      break;
+    case 3:
+      description = "Ispod očekivanja";
+      break;
+    case 4:
+      description = "Očekivano";
+      break;
+    case 5:
+      description = "Iznad očekivanja";
+  }
+  return description;
 }
 
 /* 
@@ -72,4 +93,11 @@ const getPassHash = (pass) => {
 
 // ...
 
-export { userToUserKey, arrayWithId, getPassHash, showDate, showTime };
+export {
+  userToUserKey,
+  arrayWithId,
+  getPassHash,
+  showDate,
+  showTime,
+  showStarsDescription,
+};

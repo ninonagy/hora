@@ -20,14 +20,15 @@ import "./ProfileCard.css";
 const getAge = (birthDate) =>
   new Date().getFullYear() - new Date(birthDate).getFullYear();
 
-const ProfileCard = ({ user, userId, history }) => {
+const ProfileCard = ({ user, history }) => {
   return (
     <IonCard
+      routerLink={`/user/${user.id}`}
       style={{
         background: `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("https://picsum.photos/seed/${user.email}/500/300?blur=10")`,
       }}
     >
-      <IonCardContent onClick={() => history.push(`/user/${userId}`)}>
+      <IonCardContent>
         <IonGrid>
           <IonRow className="ion-align-items-center">
             <IonCol size="4">
