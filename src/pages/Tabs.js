@@ -7,6 +7,7 @@ import {
   IonIcon,
   IonRouterOutlet,
   IonBadge,
+  IonAlert,
 } from "@ionic/react";
 
 import ProtectedRoute from "../components/ProtectedRoute";

@@ -10,10 +10,8 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonItemDivider,
   IonTextarea,
   IonButton,
-  IonRange,
   IonDatetime,
   IonRow,
   IonCol,
@@ -22,40 +20,37 @@ import {
   IonAlert,
   IonFooter,
   IonImg,
-  IonGrid,
   IonIcon,
-  IonButtons,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
 
 import "./GivePage.css";
 
-import * as db from "../../db";
 import useGlobal from "../../state";
-import { cameraOutline, phonePortrait } from "ionicons/icons";
+import { cameraOutline } from "ionicons/icons";
 import useCache from "../../hooks/useCache";
-import takePicture from "../../services/camera";
+import { useStore, subscribe, getState } from "./model";
+import * as db from "../../db";
 import { fs } from "../../firebase";
 
 const getFavorIdeas = () => {
   return fs.doc("/lists/favorIdeas").get();
 };
 
-const GivePage = (props) => {
-  const [globalState, globalActions] = useGlobal();
-  // let [skillList, setSkillList] = useState({});
-  let [title, setTitle] = useState("");
-  let [description, setDescription] = useState("");
-  let [dateTime, setDateTime] = useState(new Date());
-  // let [timeEstimation, setTimeEstimation] = useState(30);
-  let [selectedSkills, setSelectedSkills] = useState();
-  let [photo, setPhoto] = useState(undefined);
-  let [titleTemplate, setTitleTemplate] = useState("");
-  let [descriptionTemplate, setDescriptionTemplate] = useState("");
+const getISODate = (date) => {
+  return (
+    date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+  );
+};
 
-  let [showAllFieldsRequired, setShowAllFieldsRequired] = useState(false);
-  let [showOptionalImageAlert, setShowOptionalImageAlert] = useState(false);
+const getRandMax = (max) => {
+  return Math.floor(Math.random() * max);
+};
+
+const GivePage = (props) => {
+  const [globalState] = useGlobal();
+  const [state, actions] = useStore("Inputs");
 
   let user = useCache(() => db.getUser(globalState.userId), `user`);
 
@@ -65,63 +60,27 @@ const GivePage = (props) => {
   let timeAvailable = user.timeEarned - user.timeSpent;
 
   useEffect(() => {
-    // Get some input ideas
+    // Set some random placeholders ideas for title and description fields
     if (favorIdeas?.all) {
-      const rand = (max) => {
-        return Math.floor(Math.random() * max);
-      };
-      var index = rand(Object.keys(favorIdeas.all).length);
-      setTitleTemplate(favorIdeas.all[index][0]);
-      setDescriptionTemplate(favorIdeas.all[index][1]);
+      var length = Object.keys(favorIdeas.all).length;
+      var index = getRandMax(length);
+      actions.setPlaceholders({
+        title: favorIdeas.all[index][0],
+        description: favorIdeas.all[index][1],
+      });
     }
   }, [favorIdeas]);
 
-  async function handlePhoto() {
-    let image = await takePicture();
-    setPhoto(image);
-  }
+  const publishFavor = async () => {
+    await actions.createFavor(globalState.user);
+  };
 
-  function checkInputs() {
-    if (title && description && selectedSkills && dateTime) {
-      // Show photo alert
-      if (photo === undefined) {
-        setShowOptionalImageAlert(true);
-      } else {
-        publishFavor();
-      }
-    } else setShowAllFieldsRequired(true);
-  }
-
-  async function publishFavor() {
-    let userId = globalState.userId;
-    let { location } = globalState.user;
-
-    let favorId = await db.createFavor({
-      ownerId: userId,
-      title: title,
-      description: description,
-      location: location,
-      skills: selectedSkills,
-      dateDue: dateTime.toISOString(),
-    });
-
-    // Store photo
-    if (photo) {
-      let picUrl = await db.storeFavorPicture(
-        favorId,
-        photo.data,
-        photo.format
-      );
-
-      // Update picture url field
-      db.updateFavor(favorId, {
-        picUrl,
-      });
-    }
-
+  // Redirect when favor is published
+  subscribe("Inputs", "createFavor", () => {
+    const { favorId } = getState("Inputs");
     // Forward user to the public favor page
     props.history.replace(`/favor/${favorId}`);
-  }
+  });
 
   if (timeAvailable > 0)
     return (
@@ -134,15 +93,15 @@ const GivePage = (props) => {
 
         <IonContent>
           <IonAlert
-            isOpen={showAllFieldsRequired}
-            onDidDismiss={() => setShowAllFieldsRequired(false)}
+            isOpen={state.showAllFieldsRequired}
+            onDidDismiss={() => actions.setShowAllFieldsRequired(false)}
             header={"Greška!"}
             message={"Sva polja su obavezna!"}
             buttons={["U redu"]}
           />
           <IonAlert
-            isOpen={showOptionalImageAlert}
-            onDidDismiss={() => setShowOptionalImageAlert(false)}
+            isOpen={state.showOptionalImageAlert}
+            onDidDismiss={() => actions.setShowOptionalImageAlert(false)}
             header={"Fotografija"}
             message={"Sigurno ne želiš dodati fotografiju?"}
             buttons={[
@@ -150,7 +109,7 @@ const GivePage = (props) => {
                 text: "Dodaj fotografiju",
                 cssClass: "secondary",
                 handler: () => {
-                  handlePhoto();
+                  actions.handlePhoto();
                 },
               },
               {
@@ -167,9 +126,15 @@ const GivePage = (props) => {
             <div className="image-container">
               <IonImg
                 style={{ width: "100%" }}
-                src={photo?.data || `https://picsum.photos/500/250?blur=10`}
+                src={
+                  state.photo?.data || `https://picsum.photos/500/250?blur=10`
+                }
               />
-              <IonButton className="button" color="dark" onClick={handlePhoto}>
+              <IonButton
+                className="button"
+                color="dark"
+                onClick={actions.handlePhoto}
+              >
                 <IonIcon icon={cameraOutline} />
                 <span className="add-photo">Dodaj fotografiju</span>
               </IonButton>
@@ -178,17 +143,17 @@ const GivePage = (props) => {
             <IonItem>
               <IonInput
                 className="title-input"
-                placeholder={titleTemplate}
+                placeholder={state.titlePlaceholder}
                 style={{ lineHeight: 1.7 }}
-                onIonChange={(e) => setTitle(e.target.value)}
+                onIonChange={(e) => actions.setTitle(e.target.value)}
               />
             </IonItem>
             <IonItem>
               <IonTextarea
                 className="description-input"
-                placeholder={descriptionTemplate}
+                placeholder={state.descriptionPlaceholder}
                 rows="5"
-                onIonChange={(e) => setDescription(e.target.value)}
+                onIonChange={(e) => actions.setDescription(e.target.value)}
                 style={{ lineHeight: 1.7 }}
               />
             </IonItem>
@@ -200,20 +165,8 @@ const GivePage = (props) => {
                 display-format="DD. MMM YYYY."
                 picker-format="DD. MMM YYYY."
                 min={new Date().toISOString()}
-                value={
-                  dateTime.getFullYear() +
-                  "-" +
-                  (dateTime.getMonth() + 1) +
-                  "-" +
-                  dateTime.getDate()
-                }
-                onIonChange={(e) =>
-                  setDateTime(
-                    new Date(
-                      e.target.value.replace(/-/g, "/").replace("T", " ")
-                    )
-                  )
-                }
+                value={getISODate(state.dateDue)}
+                onIonChange={(e) => actions.setDateDue(e.target.value)}
                 style={{ lineHeight: 1.7 }}
               ></IonDatetime>
             </IonItem>
@@ -223,11 +176,13 @@ const GivePage = (props) => {
                 multiple={true}
                 cancelText="Odustani"
                 okText="Odaberi"
-                onIonChange={(e) => setSelectedSkills(e.detail.value)}
+                onIonChange={(e) => actions.setSkills(e.detail.value)}
                 style={{ lineHeight: 1.7 }}
               >
                 {Object.entries(skillList.all).map(([id, skill]) => (
-                  <IonSelectOption value={id}>{skill}</IonSelectOption>
+                  <IonSelectOption key={id} value={id}>
+                    {skill}
+                  </IonSelectOption>
                 ))}
               </IonSelect>
             </IonItem>
@@ -240,7 +195,7 @@ const GivePage = (props) => {
               color="dark"
               expand="block"
               fill="outline"
-              onClick={checkInputs}
+              onClick={() => actions.validateInputs(publishFavor)}
               shape="round"
             >
               Zatraži
@@ -259,9 +214,7 @@ const GivePage = (props) => {
         </IonHeader>
 
         <IonContent>
-          {
-            //using illustration from https://undraw.co/
-          }
+          {/* using illustration from https://undraw.co/ */}
           <IonImg className="image" src="../assets/sad.svg" />
           <IonRow>
             <IonCol className="ion-text-center profile-bio">
