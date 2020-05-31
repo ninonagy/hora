@@ -35,6 +35,12 @@ const Conversation = {
       };
     },
 
+    clearState: () => {
+      return (state) => {
+        state.messages = [];
+      };
+    },
+
     // Message interaction
     setMessages: (messages) => {
       return (state) => {

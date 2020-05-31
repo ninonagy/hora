@@ -14,6 +14,7 @@ import {
 import Time from "./TimeCard";
 
 import * as db from "../../db";
+import useCache from "../../hooks/useCache";
 
 const NotificationCard = ({
   user,
@@ -25,15 +26,8 @@ const NotificationCard = ({
   onUserAccept,
   onClick,
 }) => {
-  let [favor, setFavor] = useState({});
-
   let { favorId, action, dateCreated } = message;
-
-  useEffect(() => {
-    db.getFavor(favorId).then((favor) => {
-      setFavor(favor);
-    });
-  }, []);
+  let favor = useCache(() => db.getFavor(favorId), `/favor/${favorId}`, true);
 
   let { title, description } = favor || {};
 

@@ -68,7 +68,10 @@ const ConversationPage = (props) => {
 
     let unsubscribe = listenConversationUpdate();
     // Remove listener when page is not active
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      actions.clearState();
+    };
   }, []);
 
   async function handleInput() {

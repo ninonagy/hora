@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import { IonRow, IonGrid, IonButton, IonModal } from "@ionic/react";
 
-
-
 import Time from "./TimeCard";
 
 import ReviewPage from "../../pages/MessagesTab/ReviewPage";
 
 import * as db from "../../db";
 import { triggers } from "../../scheme";
+import useCache from "../../hooks/useCache";
 
 function returnNotificationText(user, isThisUser, trigger) {
   if (trigger === triggers.accept) {
@@ -49,17 +48,17 @@ const SmallNotificationCard = ({
   onUserReview,
   onClick,
 }) => {
-  let [favor, setFavor] = useState({});
-
   let [showReviewModal, setShowReviewModal] = useState(false);
 
-  let { favorId, trigger, ownerReviewed, helperReviewed, dateCreated } = message;
+  let {
+    favorId,
+    trigger,
+    ownerReviewed,
+    helperReviewed,
+    dateCreated,
+  } = message;
 
-  useEffect(() => {
-    db.getFavor(favorId).then((favor) => {
-      setFavor(favor);
-    });
-  }, []);
+  let favor = useCache(() => db.getFavor(favorId), `/favor/${favorId}`, true);
 
   function returnReviewButton(trigger) {
     var showButton = true;
