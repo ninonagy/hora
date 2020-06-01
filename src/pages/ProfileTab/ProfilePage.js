@@ -15,11 +15,19 @@ import {
   IonButton,
   IonIcon,
   IonImg,
+  IonModal,
+  IonText,
+  IonList,
+  IonItem,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
 
-import { settingsOutline } from "ionicons/icons";
+import { settingsOutline, closeOutline } from "ionicons/icons";
 
 import RatingIcons from "../../components/shared/RatingIcons";
 
@@ -27,6 +35,8 @@ import "./ProfilePage.css";
 
 import BackButton from "../../components/Buttons/Back";
 import Loader from "../../components/shared/Loader";
+
+import { showStarsDescription, showDate } from "../../utils";
 
 import useGlobalState from "../../state";
 import * as db from "../../db";
@@ -38,6 +48,8 @@ const getAge = (birthDate) =>
 const ProfilePage = ({ history, match, isPublic }) => {
   const [globalState, {}] = useGlobalState();
   let [user, setUser] = useState({});
+  let [showReviewModal, setShowReviewModal] = useState(false);
+  let [reviews, setReviews] = useState([]);
   const skillList = useCache(db.getSkillsList, `/skills`);
 
   // let publicUser = useCache(
@@ -51,8 +63,25 @@ const ProfilePage = ({ history, match, isPublic }) => {
       db.getUser(match.params.userId).then((user) => {
         setUser(user);
       });
-    } else setUser(globalState.user);
+    } else {
+      db.getUser(globalState.userId).then((user) => {
+        let { timeEarned, timeSpent } = user;
+        globalState.user.timeEarned = timeEarned;
+        globalState.user.timeSpent = timeSpent;
+        setUser(globalState.user);
+      });
+    }
   }, [globalState.user]);
+
+  async function loadReviews() {
+    if (isPublic) {
+      let reviews = await db.getReviews(match.params.userId);
+      setReviews(reviews);
+    } else {
+      let reviews = await db.getReviews(globalState.userId);
+      setReviews(reviews);
+    }
+  }
 
   let {
     name,
@@ -80,7 +109,7 @@ const ProfilePage = ({ history, match, isPublic }) => {
             <IonButtons slot="start">
               <BackButton />
             </IonButtons>
-            <IonTitle>Profile</IonTitle>
+            <IonTitle>Profil</IonTitle>
             {!isPublic && (
               <IonButtons slot="end">
                 <IonButton onClick={() => history.push("profile/edit")}>
@@ -91,6 +120,48 @@ const ProfilePage = ({ history, match, isPublic }) => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
+          {/* Review list modal */}
+          <IonModal isOpen={showReviewModal} onWillPresent={loadReviews}>
+            <IonHeader>
+              <IonToolbar>
+                <IonButtons slot="end">
+                  <IonButton onClick={() => setShowReviewModal(false)}>
+                    <IonIcon icon={closeOutline} />
+                  </IonButton>
+                </IonButtons>
+                <IonTitle>Ocjene</IonTitle>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent>
+              {reviews.map((review) => (
+                <IonCard
+                  key={review.id}
+                  //onClick={() => history.push(`/user/${review.senderId}`)}
+                >
+                  <IonItem lines="full">
+                    <IonAvatar slot="start" className="favorCard-avatar">
+                      <img src={review.userImage} alt="Profile" />
+                    </IonAvatar>
+                    <IonLabel>{review.username}</IonLabel>
+                  </IonItem>
+
+                  <IonCardContent>
+                    <div className="review-card-title">
+                      {showStarsDescription(review.rating)}
+                    </div>
+
+                    <div className="review-card-comment">{review.comment}</div>
+
+                    <div className="review-card-date">
+                      {showDate(review.dateCreated)}
+                    </div>
+                  </IonCardContent>
+                </IonCard>
+              ))}
+            </IonContent>
+          </IonModal>
+
+          {/* Content */}
           <div
             className="profile-cover"
             style={{
@@ -131,6 +202,16 @@ const ProfilePage = ({ history, match, isPublic }) => {
                       <IonLabel>{skillList.all[skill]}</IonLabel>
                     </IonChip>
                   ))}
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol className="ion-text-center">
+                <IonText
+                  color="primary"
+                  onClick={() => setShowReviewModal(true)}
+                >
+                  Pogledaj ocjene
+                </IonText>
               </IonCol>
             </IonRow>
           </IonGrid>

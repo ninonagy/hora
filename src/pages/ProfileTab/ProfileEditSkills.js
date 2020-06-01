@@ -50,7 +50,7 @@ const ProfileEditSkills = ({ history }) => {
           <IonButtons slot="start">
             <BackButton />
           </IonButtons>
-          <IonTitle>Edit skills</IonTitle>
+          <IonTitle>Uredi vještine</IonTitle>
           <IonButtons slot="end">
             <IonButton onClick={updateUser}>
               <IonIcon icon={checkmarkOutline} />

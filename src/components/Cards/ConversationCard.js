@@ -6,7 +6,7 @@ import * as db from "../../db";
 import useCache from "../../hooks/useCache";
 import { showDate } from "../../utils";
 
-const MessagesCard = ({ link, item }) => {
+const ConversationCard = ({ link, item }) => {
   let { receiverId, seen, updatedAt } = item;
 
   let time = showDate(new Date(updatedAt));
@@ -21,11 +21,10 @@ const MessagesCard = ({ link, item }) => {
       </IonAvatar>
       <IonLabel>
         <h2>{seen ? name : <strong>{name}</strong>} </h2>
-        {/* <p>Lorem ipsum...</p> */}
       </IonLabel>
       {time}
     </IonItem>
   );
 };
 
-export default MessagesCard;
+export default ConversationCard;

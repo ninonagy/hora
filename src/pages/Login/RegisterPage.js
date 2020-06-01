@@ -52,6 +52,8 @@ const RegisterPage = (props) => {
         location: "Zagreb",
         bio: "Hello! 👋",
         pictureLink: "https://api.adorable.io/avatars/110/" + email + ".png",
+        timeEarned: 3,
+        timeSpent: 0,
       }).then(() => {
         logInUser();
       });

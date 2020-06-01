@@ -88,7 +88,7 @@ const ProfileEdit = ({ history, location }) => {
             <IonButtons slot="start">
               <BackButton />
             </IonButtons>
-            <IonTitle>Edit Profile</IonTitle>
+            <IonTitle>Uredi profil</IonTitle>
             <IonButtons slot="end">
               <IonButton onClick={() => handleEdit()}>
                 <IonIcon icon={checkmarkOutline} />

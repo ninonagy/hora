@@ -1,0 +1,12 @@
+.stars-description {
+  font-family: "Raleway", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--ion-color-dark);
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.rating-comment {
+  margin: 0px 20px;
+}

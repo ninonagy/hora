@@ -1,26 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
-  IonText,
   IonContent,
   IonHeader,
   IonToolbar,
   IonTitle,
   IonPage,
   IonButtons,
-  IonAvatar,
   IonIcon,
-  IonImg,
   IonButton,
   IonPopover,
   IonGrid,
   IonRow,
   IonCol,
   IonAlert,
-  IonCard,
-  IonCardContent,
   IonChip,
   IonLabel,
   IonFooter,
+  IonModal,
 } from "@ionic/react";
 
 import Zoom from "react-medium-image-zoom";
@@ -30,7 +26,7 @@ import "./FavorDetailPage.css";
 
 import { withRouter } from "react-router";
 
-import RatingIcons from "../../components/shared/RatingIcons";
+import ProfileCard from "../../components/Cards/ProfileCard";
 
 import {
   ellipsisHorizontal,
@@ -46,12 +42,11 @@ import Loader from "../../components/shared/Loader";
 
 import * as db from "../../db";
 import useGlobal from "../../state";
+import { showDate, showTime } from "../../utils";
+
 import { states, types, triggers } from "../../scheme";
 import { userToUserKey } from "../../utils";
 import useCache from "../../hooks/useCache";
-
-const getAge = (birthDate) =>
-  new Date().getFullYear() - new Date(birthDate).getFullYear();
 
 const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
@@ -61,7 +56,7 @@ const FavorDetailPage = ({ history, match }) => {
 
   // alerts
   let [showAbortAlert, setShowAbortAlert] = useState(false);
-  let [showDoneAlert, setShowDoneAlert] = useState(false);
+  let [showReviewAlert, setShowReviewAlert] = useState(false);
 
   const favorId = match.params.favorId;
   let favor = useCache(() => db.getFavor(favorId), `/favor/${favorId}`);
@@ -134,7 +129,7 @@ const FavorDetailPage = ({ history, match }) => {
   };
 
   function returnHelpButton() {
-    if (isAbleToHelp === true && favorState == "free") {
+    if (isAbleToHelp === true && favorState === states.favor.free) {
       return (
         <IonButton
           disabled={isAbleToHelp === false}
@@ -142,6 +137,7 @@ const FavorDetailPage = ({ history, match }) => {
           color="dark"
           expand="block"
           fill="outline"
+          shape="round"
           onClick={handleHelp}
         >
           Učini uslugu
@@ -151,7 +147,7 @@ const FavorDetailPage = ({ history, match }) => {
   }
 
   function returnActiveFavorButtons() {
-    if (isAbleToHelp === true && favorState == "active")
+    if (isAbleToHelp === true && favorState === states.favor.active)
       return (
         <IonRow>
           <IonCol>
@@ -159,6 +155,7 @@ const FavorDetailPage = ({ history, match }) => {
               expand="block"
               color="danger"
               fill="outline"
+              shape="round"
               onClick={() => setShowAbortAlert(true)}
             >
               <IonIcon icon={closeCircleOutline} />
@@ -169,7 +166,8 @@ const FavorDetailPage = ({ history, match }) => {
               expand="block"
               color="success"
               fill="outline"
-              onClick={() => setShowDoneAlert(true)}
+              shape="round"
+              onClick={() => setShowReviewAlert(true)}
             >
               <IonIcon icon={checkmarkCircleOutline} />
             </IonButton>
@@ -178,6 +176,7 @@ const FavorDetailPage = ({ history, match }) => {
             <IonButton
               expand="block"
               fill="outline"
+              shape="round"
               onClick={() => {
                 // Forward to conversation page
                 const conversationId = userToUserKey(
@@ -192,42 +191,6 @@ const FavorDetailPage = ({ history, match }) => {
           </IonCol>
         </IonRow>
       );
-  }
-
-  var months = {
-    1: "siječnja",
-    2: "veljače",
-    3: "ožujka",
-    4: "travnja",
-    5: "svibnja",
-    6: "lipnja",
-    7: "srpnja",
-    8: "kolovoza",
-    9: "rujna",
-    10: "listopada",
-    11: "studenog",
-    12: "prosinca",
-  };
-
-  function returnDate(dateCreated) {
-    if (dateCreated) {
-      const date = new Date(dateCreated);
-      const today = new Date();
-      if (
-        today.getDate() == date.getDate() &&
-        today.getMonth() == date.getMonth()
-      )
-        return `Danas, ${date.getHours()}:${date.getMinutes()}`;
-      else if (
-        today.getDate() - 1 == date.getDate() &&
-        today.getMonth() == date.getMonth()
-      )
-        return `Jučer, ${date.getHours()}:${date.getMinutes()}`;
-      else
-        return `${date.getDate()}. ${
-          months[date.getMonth() + 1]
-        }, ${date.getHours()}:${date.getMinutes()}`;
-    }
   }
 
   return (
@@ -257,7 +220,7 @@ const FavorDetailPage = ({ history, match }) => {
                 <IonIcon icon={ellipsisHorizontal} />
               </IonButton>
             </IonButtons>
-            <IonTitle>Favor</IonTitle>
+            <IonTitle>Usluga</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>
@@ -296,9 +259,9 @@ const FavorDetailPage = ({ history, match }) => {
             ]}
           />
           <IonAlert
-            isOpen={showDoneAlert}
-            onDidDismiss={() => setShowDoneAlert(false)}
-            header={"Želiš li obavijestiti vlasnika da si gotov s uslugom?"}
+            isOpen={showReviewAlert}
+            onDidDismiss={() => setShowReviewAlert(false)}
+            header={"Želiš li označiti uslugu obavljenom?"}
             buttons={[
               {
                 text: "Ne",
@@ -311,54 +274,26 @@ const FavorDetailPage = ({ history, match }) => {
                 handler: async () => {
                   const { ownerId, userId } = favor;
                   const conversationId = userToUserKey(ownerId, userId);
-                  // Set favor state from active to done
-                  await db.setFavorState(favorId, states.favor.done);
+                  // Set favor state from active to review
+                  await db.setFavorState(favorId, states.favor.review);
                   await db.storeMessage(
                     conversationId,
                     {
                       senderId: userId,
                       favorId: favorId,
-                      trigger: triggers.done,
+                      trigger: triggers.review,
                     },
                     types.message.smallNotification
                   );
                   // Hide buttons
                   setIsAbleToHelp(false);
-                  setFavorState("done");
+                  setFavorState("review");
                 },
               },
             ]}
           />
-          <IonCard
-            className="favor-user"
-            style={{
-              background: `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("https://picsum.photos/seed/${user.email}/500/300?blur=10")`,
-            }}
-          >
-            <IonCardContent
-              onClick={() => history.push(`/user/${favor.ownerId}`)}
-            >
-              <IonGrid>
-                <IonRow class="ion-align-items-center">
-                  <IonCol size="4">
-                    <IonAvatar className="favor-avatar">
-                      <IonImg src={user.pictureLink} />
-                    </IonAvatar>
-                  </IonCol>
-                  <IonCol>
-                    <IonText className="FavorUserName">
-                      {user.name}, {getAge(user.birthDate)}
-                    </IonText>
-                    <br />
-                    <RatingIcons
-                      timeEarned={user.timeEarned}
-                      timeSpent={user.timeSpent}
-                    />
-                  </IonCol>
-                </IonRow>
-              </IonGrid>
-            </IonCardContent>
-          </IonCard>
+
+          <ProfileCard user={user} />
 
           <div className="favor-text">
             <h1>{title}</h1>
@@ -370,7 +305,9 @@ const FavorDetailPage = ({ history, match }) => {
               icon={calendarOutline}
               style={{ marginLeft: "30px" }}
             />
-            <span className="favor-detail-text">{returnDate(dateCreated)}</span>
+            <span className="favor-detail-text">
+              {`${showDate(dateCreated)}, ${showTime(dateCreated)}`}
+            </span>
 
             <p>{description}</p>
             <div className="favor-skills">

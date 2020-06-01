@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
 import "./style.css";
 
-const ImageCard = ({ url, caption, orientation }) => {
+const ImageCard = ({ url, orientation }) => {
   return (
     <div className="image-card">
       <img className={orientation} src={url} />

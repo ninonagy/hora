@@ -1,29 +1,25 @@
 import React from "react";
 
 import { IonRow, IonGrid } from "@ionic/react";
-import { showDate } from "../../utils";
+import { showDate, showTime } from "../../utils";
 
-const TimeCard = ({ showTime, time }) => {
-  if (showTime == 2) {
+const TimeCard = ({ show, time }) => {
+  if (show === 2) {
     return (
       <IonGrid>
         <IonRow className="ion-justify-content-center date">
           {showDate(time)}
         </IonRow>
         <IonRow className="ion-justify-content-center hour">
-          {time.getHours() < 10 ? "0" : ""}
-          {time.getHours()}:{time.getMinutes() < 10 ? "0" : ""}
-          {time.getMinutes()}
+          {showTime(time)}
         </IonRow>
       </IonGrid>
     );
-  } else if (showTime == 1) {
+  } else if (show === 1) {
     return (
       <IonGrid>
         <IonRow className="ion-justify-content-center hour">
-          {time.getHours() < 10 ? "0" : ""}
-          {time.getHours()}:{time.getMinutes() < 10 ? "0" : ""}
-          {time.getMinutes()}
+          {showTime(time)}
         </IonRow>
       </IonGrid>
     );

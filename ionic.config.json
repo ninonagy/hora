@@ -1,7 +1,8 @@
 {
-  "name": "app",
+  "name": "Hora",
   "integrations": {
     "capacitor": {}
   },
-  "type": "react"
+  "type": "react",
+  "id": "b139483d"
 }
