@@ -11,33 +11,23 @@ import {
   IonButton,
 } from "@ionic/react";
 
-import { withRouter } from "react-router";
-
 import Time from "./TimeCard";
 
 import * as db from "../../db";
+import useCache from "../../hooks/useCache";
 
 const NotificationCard = ({
-  history,
-  action,
   user,
+  message,
   isThisUser,
-  favorId,
-  onUserCancel,
+  showTime,
+  onUserAbort,
   onUserDecline,
   onUserAccept,
-  showTimeCard,
-  time,
+  onClick,
 }) => {
-  let [favor, setFavor] = useState({});
-
-  let userName = user.name;
-
-  useEffect(() => {
-    db.getFavor(favorId).then((favor) => {
-      setFavor(favor);
-    });
-  }, []);
+  let { favorId, action, dateCreated } = message;
+  let favor = useCache(() => db.getFavor(favorId), `/favor/${favorId}`, true);
 
   let { title, description } = favor || {};
 
@@ -51,7 +41,7 @@ const NotificationCard = ({
                 color="danger"
                 expand="block"
                 fill="outline"
-                onClick={onUserCancel}
+                onClick={onUserAbort}
               >
                 Poništi
               </IonButton>
@@ -88,21 +78,22 @@ const NotificationCard = ({
 
   return (
     <div>
-      <Time show={showTimeCard} time={time} />
+      <Time show={showTime} time={dateCreated} />
       <IonCard>
-        <IonCardHeader onClick={(e) => history.push(`/favor/${favorId}`)}>
+        <IonCardHeader onClick={onClick}>
           <IonCardSubtitle>
-            {userName}
+            {user.name}
             {isThisUser ? " mora prihvatiti tvoju pomoć." : " ti može pomoći!"}
           </IonCardSubtitle>
           <IonCardTitle>{title}</IonCardTitle>
         </IonCardHeader>
         <IonCardContent>
-          {description} {buttons()}
+          {description}
+          {buttons()}
         </IonCardContent>
       </IonCard>
     </div>
   );
 };
 
-export default withRouter(NotificationCard);
+export default NotificationCard;

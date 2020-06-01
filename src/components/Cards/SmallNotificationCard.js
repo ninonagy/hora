@@ -2,68 +2,63 @@ import React, { useState, useEffect } from "react";
 
 import { IonRow, IonGrid, IonButton, IonModal } from "@ionic/react";
 
-import { withRouter } from "react-router";
-
 import Time from "./TimeCard";
 
 import ReviewPage from "../../pages/MessagesTab/ReviewPage";
 
 import * as db from "../../db";
 import { triggers } from "../../scheme";
-import { userToUserKey } from "../../utils";
+import useCache from "../../hooks/useCache";
+
+function returnNotificationText(user, isThisUser, trigger) {
+  if (trigger === triggers.accept) {
+    if (isThisUser) return "Prihvatio si pomoć";
+    else return user.name + " je prihvatio pomoć";
+  } else if (trigger === triggers.decline) {
+    if (isThisUser) return "Odbio si pomoć";
+    else return user.name + " je odbio pomoć";
+  } else if (trigger === triggers.review) {
+    if (!isThisUser)
+      return (
+        user.name +
+        " je označio da je usluga zavšena. Sada možeš ocjeniti " +
+        user.name +
+        "."
+      );
+    else
+      return (
+        "Označio si da je usluga završena. Sada možeš ocjeniti " +
+        user.name +
+        "."
+      );
+  } else if (trigger === triggers.done) {
+    if (isThisUser) return "Označio si da je usluga gotova";
+    else return user.name + " je označio da je usluga gotova";
+  } else if (trigger === triggers.abort) {
+    if (isThisUser) return "Otkazao si uslugu.";
+    else return user.name + " je otkazao uslugu.";
+  }
+}
 
 const SmallNotificationCard = ({
-  history,
+  message,
   user,
   isThisUser,
-  favorId,
-  showTimeCard,
-  time,
-  trigger,
-  currentUser,
-  ownerReviewed,
-  helperReviewed,
+  showTime,
   onUserReview,
+  onClick,
 }) => {
-  let [favor, setFavor] = useState({});
-
   let [showReviewModal, setShowReviewModal] = useState(false);
 
-  useEffect(() => {
-    db.getFavor(favorId).then((favor) => {
-      setFavor(favor);
-    });
-  }, []);
+  let {
+    favorId,
+    trigger,
+    ownerReviewed,
+    helperReviewed,
+    dateCreated,
+  } = message;
 
-  function returnNotificationtext(user, isThisUser, trigger) {
-    if (trigger == triggers.accept) {
-      if (isThisUser) return "Prihvatio si pomoć";
-      else return user.name + " je prihvatio pomoć";
-    } else if (trigger == triggers.decline) {
-      if (isThisUser) return "Odbio si pomoć";
-      else return user.name + " je odbio pomoć";
-    } else if (trigger == triggers.review) {
-      if (!isThisUser)
-        return (
-          user.name +
-          " je označio da je usluga zavšena. Sada možeš ocjeniti " +
-          user.name +
-          "."
-        );
-      else
-        return (
-          "Označio si da je usluga završena. Sada možeš ocjeniti " +
-          user.name +
-          "."
-        );
-    } else if (trigger == triggers.done) {
-      if (isThisUser) return "Označio si da je usluga gotova";
-      else return user.name + " je označio da je usluga gotova";
-    } else if (trigger == triggers.abort) {
-      if (isThisUser) return "Otkazao si uslugu.";
-      else return user.name + " je otkazao uslugu.";
-    }
-  }
+  let favor = useCache(() => db.getFavor(favorId), `/favor/${favorId}`, true);
 
   function returnReviewButton(trigger) {
     var showButton = true;
@@ -90,27 +85,25 @@ const SmallNotificationCard = ({
     onUserReview(isThisUser ? "helper" : "owner");
   }
 
-  let { title, state } = favor || {};
+  let { title } = favor || {};
 
   return (
     <div>
       {/* Review modal */}
       <IonModal isOpen={showReviewModal}>
         <ReviewPage
-          userReviewing={currentUser}
           userToReview={user}
-          favor={favor}
           favorId={favorId}
           setShowReviewModal={setShowReviewModal}
           onUserReview={sendReview}
         />
       </IonModal>
 
-      <Time show={showTimeCard} time={time} />
+      <Time show={showTime} time={dateCreated} />
 
-      <IonGrid onClick={(e) => history.push(`/favor/${favorId}`)}>
+      <IonGrid onClick={onClick}>
         <IonRow className="ion-justify-content-center date">
-          {returnNotificationtext(user, isThisUser, trigger)}
+          {returnNotificationText(user, isThisUser, trigger)}
         </IonRow>
         <IonRow className="ion-justify-content-center hour">{title}</IonRow>
       </IonGrid>
@@ -119,4 +112,4 @@ const SmallNotificationCard = ({
   );
 };
 
-export default withRouter(SmallNotificationCard);
+export default SmallNotificationCard;

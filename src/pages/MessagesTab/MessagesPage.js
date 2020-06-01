@@ -32,7 +32,7 @@ function getConversationsOrderByUpdatedAt(userId) {
 }
 
 const MessagesPage = ({ match, reload }) => {
-  const [globalState, {}] = useGlobal();
+  const [globalState] = useGlobal();
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {

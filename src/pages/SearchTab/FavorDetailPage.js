@@ -47,7 +47,6 @@ import { showDate, showTime } from "../../utils";
 import { states, types, triggers } from "../../scheme";
 import { userToUserKey } from "../../utils";
 import useCache from "../../hooks/useCache";
-import { isAbsolute } from "path";
 
 const FavorDetailPage = ({ history, match }) => {
   const [globalState, globalActions] = useGlobal();
@@ -130,7 +129,7 @@ const FavorDetailPage = ({ history, match }) => {
   };
 
   function returnHelpButton() {
-    if (isAbleToHelp === true && favorState == "free") {
+    if (isAbleToHelp === true && favorState === states.favor.free) {
       return (
         <IonButton
           disabled={isAbleToHelp === false}
@@ -148,7 +147,7 @@ const FavorDetailPage = ({ history, match }) => {
   }
 
   function returnActiveFavorButtons() {
-    if (isAbleToHelp === true && favorState == "active")
+    if (isAbleToHelp === true && favorState === states.favor.active)
       return (
         <IonRow>
           <IonCol>

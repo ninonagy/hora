@@ -3,12 +3,12 @@ import React from "react";
 import { IonRow } from "@ionic/react";
 import Time from "./TimeCard";
 
-const MessageCard = ({ user, order, content, showTimeCard, time }) => {
+const MessageCard = ({ direction, order, showTime, message }) => {
   return (
     <IonRow>
-      <Time show={showTimeCard} time={time} />
+      <Time show={showTime} time={message.dateCreated} />
       <div className="wrapper">
-        <div className={user + " message " + order}>{content}</div>
+        <div className={direction + " message " + order}>{message.content}</div>
       </div>
     </IonRow>
   );

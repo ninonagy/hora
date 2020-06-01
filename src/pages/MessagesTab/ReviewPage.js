@@ -18,26 +18,23 @@ import { star, starOutline } from "ionicons/icons";
 
 import "./ReviewPage.css";
 
-import { states, types, triggers } from "../../scheme";
-
+import ProfileCard from "../../components/Cards/ProfileCard";
 import { showStarsDescription } from "../../utils";
 
-import { withRouter } from "react-router";
-
-import ProfileCard from "../../components/Cards/ProfileCard";
-
 import * as db from "../../db";
+import useGlobal from "../../state";
 
 const ReviewPage = ({
-  userReviewing,
   userToReview,
-  favor,
   favorId,
   setShowReviewModal,
   onUserReview,
 }) => {
+  const [globalState] = useGlobal();
   let [rating, setRating] = useState(0);
   let [comment, setComment] = useState("");
+
+  let userReviewing = globalState.user;
 
   const [showRatingRequiredAlert, setRatingRequiredAlert] = useState(false);
 
@@ -56,7 +53,7 @@ const ReviewPage = ({
   }
 
   function handleReview() {
-    if (rating != 0) {
+    if (rating !== 0) {
       db.setReview(
         userToReview.id,
         userReviewing.id,
@@ -135,4 +132,4 @@ const ReviewPage = ({
   );
 };
 
-export default withRouter(ReviewPage);
+export default ReviewPage;

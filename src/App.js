@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { IonReactRouter } from "@ionic/react-router";
 
-import { IonApp, IonPage } from "@ionic/react";
+import { IonApp, IonPage, IonAlert } from "@ionic/react";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -53,6 +53,13 @@ const App = () => {
 
   return (
     <IonApp>
+      {/* <IonAlert
+        isOpen={true}
+        header={"Alert"}
+        subHeader={"Subtitle"}
+        message={"This is an alert message."}
+        buttons={["OK"]}
+      /> */}
       <IonReactRouter>
         <Switch>
           <Redirect exact from="/" to="/home" />
