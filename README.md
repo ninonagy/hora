@@ -1,4 +1,5 @@
 # Hora
+Please visit https://hora.cc for screenshot, demo and more.
 
 ## How to run
 
