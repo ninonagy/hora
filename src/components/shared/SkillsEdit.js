@@ -2,25 +2,28 @@ import React from "react";
 
 import { IonList, IonItem, IonLabel, IonCheckbox } from "@ionic/react";
 
-const SkillsEdit = ({ onChange, skills, skillList }) => {
-  function changeArray(skill) {
-    if (skills.includes(skill)) {
-      const index = skills.indexOf(skill);
-      skills.splice(index, 1);
-    } else skills.push(skill);
-
-    onChange(skills);
+const SkillsEdit = ({ skillsList, userSkills, onChange }) => {
+  function removeOrAddSkill(id) {
+    if (userSkills.includes(id)) {
+      // remove user's skill
+      const index = userSkills.indexOf(id);
+      userSkills.splice(index, 1);
+    } else {
+      // add skill
+      userSkills.push(id);
+    }
+    onChange(userSkills);
   }
 
   return (
     <IonList>
-      {Object.entries(skillList).map(([id, skill]) => (
+      {Object.entries(skillsList).map(([id, skill]) => (
         <IonItem>
           <IonLabel>{skill}</IonLabel>
           <IonCheckbox
             slot="start"
-            checked={skills.includes(id)}
-            onIonChange={(e) => changeArray(id)}
+            checked={userSkills.includes(id)}
+            onIonChange={() => removeOrAddSkill(id)}
           />
         </IonItem>
       ))}

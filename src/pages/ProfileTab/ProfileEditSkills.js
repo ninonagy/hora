@@ -23,23 +23,25 @@ import * as db from "../../db";
 
 const ProfileEditSkills = ({ history }) => {
   const [globalState, globalActions] = useGlobal();
-  let [skillList, setSkillList] = useState({});
-  let [skills, setSkills] = useState([]);
+  let [skillsList, setSkillsList] = useState({});
+  let [newSkills, setNewSkills] = useState([]);
 
   let user = globalState.user;
 
   useEffect(() => {
     db.getSkillsList().then((skills) => {
-      setSkillList(skills.all);
+      setSkillsList(skills.all);
     });
   }, []);
 
   async function updateUser() {
-    user.skills = skills;
-    await db.updateUser(user.id, {
-      skills: user.skills,
-    });
-    globalActions.setUser(user);
+    if (newSkills.length) {
+      user.skills = newSkills;
+      await db.updateUser(user.id, {
+        skills: user.skills,
+      });
+      globalActions.setUser(user);
+    }
     history.goBack();
   }
 
@@ -60,9 +62,9 @@ const ProfileEditSkills = ({ history }) => {
       </IonHeader>
       <IonContent>
         <SkillsEdit
-          skillList={skillList}
-          skills={user.skills}
-          onChange={(skills) => setSkills(skills)}
+          skillsList={skillsList}
+          userSkills={user.skills}
+          onChange={(skills) => setNewSkills(skills)}
         />
       </IonContent>
     </IonPage>
