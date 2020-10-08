@@ -8,7 +8,6 @@ import SmallNotificationCard from "../../components/Cards/SmallNotificationCard"
 
 import { types } from "../../scheme";
 import { IonList } from "@ionic/react";
-import { getState } from "react-model";
 
 const messageOrder = (messages, id, idprev) => {
   if (

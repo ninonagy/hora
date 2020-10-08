@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   IonContent,
   IonHeader,
@@ -13,7 +13,6 @@ import {
   IonButton,
   IonIcon,
   IonAvatar,
-  IonAlert,
 } from "@ionic/react";
 
 import { withRouter } from "react-router";
@@ -42,6 +41,13 @@ const ConversationPage = (props) => {
   let conversationId = props.match.params.conversationId;
 
   useEffect(() => {
+    let unsubscribe;
+
+    db.getMessages(conversationId, "cache").then(async (messages) => {
+      actions.setMessages(messages);
+      unsubscribe = listenConversationUpdate();
+    });
+
     const listenConversationUpdate = () => {
       return fs
         .collection(
@@ -50,13 +56,12 @@ const ConversationPage = (props) => {
             messageId: "",
           })
         )
+        .where("dateCreated", ">", state.lastMessageDateCreated)
         .orderBy("dateCreated", "asc")
         .onSnapshot((querySnapshot) => {
-          let messages = arrayWithId(querySnapshot);
-          actions.setMessages(messages);
-          // if (messages.length === 0) {
-          //   props.history.replace("/messages");
-          // }
+          if (querySnapshot.metadata.fromCache === false) {
+            actions.setMessages(arrayWithId(querySnapshot));
+          }
           scrollToBottom();
         });
     };
@@ -66,8 +71,7 @@ const ConversationPage = (props) => {
       conversationId,
     });
 
-    let unsubscribe = listenConversationUpdate();
-    // Remove listener when page is not active
+    // Remove listener and clear messages when page is not active
     return () => {
       unsubscribe();
       actions.clearState();

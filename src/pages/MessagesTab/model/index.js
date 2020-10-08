@@ -13,6 +13,7 @@ const Conversation = {
     conversationId: undefined,
     messageTextInput: "",
     messages: [],
+    lastMessageDateCreated: "0",
     // alert modal
     alertModal: {
       isOpen: false,
@@ -44,7 +45,11 @@ const Conversation = {
     // Message interaction
     setMessages: (messages) => {
       return (state) => {
-        state.messages = messages;
+        state.messages = [...state.messages, ...messages];
+        let messageCount = state.messages.length;
+        if (messageCount)
+          state.lastMessageDateCreated =
+            state.messages[messageCount - 1].dateCreated;
       };
     },
     setMessageTextInput: (value) => {

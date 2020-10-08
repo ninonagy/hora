@@ -51,7 +51,7 @@ function arrayWithId(querySnapshot) {
   let array = [];
   let docs = querySnapshot.docs;
   docs.forEach((doc) => {
-    array.push({ ...doc.data(), id: doc.id });
+    array.push({ id: doc.id, ...doc.data() });
   });
   return array;
 }

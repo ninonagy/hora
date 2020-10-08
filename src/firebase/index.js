@@ -3,8 +3,11 @@ import { devConfig } from "./config";
 
 var app = firebase.initializeApp(devConfig);
 
+
 var fs = firebase.firestore(app);
 var storage = firebase.storage(app);
+
+fs.enablePersistence();
 
 const FieldValue = firebase.firestore.FieldValue;
 

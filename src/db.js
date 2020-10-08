@@ -1,20 +1,20 @@
 import { fs, storage, FieldValue } from "./firebase";
 
 import { paths, buildPath, states } from "./scheme";
-import { userToUserKey } from "./utils";
+import { userToUserKey, arrayWithId } from "./utils";
 
 // https://capacitor.ionicframework.com/docs/apis/storage/
 // import { Plugins } from "@capacitor/core";
 // const { Storage } = Plugins;
 
-function getValue(path = "", ids = {}) {
+function getValue(path = "", ids = {}, source = "default") {
   path = buildPath(path, ids);
   let segments = path.split("/").filter((i) => i !== "/" && i !== "");
   // If segment count is even then get document
   if (segments.length % 2 === 0) {
     return fs
       .doc(path)
-      .get()
+      .get({ source })
       .then((result) => {
         return { ...result.data(), id: result.id };
       });
@@ -23,7 +23,7 @@ function getValue(path = "", ids = {}) {
   else {
     return fs
       .collection(path)
-      .get()
+      .get({ source })
       .then((querySnapshot) => {
         let array = [];
         let docs = querySnapshot.docs;
@@ -145,11 +145,12 @@ async function getUserConversation(id, conversationId) {
 }
 
 // Get all messages from conversation
-async function getMessages(conversationId) {
-  return getValue(paths.message, {
-    conversationId: conversationId,
-    messageId: "",
-  });
+async function getMessages(conversationId, source) {
+  return fs
+    .collection(buildPath(paths.message, { conversationId, messageId: "" }))
+    .orderBy("dateCreated", "asc")
+    .get({ source })
+    .then((querySnapshot) => arrayWithId(querySnapshot));
 }
 
 // Store new message in conversation thread
